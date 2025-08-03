@@ -1,0 +1,22 @@
+{
+    "KPackageStructure": "Plasma/Wallpaper",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "DigitalArtifex"
+            }
+        ],
+        "Category": "",
+        "Description": "Allows you to use Shaders as your wallpaper",
+        "Icon": "preferences-desktop-wallpaper",
+        "Id": "com.github.digitalartifex.komplex",
+        "License": "GPLv3+",
+        "Version": "1.0.0",
+        "Name": "Komplex Wallpaper Engine",
+        "ServiceTypes": [
+            "Plasma/Wallpaper"
+        ]
+    },
+    "X-KDE-ParentApp": "org.kde.plasmashell",
+    "X-Plasma-MainScript": "ui/main.qml"
+}

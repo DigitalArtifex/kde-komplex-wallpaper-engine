@@ -1,0 +1,36 @@
+{
+    "author": "DigitalArtifex",
+    "name": "Test",
+    "version": "1.0.0",
+    "description": "Test",
+    "license": "GPLv3+",
+    "engine": "shadertoys",
+    "id": "sdE3sx",
+
+    "type": 2,
+    "source": "/home/parametheus/Projects/Code/ControlsTest/shaders/video-glitch-extra.frag.qsb",
+
+    "channel0":
+    {
+        "type": 2,
+        "source": "/home/parametheus/Projects/Code/ControlsTest/shaders/edge-detect-greyscale.frag.qsb",
+
+        "resolution_x": 1920,
+        "resolution_y": 1080,
+        "resolution_scale": 1.0,
+        "time_scale": 1.0,
+        "mouse_scale": 1.0,
+
+        "channel0":
+        {
+            "type": 2,
+            "source": "/home/parametheus/kde/src/komplex/package/contents/ui/Shaders/Generative/Glow-City.frag.qsb",
+
+            "resolution_x": 1920,
+            "resolution_y": 1080,
+            "resolution_scale": 1.0,
+            "time_scale": 1.0,
+            "mouse_scale": 1.0
+        }
+    }
+}

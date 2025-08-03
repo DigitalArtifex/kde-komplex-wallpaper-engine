@@ -1,0 +1,15 @@
+description: Complex Shader Wallpaper Arrangements
+tier: 1
+type: solution
+platforms:
+    - name: Linux
+    - name: FreeBSD
+portingAid: false
+deprecated: false
+release: true
+libraries:
+cmakename: komplex
+
+public_lib: true
+group: Frameworks
+subgroup: Tier 1

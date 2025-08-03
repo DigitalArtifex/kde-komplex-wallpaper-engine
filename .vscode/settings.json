@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "qjsonarray": "cpp",
+        "qjsonobject": "cpp",
+        "qaudiodevice": "cpp",
+        "qjsondocument": "cpp",
+        "qjsonparseerror": "cpp",
+        "qmediarecorder": "cpp",
+        "qobject": "cpp",
+        "fstream": "cpp",
+        "array": "cpp",
+        "qqmlengine": "cpp",
+        "*.moc": "cpp",
+        "qeventloop": "cpp",
+        "qstandardpaths": "cpp"
+    }
+}
