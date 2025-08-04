@@ -23,6 +23,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
 
+import QtCore
 import QtQuick
 
 import com.github.digitalartifex.komplex 1.0 as Komplex
@@ -154,16 +155,14 @@ Item
         if (pack.channel3)
             channelOutput.iChannel3 = parseChannel(pack.channel3);
 
-        var source
-
-        // Ensure the source path is correctly resolved for relative paths
-        if(!pack.source.startsWith("/") && !pack.source.startsWith("file://"))
-            source = Qt.resolvedUrl(shaderPackModel.shaderPackPath + "/" + pack.source);
-        else if(!pack.source.startsWith("file://"))
-            source = Qt.resolvedUrl("file://" + pack.source);
-
-        channelOutput.source = "file://" + (source || ""); // Set the shader source file
+        channelOutput.source = getFilePath(pack.source); // Set the shader source file
         channelOutput.type = ShaderChannel.Type.ShaderChannel; // Set the shader
+
+        if(pack.mouse_scale)
+            channelOutput.mouseBias = pack.mouse_scale
+
+        if(pack.speed)
+            channelOutput.iTimeScale = pack.speed
     }
 
     // Recursive helper function to parse channels
@@ -171,13 +170,7 @@ Item
     {
         if (!channel) return;
 
-        var source
-
-        // Ensure the source path is correctly resolved for relative paths
-        if(!channel.source.startsWith("/") && !channel.source.startsWith("file://"))
-            source = Qt.resolvedUrl(shaderPackModel.shaderPackPath + "/" + channel.source);
-        else if(!channel.source.startsWith("file://"))
-            source = Qt.resolvedUrl("file://" + channel.source);
+        var source = getFilePath(channel.source)
 
         var result = Qt.createQmlObject(`ShaderChannel
         {
@@ -190,6 +183,7 @@ Item
             type: ${channel.type || 0}
             iTime: mainItem.iTime * ${channel.time_scale || 1.0}
             iMouse: mainItem.iMouse
+            mouseBias: ${channel.mouse_scale || 1.0}
             iResolution: Qt.vector3d(${(channel.resolution_x || mainItem.width) * (channel.resolution_scale || 1.0)}, ${(channel.resolution_y || mainItem.width) * (channel.resolution_scale || 1.0)}, pixelRatio)
         }`, mainItem);
 
@@ -203,5 +197,25 @@ Item
             result.iChannel3 = parseChannel(channel.channel3);
 
         return result;
+    }
+
+    function getFilePath(source)
+    {
+        if(source === "") 
+            return "";
+
+        // Ensure the source path is correctly resolved for relative paths
+        if(source.startsWith("./"))
+        {
+            var temp = source.replace("./", "file://" + shaderPackModel.shaderPackPath + "/")
+            return Qt.resolvedUrl(temp);
+        }
+        else if(source.startsWith("$/"))
+        {
+            var temp = source.replace("$/", "file://" + StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.local/share/komplex/")
+            return Qt.resolvedUrl(temp);
+        }
+        else if(!source.startsWith("file://"))
+            return Qt.resolvedUrl("file://" + source);
     }
 }
