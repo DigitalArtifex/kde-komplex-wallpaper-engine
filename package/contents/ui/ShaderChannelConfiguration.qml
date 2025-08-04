@@ -113,7 +113,7 @@ Item
             name: "Image"
             icon: "./icons/image.svg"
             title: "Select an Image File"
-            filter: "Image Files (*.jpg, *.jpeg, *.png, *.svg)"
+            filter: "Image Files (*.jpg *.jpeg *.png *.svg *.gif *.tiff *.webp)"
             type: ShaderChannel.Type.ImageChannel
         }
 
@@ -133,7 +133,7 @@ Item
             name: "Video"
             icon: "./icons/video.svg"
             title: "Select a Video File"
-            filter: "Video Files (*.mov, *.avi, *.mkv, *.mp4)"
+            filter: "Video Files (*.mov *.avi *.mkv *.mp4)"
             type: ShaderChannel.Type.VideoChannel
         }
 
