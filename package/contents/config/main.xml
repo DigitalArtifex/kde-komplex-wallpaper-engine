@@ -169,7 +169,7 @@
       <label>Shader Package</label>
       <default></default>
     </entry>
-    <entry name="komplex_mode" type="int">
+    <entry name="komplex_mode" type="Int">
       <label>Use the Komplex Mode</label>
       <default>0</default>
     </entry>
