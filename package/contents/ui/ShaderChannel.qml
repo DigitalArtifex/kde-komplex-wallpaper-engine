@@ -59,24 +59,32 @@ Item
     property vector3d iResolution
     property real iResolutionScale: 1 // This is used to scale the resolution of the shader, allowing for performance optimizations
     property real iTime: 0 //used by most motion shaders
-    property real lastITime: 0
     property real iTimeDelta: 0
-    property var iChannelTime: [iTimeActual, iTimeActual, iTimeActual, iTimeActual] //individual channel time values
+    property var iChannelTime: [data.iTime, data.iTime, data.iTime, data.iTime] //individual channel time values
     property real iSampleRate: 44100 //used by audio shaders
     property int iFrame: 0
     property var iFrameRate: 60
     property vector4d iMouse
+    property real mouseBias: 1
     property var iDate
-    property real iTimeActual: 0 // This is used to track the actual time for the shader, according to the time scale
     property real iTimeScale: 1 // This is used to scale the time for the shader, allowing for slow motion or fast forward effects per channel
 
     property var iChannelResolution: [Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1), Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1), Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1)]
 
+    QtObject
+    {
+        id: data
+
+        property vector4d iMouse: Qt.vector4d(channel.iMouse.x * channel.mouseBias, channel.iMouse.y * channel.mouseBias, channel.iMouse.z, channel.iMouse.w)
+        property real iTime: 0
+        property real lastITime: 0
+    }
+
     onITimeChanged: 
     {
-        iTimeDelta = iTime - lastITime
-        lastITime = iTime
-        iTimeActual += iTimeDelta * iTimeScale
+        iTimeDelta = iTime - data.lastITime
+        data.lastITime = iTime
+        data.iTime += iTimeDelta * iTimeScale
     }
 
     id: channel
@@ -169,7 +177,8 @@ Item
 
             visible: true
             anchors.fill: parent
-            fillMode: channel.fillMode
+            fillMode: VideoOutput.PreserveAspectCrop
+            smooth: true
 
             onHeightChanged: this.sizeChanged()
 
@@ -264,13 +273,13 @@ Item
                 property var iChannel3: channelSource3
 
                 property var iResolution: channel.iResolution
-                property var iTime: channel.iTimeActual
+                property var iTime: data.iTime
                 property var iTimeDelta: channel.iTimeDelta
                 property var iChannelTime: channel.iChannelTime
                 property var iSampleRate: channel.iSampleRate
                 property var iFrame: channel.iFrame
                 property var iFrameRate: channel.iFrameRate
-                property var iMouse: channel.iMouse
+                property var iMouse: data.iMouse
                 property var iDate: channel.iDate
 
                 property var iChannelResolution: channel.iResolution
@@ -315,11 +324,11 @@ Item
 
             function updateCamera() 
             {
-                yaw -= (channel.iMouse.x - lastX) * 0.5
-                pitch -= (channel.iMouse.y - lastY) * -0.5
+                yaw -= (data.iMouse.x - lastX) * 0.5
+                pitch -= (data.iMouse.y - lastY) * -0.5
                 pitch = Math.max(-89, Math.min(89, pitch))
-                lastX = channel.iMouse.x
-                lastY = channel.iMouse.y
+                lastX = data.iMouse.x
+                lastY = data.iMouse.y
 
                 var radYaw = yaw * Math.PI / 180
                 var radPitch = pitch * Math.PI / 180
