@@ -86,6 +86,9 @@ Kirigami.FormLayout
     property alias cfg_shader_package_index: selectedShaderPack.currentIndex
     property alias cfg_komplex_mode: engineModeSelect.currentIndex
 
+    property alias cfg_resolution_x: resolutionXField.value
+    property alias cfg_resolution_y: resolutionYField.value
+
     Palette 
     {
         id: palette
@@ -414,6 +417,85 @@ Kirigami.FormLayout
         }
     }
 
+    RowLayout
+    {
+        visible: navBar.currentIndex === 1
+
+        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Resolution:")
+        Text
+        {
+            color: palette.text
+            text: "X"
+            verticalAlignment: Text.AlignVCenter
+        }
+        TextField 
+        {
+            property int value
+            id: resolutionXField
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            horizontalAlignment: Text.AlignRight
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 4
+            text: value
+            onEditingFinished: () =>
+            {
+                value = parseInt(text)
+            }
+            Keys.onPressed: (event) => 
+            {
+                if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) 
+                {
+                    resolutionXField.focus = false; // Unfocus the TextField
+                    event.accepted = true; // Prevent further propagation of the key event
+                }
+            }
+            background: Rectangle 
+            {
+                color: resolutionXField.activeFocus ? palette.base : "transparent"
+                border.color: resolutionXField.activeFocus ? palette.highlight : "transparent"
+                border.width: 1
+                radius: 4
+                anchors.fill: resolutionXField
+                anchors.margins: -2
+            }
+        }
+        Text
+        {
+            color: palette.text
+            text: "Y"
+            verticalAlignment: Text.AlignVCenter
+        }
+        TextField 
+        {
+            property int value
+            id: resolutionYField
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            horizontalAlignment: Text.AlignRight
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 4
+            text: value
+            onEditingFinished: () =>
+            {
+                value = parseInt(text)
+            }
+            Keys.onPressed: (event) => 
+            {
+                if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) 
+                {
+                    resolutionYField.focus = false; // Unfocus the TextField
+                    event.accepted = true; // Prevent further propagation of the key event
+                }
+            }
+            background: Rectangle 
+            {
+                color: resolutionYField.activeFocus ? palette.base : "transparent"
+                border.color: resolutionYField.activeFocus ? palette.highlight : "transparent"
+                border.width: 1
+                radius: 4
+                anchors.fill: resolutionYField
+                anchors.margins: -2
+            }
+        }
+    }
+
     RowLayout 
     {
         visible: navBar.currentIndex === 1
@@ -538,7 +620,7 @@ Kirigami.FormLayout
     
     RowLayout 
     {
-        visible: navBar.currentIndex === 1
+        visible: navBar.currentIndex === 2
         id: mouseLayout
 
         Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Mouse allowed:")
@@ -556,7 +638,7 @@ Kirigami.FormLayout
     RowLayout 
     {
         id: mouseBiasLayout
-        visible: root.cfg_mouseAllowed && navBar.currentIndex === 1
+        visible: root.cfg_mouseAllowed && navBar.currentIndex === 2
 
         Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Mouse bias:")
         ColumnLayout 
@@ -579,7 +661,6 @@ Kirigami.FormLayout
         }
         ColumnLayout 
         {
-        visible: navBar.currentIndex === 1
             TextField 
             {
                 id: mouseBiasField
@@ -623,7 +704,7 @@ Kirigami.FormLayout
 
     Button 
     {
-        visible: navBar.currentIndex === 1
+        visible: navBar.currentIndex === 2
         id: kofiButton
         Layout.preferredWidth: Kirigami.Units.gridUnit * 5
         Layout.preferredHeight: Kirigami.Units.gridUnit * 3
