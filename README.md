@@ -2,7 +2,7 @@
 
 Komplex Wallpaper Engine is an advanced wallpaper engine for the KDE Plasma 6 Desktop Environment that allows the use of complex shader arrangements as a Wallpaper. Shader arrangements are a collection of shaders and various channel buffers that the shader is intended to manipulate, resulting in visually stunning live motion and reactive wallpapers.
 
-https://github.com/user-attachments/assets/8231de6d-3042-4c47-bb46-9e51dc1231e6
+https://github.com/user-attachments/assets/456bedfc-1d18-4520-9340-ab7d0f0a8f98
 
 ## Supported Engine Modes
 - ShaderToy
