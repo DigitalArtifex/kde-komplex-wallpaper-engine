@@ -73,11 +73,32 @@ Example `pack.json` file:
 
 Contents of the `data` directory should be placed in `~/.local/komplex/`
 
-Compiling requires setting up the `kde-builder` package, setting the required env variables and selecting the proper CMake kit for building.
+### Requirements
+- qt6-base
+- qt6-multimedia
+- qt6-multimedia-gstreamer*
+- qt6-declarative
+- qt6-imageformats
+- qt6-quick3d
+- qt6-shadertools
+- ECM (extra-cmake-modules)
+- plasma-desktop
+- cmake
+
+### Instructions
+
+After ensuring your system has all the required packages, run the following commands
+```
+git clone https://github.com/DigitalArtifex/kde-komplex-wallpaper-engine.git
+cd kde-komplex-wallpaper-engine
+cmake -S ./ -B ./build
+cmake --build ./build
+cmake --install ./build
+```
 
 ## Installation (Release Packages)
 
-No release packages are available at this time. We are working on getting them setup for multiple package managers.
+Currently only Arch packages are available at this time. I am working towards Debian and Gentoo releases as well.
 
 ## Credits
 
