@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.16)
 
 project(komplex VERSION 0.1 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(QT_QML_GENERATE_QMLLS_INI ON)
-set(KF_MIN_VERSION "5.68.0")
+set(KF_MIN_VERSION "6.0.0")
 
 set(CMAKE_SKIP_INSTALL_ALL_DEPENDENCY true)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -28,6 +29,8 @@ endif()
 find_package(ECM ${KF_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake) 
 
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Multimedia Quick Quick3D)
+
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
@@ -42,8 +45,6 @@ include(ECMDeprecationSettings)
 include(ECMQmlModule)
 include(GNUInstallDirs)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Core Gui Quick3D Qml Multimedia)
-
 find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
     CoreAddons      # KAboutData
     I18n            # KLocalizedString
@@ -51,7 +52,7 @@ find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
 )
 
 find_package(Plasma REQUIRED) 
-qt_standard_project_setup(REQUIRES 6.8)
+qt_standard_project_setup(REQUIRES 6.9) 
 
 add_definitions(-DTRANSLATION_DOMAIN=\"plasma_wallpaper_com.github.digitalartifex.komplex\")
 
@@ -59,4 +60,4 @@ set(QMLPLUGIN_URI "com.github.digitalartifex.komplex")
 string(REPLACE "." "/" QMLPLUGIN_INSTALL_URI ${QMLPLUGIN_URI})
 
 plasma_install_package(package ${QMLPLUGIN_URI} wallpapers wallpaper)
-add_subdirectory(plugin)
+add_subdirectory(plugin) 

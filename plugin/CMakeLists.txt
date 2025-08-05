@@ -4,7 +4,7 @@ set(BUILD_QML ON CACHE BOOL "")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOUIC ON) 
 
 add_library(
     ${PROJECT_NAME}
@@ -12,7 +12,7 @@ add_library(
         plugin.cpp
         ShaderPackModel.cpp
         AudioModel.cpp
-)
+) 
 
 qt_add_qml_module(
     ${PROJECT_NAME}
