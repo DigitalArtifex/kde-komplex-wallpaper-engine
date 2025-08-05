@@ -2,12 +2,12 @@
 
 ShaderPackModel::ShaderPackModel(QObject *parent)
     : QObject(parent), 
-    m_shaderPackPath(QString::fromLatin1("%1/.local/share/komplex/packs/default").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_shaderPackInstallPath(QString::fromLatin1("%1/.local/share/komplex/packs").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_shadersPath(QString::fromLatin1("%1/.local/share/komplex/shaders").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_imagesPath(QString::fromLatin1("%1/.local/share/komplex/images").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_cubeMapsPath(QString::fromLatin1("%1/.local/share/komplex/cubemaps").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_videosPath(QString::fromLatin1("%1/.local/share/komplex/videos").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_shaderPackPath(QString::fromLatin1("/usr/share/komplex/packs/default")),
+    m_shaderPackInstallPath(QString::fromLatin1("/usr/share/komplex/packs")),
+    m_shadersPath(QString::fromLatin1("/usr/share/komplex/shaders")),
+    m_imagesPath(QString::fromLatin1("/usr/share/komplex/images")),
+    m_cubeMapsPath(QString::fromLatin1("/usr/share/komplex/cubemaps")),
+    m_videosPath(QString::fromLatin1("/usr/share/komplex/videos")),
     m_json(QString())
 {
 }
