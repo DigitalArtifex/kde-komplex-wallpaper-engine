@@ -53,9 +53,11 @@ compile_commands.json
 
 *_qmlcache.qrc
 build/*
+release/*
+PKGBUILD
 
 #VSCode Ignores
-.vscode/*      # Maybe .vscode/**/* instead - see comments
+.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
