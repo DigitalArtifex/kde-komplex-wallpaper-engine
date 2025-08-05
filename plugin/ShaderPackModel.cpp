@@ -2,12 +2,12 @@
 
 ShaderPackModel::ShaderPackModel(QObject *parent)
     : QObject(parent), 
-    m_shaderPackPath(QString("%1/.local/share/komplex/packs/default").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_shaderPackInstallPath(QString("%1/.local/share/komplex/packs").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_shadersPath(QString("%1/.local/share/komplex/shaders").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_imagesPath(QString("%1/.local/share/komplex/images").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_cubeMapsPath(QString("%1/.local/share/komplex/cubemaps").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
-    m_videosPath(QString("%1/.local/share/komplex/videos").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_shaderPackPath(QString::fromLatin1("%1/.local/share/komplex/packs/default").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_shaderPackInstallPath(QString::fromLatin1("%1/.local/share/komplex/packs").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_shadersPath(QString::fromLatin1("%1/.local/share/komplex/shaders").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_imagesPath(QString::fromLatin1("%1/.local/share/komplex/images").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_cubeMapsPath(QString::fromLatin1("%1/.local/share/komplex/cubemaps").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_videosPath(QString::fromLatin1("%1/.local/share/komplex/videos").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
     m_json(QString())
 {
 }
@@ -96,10 +96,10 @@ void ShaderPackModel::refreshShaderPacks()
         bool valid = false;
 
         // Check if the pack directory contains a pack.json file
-        if(packDir.exists("pack.json"))
+        if(packDir.exists(QString::fromLatin1("pack.json")))
         {
             // Load the pack.json data
-            QFile packFile(packDir.absoluteFilePath("pack.json"));
+            QFile packFile(packDir.absoluteFilePath(QString::fromLatin1("pack.json")));
             if (packFile.open(QIODevice::ReadOnly | QIODevice::Text)) 
             {
                 QByteArray packData = packFile.readAll();
@@ -120,7 +120,7 @@ void ShaderPackModel::refreshShaderPacks()
 
         // If valid, add to the list of verified shader packs
         if(valid)
-            verifiedShaderPacks.insert(pack, packDir.absoluteFilePath("pack.json")); // Store the path to the pack.json file
+            verifiedShaderPacks.insert(pack, packDir.absoluteFilePath(QString::fromLatin1("pack.json"))); // Store the path to the pack.json file
         // Otherwise, log a warning
         else
             qWarning("Shader pack %s does not contain a valid pack.json file", qPrintable(pack));
@@ -171,10 +171,10 @@ void ShaderPackModel::importShaderPack(const QString &filePath)
     setState(Importing); // Set the state to Importing
 
     // Check if the file is a zip or tarball
-    if(filePath.endsWith(".zip", Qt::CaseInsensitive))
-        command = QString("unzip -o %1 -d %2/%3").arg(file.absoluteFilePath(), m_shaderPackInstallPath, file.baseName());
-    else if(filePath.endsWith(".tar.gz", Qt::CaseInsensitive) || filePath.endsWith(".tar", Qt::CaseInsensitive))
-        command = QString("tar -xf %1 -C %2/%3").arg(file.absoluteFilePath(), m_shaderPackInstallPath, file.baseName());
+    if(filePath.endsWith(QString::fromLatin1(".zip"), Qt::CaseInsensitive))
+        command = QString::fromLatin1("unzip -o %1 -d %2/%3").arg(file.absoluteFilePath(), m_shaderPackInstallPath, file.baseName());
+    else if(filePath.endsWith(QString::fromLatin1(".tar.gz"), Qt::CaseInsensitive) || filePath.endsWith(QString::fromLatin1(".tar"), Qt::CaseInsensitive))
+        command = QString::fromLatin1("tar -xf %1 -C %2/%3").arg(file.absoluteFilePath(), m_shaderPackInstallPath, file.baseName());
     else 
     {
         setState(Idle); // Reset state to Idle
