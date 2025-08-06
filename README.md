@@ -105,3 +105,5 @@ Currently only Arch packages are available at this time. I am working towards De
 This project was inspired by `KDE Shader Wallpaper`, `Wallpaper Engine` and others. It uses code that was originally part of `KDE Shader Wallpaper`.
 
 This project uses icons donated by [Icons8](http://www.icons8.com)
+
+To support me, this project or to find Linux themed hot sauces, you can [Buy me a coffee](https://ko-fi.com/digitalartifex)
