@@ -96,6 +96,12 @@ cmake --build ./build
 cmake --install ./build
 ```
 
+After installation, it is likely that you may experience scan lines and other artifacts when using the `Video Channel Buffer`. This is due to the default backend being FFMPEG, which is known to have such issues with Qt. You can correct this issue by using the `gstreamer` backend provided by qt6-multimedia-gstreamer. 
+```
+sudo echo "export QT_MEDIA_BACKEND=gstreamer" >> /etc/profile
+```
+This step is automatically executed by the Arch installation package.
+
 ## Installation (Release Packages)
 
 Currently only Arch packages are available at this time. I am working towards Debian and Gentoo releases as well.
