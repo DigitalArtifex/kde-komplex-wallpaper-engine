@@ -89,6 +89,9 @@ Item
             type: wallpaper.configuration.iChannel0_flag ? wallpaper.configuration.iChannel0_type : 0
 
             source: wallpaper.configuration.iChannel0_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel0) : ""
+
+            // ShaderToy seems to start at bottom left for 0,0
+            invert: wallpaper.configuration.iChannel0_inverted
         }
 
         ShaderChannel
@@ -103,6 +106,9 @@ Item
             type: wallpaper.configuration.iChannel1_flag ? wallpaper.configuration.iChannel1_type : 0
 
             source: wallpaper.configuration.iChannel1_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel1) : ""
+
+            // ShaderToy seems to start at bottom left for 0,0
+            invert: wallpaper.configuration.iChannel1_inverted ? wallpaper.configuration.iChannel1_inverted : true
         }
 
         ShaderChannel
@@ -117,6 +123,9 @@ Item
             type: wallpaper.configuration.iChannel2_flag ? wallpaper.configuration.iChannel2_type : 0
 
             source: wallpaper.configuration.iChannel2_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel2) : ""
+
+            // ShaderToy seems to start at bottom left for 0,0
+            invert: wallpaper.configuration.iChannel2_inverted ? wallpaper.configuration.iChannel2_inverted : true
         }
 
         ShaderChannel
@@ -133,6 +142,9 @@ Item
             type: wallpaper.configuration.iChannel3_flag ? wallpaper.configuration.iChannel3_type : 0
 
             source: wallpaper.configuration.iChannel3_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel3) : ""
+
+            // ShaderToy seems to start at bottom left for 0,0
+            invert: wallpaper.configuration.iChannel3_inverted ? wallpaper.configuration.iChannel3_inverted : true
         }
 
         // The output channel that combines all the input channels and displays the final shader output

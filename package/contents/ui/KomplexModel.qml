@@ -119,18 +119,6 @@ Item
         }
     }
 
-    // Setup the connection to shader pack model for updates
-    Connections
-    {
-        target: shaderPackModel
-
-        function onJsonChanged()
-        {
-            // Parse the JSON configuration and set the properties of the ShaderChannel
-            // mainItem.parsePack(shaderPackModel.json);
-        }
-    }
-
     // Load the default shader pack configuration on component completion
     Component.onCompleted:
     {
@@ -175,6 +163,7 @@ Item
         var result = Qt.createQmlObject(`ShaderChannel
         {
             z: 0
+            invert: ${channel.invert || true}
             iTimeScale: ${channel.time_scale || 1.0}
             iResolutionScale: ${channel.resolution_scale || 1.0}
             visible: false

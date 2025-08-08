@@ -69,6 +69,8 @@ Item
     property var iDate
     property real iTimeScale: 1 // This is used to scale the time for the shader, allowing for slow motion or fast forward effects per channel
 
+    property bool invert
+
     property var iChannelResolution: [Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1), Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1), Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1)]
 
     QtObject
@@ -78,6 +80,7 @@ Item
         property vector4d iMouse: Qt.vector4d(channel.iMouse.x * channel.mouseBias, channel.iMouse.y * channel.mouseBias, channel.iMouse.z, channel.iMouse.w)
         property real iTime: 0
         property real lastITime: 0
+        property real angle: channel.invert ? 180 : 0
     }
 
     onITimeChanged: 
@@ -140,6 +143,23 @@ Item
             //     }
             // }
         ]
+
+        transform: Rotation
+        {
+            id: channelRotation
+            origin.x: channel.width / 2
+            origin.y: channel.height / 2
+
+            // For vertical flipping, we need to transform the x axis
+            axis
+            {
+                x: 1
+                y: 0
+                z: 0
+            }
+
+            angle: data.angle
+        }
     }
 
     //The image channel will be the default channel type for backwards compatability
@@ -149,6 +169,7 @@ Item
 
         Image
         {
+            id: image
             anchors.fill: parent
             source: Qt.resolvedUrl(channel.source)
             fillMode: channel.fillMode

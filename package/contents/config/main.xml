@@ -61,6 +61,10 @@
       <label>iChannel0 on/off flag</label>
       <default>true</default>
     </entry>
+    <entry name="iChannel0_inverted" type="Bool">
+      <label>Invert iChannel0's data for the shader</label>
+      <default>true</default>
+    </entry>
     <entry name="iChannel0_timeScale" type="Double">
       <label>iChannel0 time scale</label>
       <default>1.0</default>
@@ -87,6 +91,10 @@
     </entry>
     <entry name="iChannel1_flag" type="Bool">
       <label>iChannel1 on/off flag</label>
+      <default>true</default>
+    </entry>
+    <entry name="iChannel1_inverted" type="Bool">
+      <label>Invert iChannel1's data for the shader</label>
       <default>true</default>
     </entry>
     <entry name="iChannel1_timeScale" type="Double">
@@ -117,6 +125,10 @@
       <label>iChannel2 on/off flag</label>
       <default>true</default>
     </entry>
+    <entry name="iChannel2_inverted" type="Bool">
+      <label>Invert iChannel2's data for the shader</label>
+      <default>true</default>
+    </entry>
     <entry name="iChannel2_timeScale" type="Double">
       <label>iChannel2 time scale</label>
       <default>1.0</default>
@@ -144,6 +156,10 @@
     <entry name="iChannel3_flag" type="Bool">
       <label>iChannel3 on/off flag</label>
       <default>false</default>
+    </entry>
+    <entry name="iChannel3_inverted" type="Bool">
+      <label>Invert iChannel3's data for the shader</label>
+      <default>true</default>
     </entry>
     <entry name="iChannel3_timeScale" type="Double">
       <label>iChannel3 time scale</label>

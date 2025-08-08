@@ -62,6 +62,7 @@ Item
     property alias tmp_resolution_scale: resolutionScaleSlider.value
     property alias tmp_resolution_x: resolutionXEdit.value
     property alias tmp_resolution_y: resolutionYEdit.value
+    property alias tmp_invert: channelInvertedCheckBox.checked
     property bool tmp_enabled: tmp_source !== ""
     property Palette palette
 
@@ -72,6 +73,7 @@ Item
     property int resolution_x
     property int resolution_y
     property bool enabled
+    property bool invert
 
     id: window
 
@@ -302,6 +304,12 @@ Item
                         folderDialog.open()
                 }
             }
+        }
+
+        CheckBox 
+        {
+            id: channelInvertedCheckBox
+            text: i18n("Invert Channel Data")
         }
 
         RowLayout 
@@ -567,6 +575,7 @@ Item
         resolution_x = tmp_resolution_x
         resolution_y = tmp_resolution_y
         enabled = tmp_enabled
+        invert = tmp_invert
 
         // Emit the accepted signal and reset the selection
         window.accepted()
@@ -616,6 +625,7 @@ Item
         tmp_resolution_scale = resolution_scale
         tmp_resolution_x = resolution_x
         tmp_resolution_y = resolution_y
+        tmp_invert = invert
 
         tmp_type = type
         updateCurrentSelection()

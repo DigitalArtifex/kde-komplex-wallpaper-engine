@@ -71,6 +71,10 @@ Kirigami.FormLayout
     property alias cfg_iChannel2_resolution_y: shaderChannelConfig2.resolution_y
     property alias cfg_iChannel3_resolution_x: shaderChannelConfig3.resolution_x
     property alias cfg_iChannel3_resolution_y: shaderChannelConfig3.resolution_y
+    property alias cfg_iChannel0_inverted: shaderChannelConfig0.invert
+    property alias cfg_iChannel1_inverted: shaderChannelConfig1.invert
+    property alias cfg_iChannel2_inverted: shaderChannelConfig2.invert
+    property alias cfg_iChannel3_inverted: shaderChannelConfig3.invert
     property alias cfg_shaderSpeed: speedSlider.value
     property alias cfg_mouseSpeedBias: mouseBiasSlider.value
     property alias cfg_mouseAllowed: mouseEnableButton.checked
@@ -773,7 +777,7 @@ Kirigami.FormLayout
             }
 
             textRole: "fileBaseName"
-            currentIndex: root.cfg_shader_package
+            currentIndex: root.cfg_shader_package_index
             displayText: currentIndex === -1 ? "Custom File" : currentText.replace("_", " ").charAt(0).toUpperCase() + currentText.replace("_", " ").slice(1)
 
             onCurrentTextChanged: 
