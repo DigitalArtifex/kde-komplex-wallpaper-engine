@@ -3,6 +3,7 @@
 #include <QQmlExtensionPlugin>
 
 #include "AudioModel.h"
+#include "AudioImageProvider.h"
 #include "ShaderPackModel.h"
 #include "Komplex_global.h"
 
@@ -17,6 +18,12 @@ public:
     
         qmlRegisterType<AudioModel>(uri, 1, 0, "AudioModel");
         qmlRegisterType<ShaderPackModel>(uri, 1, 0, "ShaderPackModel");
+    }
+
+    void initializeEngine(QQmlEngine *engine, const char *uri) override
+    {
+        Q_ASSERT(QLatin1String(uri) == QLatin1String("com.github.digitalartifex.komplex"));
+        engine->addImageProvider(QString::fromLatin1("audiotexture"), new AudioImageProvider);
     }
 };
 

@@ -12,6 +12,8 @@ add_library(
         plugin.cpp
         ShaderPackModel.cpp
         AudioModel.cpp
+        AudioImageProvider.cpp
+        AudioImageProvider.h
 ) 
 
 qt_add_qml_module(
@@ -20,7 +22,7 @@ qt_add_qml_module(
         ${QMLPLUGIN_URI}
     VERSION
         1.0
-    PLUGIN_TARGET  
+    PLUGIN_TARGET
         ${PROJECT_NAME}
     CLASS_NAME
         KomplexPlugin
@@ -28,7 +30,8 @@ qt_add_qml_module(
         plugin.cpp
         ShaderPackModel.cpp
         AudioModel.cpp
-    NO_GENERATE_PLUGIN_SOURCE 
+        AudioImageProvider.cpp
+    NO_GENERATE_PLUGIN_SOURCE
 )
 
 target_link_libraries(
@@ -43,6 +46,8 @@ target_link_libraries(
         KF6::CoreAddons
         KF6::I18n
         KF6::Package
+        PipeWire::PipeWire
+        fftw3
 )
 
 target_compile_definitions(
