@@ -120,6 +120,9 @@ AudioModel::~AudioModel()
 
 void AudioModel::startCapture()
 {
+    if(!m_instance)
+        m_instance = new AudioModel();
+        
     if(m_thread->isRunning())
         return;
 
@@ -139,6 +142,9 @@ void AudioModel::startCaptureAsync()
 
 QPixmap AudioModel::frame()
 {
+    if(!m_instance)
+        return QPixmap();
+    
     return m_instance->m_frame;
 }
 
@@ -319,7 +325,8 @@ void AudioModel::on_process(void *userdata)
 }
 
 // Blackman window function
-std::vector<double> AudioModel::createBlackmanWindow(int size) {
+std::vector<double> AudioModel::createBlackmanWindow(int size)
+{
     std::vector<double> window(size);
     const double a0 = 0.42;
     const double a1 = 0.5;

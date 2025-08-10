@@ -5,8 +5,9 @@
 #include <QQuickImageProvider>
 
 #include "AudioModel.h"
+#include "Komplex_global.h"
 
-class AudioImageProvider : public QQuickImageProvider
+class KOMPLEX_EXPORT AudioImageProvider : public QQuickImageProvider
 {
     public:
         explicit AudioImageProvider();

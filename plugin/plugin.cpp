@@ -7,6 +7,15 @@
 #include "ShaderPackModel.h"
 #include "Komplex_global.h"
 
+AudioModel *komplexAudioSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    AudioModel *model = new AudioModel();
+    return model;
+}
+
 class KOMPLEX_EXPORT KomplexPlugin : public QQmlExtensionPlugin
 {
 	Q_OBJECT
@@ -16,7 +25,7 @@ public:
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("com.github.digitalartifex.komplex"));
     
-        qmlRegisterType<AudioModel>(uri, 1, 0, "AudioModel");
+        qmlRegisterSingletonType<AudioModel*>(uri, 1, 0, "AudioModel", komplexAudioSingletonProvider);
         qmlRegisterType<ShaderPackModel>(uri, 1, 0, "ShaderPackModel");
     }
 

@@ -88,16 +88,13 @@ Item
     {
         id: selectionModel
 
-        // Commented out Audio channel as it is not implemented yet
-        // ListElement
-        // {
-        //     file: true
-        //     name: "Audio"
-        //     icon: "qrc:/icons/audio.svg"
-        //     title: "Select an Audio File"
-        //     filter: "MP3 Files (*.mp3):WAV Files (*.wav)"
-        //     type: ShaderChannel.Type.AudioChannel
-        // }
+        ListElement
+        {
+            file: true
+            name: "Audio"
+            icon: "./icons/audio.svg"
+            type: ShaderChannel.Type.AudioChannel
+        }
 
         ListElement
         {
@@ -271,6 +268,7 @@ Item
 
         RowLayout
         {
+            visible: window.tmp_type != ShaderChannel.Type.AudioChannel
             Layout.alignment: Qt.AlignTop
 
             Label
@@ -610,6 +608,8 @@ Item
                 break;
             case ShaderChannel.Type.VideoChannel:
                 window.currentFolder = window.videoFolder
+                break;
+            case ShaderChannel.Type.AudioChannel:
                 break;
         }
 

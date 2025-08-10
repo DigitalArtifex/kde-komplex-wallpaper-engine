@@ -42,8 +42,8 @@ Item
         ImageChannel,
         VideoChannel,
         ShaderChannel,
-        CubeMapChannel
-        // AudioChannel
+        CubeMapChannel,
+        AudioChannel
     }
 
     property int type: ShaderChannel.Type.ImageChannel
@@ -133,15 +133,15 @@ Item
                 {
                     loader.sourceComponent: channelShader
                 }
+            },
+            State
+            {
+                when: channel.type === ShaderChannel.Type.AudioChannel
+                PropertyChanges
+                {
+                    loader.sourceComponent: channelAudio
+                }
             }
-            // State
-            // {
-            //     when: channel.type === ShaderChannel.Type.AudioChannel
-            //     PropertyChanges
-            //     {
-            //         loader.sourceComponent: channelAudio
-            //     }
-            // }
         ]
 
         transform: Rotation
@@ -373,80 +373,40 @@ Item
 
     // Supporting this as an mp3 feels kinda silly. Should really figure out how to capture desktop audio with qml
     // UPDATE: This is not currently supported in QML, so we will need to implement this in C++ later
-    // Component
-    // {
-    //     id: channelAudio
-    //     Rectangle
-    //     {
-    //         anchors.fill: parent
-    //         color: "black"
+    Component
+    {
+        id: audioChannel
 
-    //         property var audioData: new Array(512).fill(0)
-    //         property alias texture: audioTexture
+        Item
+        {
 
-    //         MediaDevices 
-    //         {
-    //             id: devices
-    //         }
+            Image
+            {
+                id: textureImage
+                source: "image://audiotexture/frame"
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectFit
+            }
 
-    //         AudioInput 
-    //         {
-    //             id: audioInput
-    //             device: devices.defaultAudioInput
-    //         }
+            Timer
+            {
+                property int frame: 0
+                interval: 16
+                repeat: true
+                triggeredOnStart: true
+                running: true
 
-    //         CaptureSession 
-    //         {
-    //             id: captureSession
-    //             audioInput: audioInput
-    //         }
+                onTriggered:
+                {
+                    frame++
+                    textureImage.source = "image://audiotexture/frame" + frame
+                }
+            }
 
-    //         Timer 
-    //         {
-    //             interval: 16 // ~60fps update
-    //             running: true
-    //             repeat: true
-    //             onTriggered: 
-    //             {
-    //                 // Get audio levels and update texture
-    //                 // let buffer = audioInput.probe.audioBuffer()
-    //                 // if (buffer) 
-    //                 // {
-    //                 //     for (let i = 0; i < Math.min(buffer.length, 512); i++) {
-    //                 //         audioData[i] = Math.abs(buffer[i])
-    //                 //     }
-    //                 //     audioTexture.update()
-    //                 // }
-    //             }
-    //         }
-
-    //         ShaderEffectSource 
-    //         {
-    //             id: audioTexture
-    //             width: 512
-    //             height: 1
-    //             format: ShaderEffectSource.Alpha
-    //             smooth: false
-    //             hideSource: true
-    //             sourceItem: Row 
-    //             {
-    //                 Repeater 
-    //                 {
-    //                     model: 512
-    //                     Rectangle
-    //                     {
-    //                         width: 1
-    //                         height: 1
-    //                         color: Qt.rgba(1, 1, 1, root.audioData[index])
-    //                     }
-    //                 }
-    //             }
-    //         }
-
-    //         Component.onCompleted: 
-    //         {
-    //             //captureSession.start()
-    //         }
-    //     }
-    // }
+            Component.onCompleted:
+            {
+                Komplex.AudioModel.startCapture()
+            }
+        }
+    }
 }

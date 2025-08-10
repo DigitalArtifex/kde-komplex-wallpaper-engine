@@ -12,7 +12,7 @@
  *  https://webaudio.github.io/web-audio-api/#smoothing-over-time
  * 
  *  The described smoothing method was resulting in inconsistent data. This
- *  is likely to a poor implementation. A linear smoothing algo seems to work
+ *  is likely due to a poor implementation. A linear smoothing algo seems to work
  *  (at least visually). Will need to revisit the temporal implementation if 
  *  things do not work as expected.
  *

@@ -124,7 +124,7 @@ Kirigami.FormLayout
             model: [
                 { "label": i18nd("@option:komplex_mode", "ShaderToys") },
                 { "label": i18nd("@option:komplex_mode", "Komplex") }
-            ]
+            ] 
         }
     }
     TabBar 
