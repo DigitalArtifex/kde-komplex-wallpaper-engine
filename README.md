@@ -13,8 +13,13 @@ https://github.com/user-attachments/assets/456bedfc-1d18-4520-9340-ab7d0f0a8f98
 - Images
 - Videos
 - Cubemaps**
+- Audio***
 
 *Shaders must be compiled with the `qsb` tool supplied with Qt. It may be available through your distribution's package manager. Follow the instructions in /tools/README.md to compile shaders for use with Qt.
+
+**The Cubemaps provided in this package are released under Creative Commons Attribution 3.0 Unported License and were obtained from [Humus](http://www.humus.name)
+
+***Audio reactivity requires KDE to be using Pipewire
 
 ### Engine Mode: ShaderToy
 
