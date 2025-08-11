@@ -97,7 +97,7 @@ Item
     Loader
     {
         id: loader
-        anchors.fill: parent
+        anchors.fill: channel.invert ? null : parent
 
         sourceComponent: channelImage
 
@@ -140,6 +140,9 @@ Item
                 PropertyChanges
                 {
                     loader.sourceComponent: channelAudio
+
+                    loader.width: 512
+                    loader.height: 2
                 }
             }
         ]
@@ -375,16 +378,20 @@ Item
     // UPDATE: This is not currently supported in QML, so we will need to implement this in C++ later
     Component
     {
-        id: audioChannel
+        id: channelAudio
 
-        Item
+        Rectangle
         {
-
+            anchors.fill: parent
+            color: "black"
             Image
             {
+                width: 512
+                height: 2
+                anchors.top: channel.invert ? undefined : parent.top
+                anchors.bottom: channel.invert ? parent.bottom : undefined
                 id: textureImage
                 source: "image://audiotexture/frame"
-                anchors.fill: parent
                 fillMode: Image.PreserveAspectFit
             }
 

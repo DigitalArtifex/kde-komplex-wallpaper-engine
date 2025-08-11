@@ -35,6 +35,7 @@ import org.kde.plasma.core as PlasmaCore
 
 Item
 {
+    property var screenGeometry
     property real pixelRatio: 1 //This will (hopefully) be set to PlasmaCore.Units.devicePixelRatio in onCompleted
     property vector3d iResolution: Qt.vector3d(wallpaper.configuration.resolution_x,wallpaper.configuration.resolution_y,1)//width, height, pixel aspect ratio
     property real iTime: 0 //used by most motion shaders 
@@ -59,7 +60,7 @@ Item
     WindowModel
     {
         id: windowModel
-        screenGeometry: mainItem.parent.screenGeometry
+        screenGeometry: mainItem.screenGeometry
     }
 
     Rectangle

@@ -1,3 +1,29 @@
+ /*
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2025 @DigitalArtifex | github.com/DigitalArtifex
+ *
+ *  This file is responsible for loading the 2 different engine models
+ *
+ *  --------------------------------------------------------------------------------------------------------
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  This software uses some of the QML code from JaredTao/jared2020@163.com's ToyShader for Android.
+ *  See: https://github.com/jaredtao/TaoShaderToy/
+ */
+pragma ComponentBehavior: Bound
+
 import QtCore
 import QtQuick
 import QtQml
@@ -9,6 +35,7 @@ import org.kde.plasma.plasmoid
 
 WallpaperItem 
 {
+    id: wallpaperItem
     Item
     {
         anchors.fill: parent
@@ -46,6 +73,7 @@ WallpaperItem
 
             ShaderToyModel
             {
+                screenGeometry: wallpaperItem.parent.screenGeometry
                 anchors.fill: parent
             }
         }
@@ -56,6 +84,7 @@ WallpaperItem
 
             KomplexModel
             {
+                screenGeometry: wallpaperItem.parent.screenGeometry
                 anchors.fill: parent
             }
         }

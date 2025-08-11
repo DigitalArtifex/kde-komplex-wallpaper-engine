@@ -126,23 +126,23 @@ Item
         activity: activityInfo.currentActivity
         screenGeometry: wModel.screenGeometry
         filterByVirtualDesktop: true
-        filterByScreen: parent.activeScreenOnly
+        filterByScreen: wModel.activeScreenOnly
         filterByActivity: true
         filterMinimized: true
 
         onActiveTaskChanged: 
         {
-            updateWindowsInfo();
+            wModel.updateWindowsInfo();
         }
 
         onDataChanged: 
         {
-            updateWindowsInfo();
+            wModel.updateWindowsInfo();
         }
 
         onCountChanged: 
         {
-            updateWindowsInfo();
+            wModel.updateWindowsInfo();
         }
     }
 
