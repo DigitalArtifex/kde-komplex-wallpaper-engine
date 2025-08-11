@@ -1,9 +1,12 @@
+# This file was originally part of the KDE Shader Wallpaper Project
+# it contains modifications from Neil Panda and myself
+
 import os
 import re
 import shutil
 
 # Specify the directory where your .frag files are located
-directory_path = 'src'
+source_directory = 'src'
 output_directory = 'processed'
 
 # List of variables to update
@@ -13,9 +16,8 @@ variables_to_update = [
     r'iChannelTime', r'iChannelResolution'
 ]
 
-# Header and footer to append
-header = '''
-#version 450
+# Header to be prepended to the shader file
+header = '''#version 450
 
 layout(location = 0) in vec2 qt_TexCoord0;
 layout(location = 0) out vec4 fragColor;
@@ -43,8 +45,8 @@ layout(binding = 4) uniform sampler2D iChannel3;
 vec2 fragCoord = vec2(qt_TexCoord0.x, 1.0 - qt_TexCoord0.y) * ubuf.iResolution.xy;
 '''
 
+# Footer to be appended, containing the main entry point
 footer = '''
-
 void main() {
     vec4 color = vec4(0.0);
     mainImage(color, fragCoord);
@@ -52,7 +54,7 @@ void main() {
 }
 '''
 
-for root, dirs, files in os.walk(directory_path):
+for root, dirs, files in os.walk(source_directory):
     for file in files:
         if file.endswith('.frag'):
             file_path = os.path.join(root, file)
@@ -60,23 +62,27 @@ for root, dirs, files in os.walk(directory_path):
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
 
-            # Replace variable names
-            for var in variables_to_update:
-                content = re.sub(r'\b' + re.escape(var) + r'\b', 'ubuf.' + var, content)
+                # 1. Remove any existing #version directive to avoid conflicts
+                content = re.sub(r'^\s*#version\s+.*?\n', '', content, flags=re.MULTILINE)
 
-            # Insert header after first empty line
-            insert_index = content.find('\n\n') + 1
-            content = content[:insert_index] + header + content[insert_index:]
+                # 2. Remove any pre-existing main() function
+                content = re.sub(r'void\s+main\s*\([^)]*\)\s*\{[\s\S]*?\}', '', content)
 
-            # Append footer
-            content += footer
+                # 3. Prepend 'ubuf.' to all shadertoy uniforms
+                for var in variables_to_update:
+                    pattern = r'(?<!\.)\b' + var + r'\b'
+                    replacement = 'ubuf.' + var
+                    content = re.sub(pattern, replacement, content)
 
-            # Construct new output path
-            relative_path = os.path.relpath(root, directory_path)
-            new_root = os.path.join(output_directory, relative_path)
-            os.makedirs(new_root, exist_ok=True)
-            new_file_path = os.path.join(new_root, file)
+                # 4. Assemble the final, complete shader
+                final_content = header + '\n' + content.strip() + '\n' + footer
 
-            # Write to the new file
-            with open(new_file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
+                # Construct new output path
+                relative_path = os.path.relpath(root, source_directory)
+                new_root = os.path.join(output_directory, relative_path)
+                os.makedirs(new_root, exist_ok=True)
+                new_file_path = os.path.join(new_root, file)
+
+                # Write to the new file
+                with open(new_file_path, 'w', encoding='utf-8') as f:
+                    f.write(final_content)

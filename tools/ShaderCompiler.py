@@ -1,3 +1,6 @@
+# This file was originally part of the KDE Shader Wallpaper Project
+# it contains modifications from Neil Panda and myself
+
 import os
 import subprocess
 
@@ -20,12 +23,18 @@ for root, dirs, files in os.walk(source_directory):
         if file.endswith('.frag'):
             # Construct the full path to the source file
             source_file_path = os.path.join(root, file)
-            # Construct the output file path
+            
+            # Construct new output path
+            relative_path = os.path.relpath(root, source_directory)
+            new_root = os.path.join(output_directory, relative_path)
+            os.makedirs(new_root, exist_ok=True)
+            
             output_file_name = file.replace('.frag', '.frag.qsb')
-            output_file_path = os.path.join(output_directory, output_file_name)
+            output_file_path = os.path.join(new_root, output_file_name)
+
             # Construct and execute the command
             cmd = [
-                'qsb', '--glsl', '100 es,120,150', '--hlsl', '50', '--msl', '12',
+                '/usr/lib/qt6/bin/qsb', '--glsl', '330', '--hlsl', '50', '--msl', '12',
                 '-o', output_file_path, source_file_path
             ]
             
