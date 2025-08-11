@@ -217,7 +217,7 @@ Kirigami.FormLayout
             Layout.preferredHeight: Kirigami.Units.gridUnit * 2
             onClicked: 
             {
-                fileDialog.currentFolder = "file://" + shaderPackModel.shadersPath + "/generative";
+                fileDialog.currentFolder = "file://" + shaderPackModel.shadersPath;
                 fileDialog.open();
             }
         }
