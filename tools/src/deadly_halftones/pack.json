@@ -1,0 +1,37 @@
+{
+    "author": "Julien Vergnaud @duvengar-2018",
+    "name": "deadly_halftones",
+    "version": "1.0.0",
+    "description": "",
+    "license": "CC BY-NC-SA 3.0",
+    "engine": "shadertoys",
+    "id": "MddcRr",
+
+    "type": 2,
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 0.14,
+
+    "channel0":
+    {
+        "type": 2,
+        "source": "./shaders/Buffer B.frag.qsb",
+
+        "resolution_x": 1920,
+        "resolution_y": 1080,
+        "resolution_scale": 1.0,
+        "time_scale": 1.0,
+        "mouse_scale": 1.0,
+
+        "channel0":
+        {
+            "type": 2,
+            "source": "./shaders/Buffer A.frag.qsb",
+
+            "resolution_x": 1920,
+            "resolution_y": 1080,
+            "resolution_scale": 1.0,
+            "time_scale": 1.0,
+            "mouse_scale": 1.0
+        }
+    }
+}
