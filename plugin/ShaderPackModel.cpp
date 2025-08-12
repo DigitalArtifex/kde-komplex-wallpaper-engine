@@ -20,12 +20,13 @@ void ShaderPackModel::loadJson(const QString &filePath)
     setState(Loading); // Set the state to Loading
 
     // Open the file and read its contents
-    QFile file(filePath);
+    QFile file(QUrl(filePath).toLocalFile());
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) 
     {
         setState(Idle); // Reset state to Idle
         qWarning("Could not open file %s for reading", qPrintable(filePath));
+        qWarning(file.errorString().toStdString().c_str());
         return;
     }
 
@@ -49,10 +50,11 @@ void ShaderPackModel::loadJson(const QString &filePath)
     // Check if the JSON content has changed
     if (json != m_json) 
     {
+        QFileInfo info(file);
+        setShaderPackPath(info.absolutePath()); // Update the shader pack path
+
         m_json = json;
         Q_EMIT jsonChanged();
-
-        setShaderPackPath(filePath); // Update the shader pack path
     }
 
     setState(Idle); // Reset state to Idle
@@ -73,14 +75,14 @@ void ShaderPackModel::refreshShaderPacks()
     setState(Loading);
 
     // check for and create the directory if it doesn't exist
-    QDir dir(m_shaderPackPath);
+    QDir dir(m_shaderPackInstallPath);
 
     if (!dir.exists())
     {
-        if (!dir.mkpath(m_shaderPackPath))
+        if (!dir.mkpath(m_shaderPackInstallPath))
         {
             setState(Idle); // Reset state to Idle
-            qWarning("Failed to create shader pack directory: %s", qPrintable(m_shaderPackPath));
+            qWarning("Failed to create shader pack directory: %s", qPrintable(m_shaderPackInstallPath));
             return;
         }
     }

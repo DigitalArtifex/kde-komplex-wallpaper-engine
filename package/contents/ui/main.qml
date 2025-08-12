@@ -45,12 +45,12 @@ WallpaperItem
             id: pageLoader
             anchors.fill: parent
             active: true
-            sourceComponent: shaderToysContent
+            sourceComponent: wallpaper.configuration.komplex_mode === 0 ? shaderToysContent : packContent
 
             states: [
                 State
                 {
-                    when: wallpaper.komplex_mode === 0
+                    when: wallpaper.configuration.komplex_mode === 0
                     PropertyChanges
                     {
                         pageLoader.sourceComponent: shaderToysContent
@@ -58,7 +58,7 @@ WallpaperItem
                 },
                 State
                 {
-                    when: wallpaper.komplex_mode === 1
+                    when: wallpaper.configuration.komplex_mode === 1
                     PropertyChanges
                     {
                         pageLoader.sourceComponent: packContent

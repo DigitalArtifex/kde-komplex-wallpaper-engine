@@ -56,13 +56,22 @@ Item
 
     id: mainItem
 
+    Item
+    {
+        id: data
+        property var channels: []
+    }
+
     Komplex.ShaderPackModel
     {
         id: shaderPackModel
         onJsonChanged: 
         {
+            // clean up old channels
+            while(data.channels.length > 0)
+                data.channels.pop().destroy()
+                
             // Handle the JSON change if needed
-            console.log("Shader pack JSON changed:", shaderPackModel.json);
             mainItem.parsePack(shaderPackModel.json);
         }
     }
@@ -161,21 +170,27 @@ Item
 
         var source = getFilePath(channel.source)
 
-        var result = Qt.createQmlObject(`ShaderChannel
-        {
-            z: 0
-            invert: ${channel.invert || true}
-            iTimeScale: ${channel.time_scale || 1.0}
-            iResolutionScale: ${channel.resolution_scale || 1.0}
-            visible: false
-            anchors.fill: parent
-            source: "file://" + "${source || ''}"
-            type: ${channel.type || 0}
-            iTime: mainItem.iTime * ${channel.time_scale || 1.0}
-            iMouse: mainItem.iMouse
-            mouseBias: ${channel.mouse_scale || 1.0}
-            iResolution: Qt.vector3d(${(channel.resolution_x || mainItem.width) * (channel.resolution_scale || 1.0)}, ${(channel.resolution_y || mainItem.width) * (channel.resolution_scale || 1.0)}, pixelRatio)
-        }`, mainItem);
+        // Qt.createQmlObject() method was not working the same inside plasma
+        // as it was inside a QMLEngine instance. This resulted in the Loader
+        // object being undefined and thus breaking the Komplex wallpaper mode. (oops)
+
+        // Instead, use Qt.createComponent() then manually setup bindings
+        var component = Qt.createComponent("./ShaderChannel.qml")
+        var result
+
+        if (component.status === Component.Ready) {
+            result = component.createObject(mainItem, { x: 100, y: 100 });
+}
+        result.type = channel.type
+        result.anchors.fill = mainItem
+        result.visible = false
+        result.iMouse = Qt.binding(function () { return mainItem.iMouse; })
+        result.iTime = Qt.binding(function() { return mainItem.iTime; })
+        result.iResolution = Qt.vector3d(channel.resolution_x || mainItem.width, channel.resolution_y || mainItem.height, 1.0)
+        result.mouseBias = channel.mouse_scale ? channel.mouse_scale : 1.0
+        result.iTimeScale = channel.time_scale ? channel.time_scale : 1.0
+        result.invert = channel.invert ? channel.invert : false
+        result.source = source
 
         if (channel.channel0)
             result.iChannel0 = parseChannel(channel.channel0);
@@ -186,26 +201,28 @@ Item
         if (channel.channel3)
             result.iChannel3 = parseChannel(channel.channel3);
 
+        data.channels.push(result) // save for destroying
+
         return result;
     }
 
     function getFilePath(source)
     {
-        if(source === "") 
+        if(source === undefined || source === "") 
             return "";
 
         // Ensure the source path is correctly resolved for relative paths
         if(source.startsWith("./"))
         {
             var temp = source.replace("./", "file://" + shaderPackModel.shaderPackPath + "/")
-            return Qt.resolvedUrl(temp);
+            return temp;
         }
         else if(source.startsWith("$/"))
         {
             var temp = source.replace("$/", "file://" + StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.local/share/komplex/")
-            return Qt.resolvedUrl(temp);
+            return temp;
         }
         else if(!source.startsWith("file://"))
-            return Qt.resolvedUrl("file://" + source);
+            return "file://" + source;
     }
 }
