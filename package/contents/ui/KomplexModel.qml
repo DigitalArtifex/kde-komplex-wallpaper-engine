@@ -65,7 +65,7 @@ Item
     Komplex.ShaderPackModel
     {
         id: shaderPackModel
-        onJsonChanged: 
+        onJsonChanged: () =>
         {
             // clean up old channels
             while(data.channels.length > 0)
@@ -125,6 +125,7 @@ Item
 
                 mainItem.iTime += (interval / 1000) * (wallpaper.configuration.shaderSpeed ? wallpaper.configuration.shaderSpeed : 1.0)
                 mainItem.iDate = Qt.vector4d(date.getFullYear(), date.getMonth() + 1, date.getDate(), secondsSinceMidnight)
+                mainItem.iFrame += 1
             }
         }
     }
@@ -145,13 +146,13 @@ Item
         var currentChannel = null;
 
         if (pack.channel0)
-            channelOutput.iChannel0 = parseChannel(pack.channel0);
+            channelOutput.iChannel0 = parseChannel(pack.channel0, channelOutput);
         if (pack.channel1)
-            channelOutput.iChannel1 = parseChannel(pack.channel1);
+            channelOutput.iChannel1 = parseChannel(pack.channel1, channelOutput);
         if (pack.channel2)
-            channelOutput.iChannel2 = parseChannel(pack.channel2);
+            channelOutput.iChannel2 = parseChannel(pack.channel2, channelOutput);
         if (pack.channel3)
-            channelOutput.iChannel3 = parseChannel(pack.channel3);
+            channelOutput.iChannel3 = parseChannel(pack.channel3, channelOutput);
 
         channelOutput.source = getFilePath(pack.source); // Set the shader source file
         channelOutput.type = ShaderChannel.Type.ShaderChannel; // Set the shader
@@ -164,7 +165,7 @@ Item
     }
 
     // Recursive helper function to parse channels
-    function parseChannel(channel)
+    function parseChannel(channel, parent)
     {
         if (!channel) return;
 
@@ -181,25 +182,49 @@ Item
         if (component.status === Component.Ready) {
             result = component.createObject(mainItem, { x: 100, y: 100 });
 }
+        result.frameBufferChannel = channel.frameBufferChannel !== undefined ? channel.frameBufferChannel : -1
         result.type = channel.type
         result.anchors.fill = mainItem
         result.visible = false
-        result.iMouse = Qt.binding(function () { return mainItem.iMouse; })
-        result.iTime = Qt.binding(function() { return mainItem.iTime; })
-        result.iResolution = Qt.vector3d(channel.resolution_x || mainItem.width, channel.resolution_y || mainItem.height, 1.0)
+        result.iMouse = Qt.binding(() => { return mainItem.iMouse; })
+        result.iTime = Qt.binding(() => { return mainItem.iTime; })
+        result.iResolution = Qt.binding(() => { return Qt.vector3d(channel.resolution_x || mainItem.width, channel.resolution_y || mainItem.height, 1.0); })
         result.mouseBias = channel.mouse_scale ? channel.mouse_scale : 1.0
         result.iTimeScale = channel.time_scale ? channel.time_scale : 1.0
+        result.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
+
+        result.iChannelResolution = Qt.binding(() => {
+            return [
+                Qt.vector3d(channel.resolution_x || mainItem.width, channel.resolution_y || mainItem.height, 1.0),
+                Qt.vector3d(channel.resolution_x || mainItem.width, channel.resolution_y || mainItem.height, 1.0),
+                Qt.vector3d(channel.resolution_x || mainItem.width, channel.resolution_y || mainItem.height, 1.0),
+                Qt.vector3d(channel.resolution_x || mainItem.width, channel.resolution_y || mainItem.height, 1.0)
+            ];
+        });
+
+        result.iChannelTime = Qt.binding(() => {
+            return [
+                mainItem.iTime * result.iTimeScale,
+                mainItem.iTime * result.iTimeScale,
+                mainItem.iTime * result.iTimeScale,
+                mainItem.iTime * result.iTimeScale
+            ];
+        });
+
+        result.iFrameRate = Qt.binding(() => { return mainItem.iFrameRate; })
+        result.iFrame = Qt.binding(() => { return mainItem.iFrame; })
         result.invert = channel.invert ? channel.invert : false
+
         result.source = source
 
         if (channel.channel0)
-            result.iChannel0 = parseChannel(channel.channel0);
+            result.iChannel0 = parseChannel(channel.channel0, result);
         if (channel.channel1)
-            result.iChannel1 = parseChannel(channel.channel1);
+            result.iChannel1 = parseChannel(channel.channel1, result);
         if (channel.channel2)
-            result.iChannel2 = parseChannel(channel.channel2);
+            result.iChannel2 = parseChannel(channel.channel2, result);
         if (channel.channel3)
-            result.iChannel3 = parseChannel(channel.channel3);
+            result.iChannel3 = parseChannel(channel.channel3, result);
 
         data.channels.push(result) // save for destroying
 

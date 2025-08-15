@@ -68,6 +68,7 @@ Item
     property real mouseBias: 1
     property var iDate
     property real iTimeScale: 1 // This is used to scale the time for the shader, allowing for slow motion or fast forward effects per channel
+    property int frameBufferChannel: -1
 
     property bool invert
 
@@ -250,6 +251,10 @@ Item
 
         Item
         {
+            property var frameBufferData: undefined
+            id: channelShaderContent
+            anchors.fill: parent
+
             // Setup the shader effect sources for each channel
             // These are needed to provide the uniform data to the shader channel buffers
             ShaderEffectSource
@@ -259,6 +264,9 @@ Item
                 live: true
                 smooth: true
                 sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
+                wrapMode: ShaderEffectSource.Repeat
+                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                textureMirroring: ShaderEffectSource.NoMirroring
             }
 
             ShaderEffectSource
@@ -268,6 +276,9 @@ Item
                 live: true
                 smooth: true
                 sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
+                wrapMode: ShaderEffectSource.Repeat
+                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                textureMirroring: ShaderEffectSource.NoMirroring
             }
 
             ShaderEffectSource
@@ -277,6 +288,9 @@ Item
                 live: true
                 smooth: true
                 sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
+                wrapMode: ShaderEffectSource.Repeat
+                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                textureMirroring: ShaderEffectSource.NoMirroring
             }
 
             ShaderEffectSource
@@ -286,15 +300,33 @@ Item
                 live: true
                 smooth: true
                 sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
+                wrapMode: ShaderEffectSource.Repeat
+                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                textureMirroring: ShaderEffectSource.NoMirroring
+            }
+
+            // recursive frame buffer
+            ShaderEffectSource
+            {
+                id: frameBufferSource
+                sourceItem: channelShaderContent
+                live: true
+                sourceRect: Qt.rect(0,0, channelShaderContent.width, channelShaderContent.height)
+                wrapMode: ShaderEffectSource.Repeat
+                recursive: true
+                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                anchors.fill: parent
+                visible: false
+                textureMirroring: ShaderEffectSource.NoMirroring
             }
 
             // The shader effect that will be used to render the shader
             ShaderEffect
             {
-                property var iChannel0: channelSource0
-                property var iChannel1: channelSource1
-                property var iChannel2: channelSource2
-                property var iChannel3: channelSource3
+                property var iChannel0: channel.frameBufferChannel === 0 ? frameBufferSource : channelSource0
+                property var iChannel1: channel.frameBufferChannel === 1 ? frameBufferSource : channelSource1
+                property var iChannel2: channel.frameBufferChannel === 2 ? frameBufferSource : channelSource2
+                property var iChannel3: channel.frameBufferChannel === 3 ? frameBufferSource : channelSource3
 
                 property var iResolution: channel.iResolution
                 property var iTime: data.iTime
@@ -310,6 +342,8 @@ Item
 
                 fragmentShader: Qt.resolvedUrl(channel.source)
                 anchors.fill: parent
+
+                id: channelShaderOutput
             }
         }
     }
@@ -374,8 +408,7 @@ Item
         }
     }
 
-    // Supporting this as an mp3 feels kinda silly. Should really figure out how to capture desktop audio with qml
-    // UPDATE: This is not currently supported in QML, so we will need to implement this in C++ later
+    // Connect the audio channel to the cpp backend
     Component
     {
         id: channelAudio
@@ -413,6 +446,11 @@ Item
             Component.onCompleted:
             {
                 Komplex.AudioModel.startCapture()
+            }
+
+            Component.onDestruction:
+            {
+                Komplex.AudioModel.stopCapture()
             }
         }
     }

@@ -85,6 +85,10 @@ Examples:
                        default='processed', 
                        help='Temporary Files Directory')
     
+    parser.add_argument('-q', '--qsb', 
+                       default='/usr/lib/qt6/bin/qsb', 
+                       help='QSB Compiler Location')
+    
     return parser.parse_args()
 
 def process():
@@ -193,9 +197,8 @@ def compile():
 
     dirname = os.path.basename(source_directory)
 
-    if args.output:
-        output_directory = args.output + '/' + dirname
-
+    qsb = args.qsb
+    output_directory = args.output + '/' + dirname
     source_directory = temp_directory + '/' + dirname
     
     if args.verbose:
@@ -227,7 +230,7 @@ def compile():
 
                     # Construct and execute the command
                     cmd = [
-                        '/usr/lib/qt6/bin/qsb', '--glsl', '330', '--hlsl', '50', '--msl', '12',
+                        qsb, '--glsl', '330', '--hlsl', '50', '--msl', '12',
                         '-o', output_file_path, source_file_path
                     ]
 

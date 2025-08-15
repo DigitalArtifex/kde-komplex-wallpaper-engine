@@ -58,6 +58,12 @@ tools/processed/*
 tools/build/*
 tools/processed/
 tools/build/
+tools/broken
+tools/broken/*
+tools/packs_build/
+tools/packs_processed/
+tools/packs_build/*
+tools/packs_processed/*
 PKGBUILD
 
 #VSCode Ignores
