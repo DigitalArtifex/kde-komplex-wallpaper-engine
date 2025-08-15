@@ -6,10 +6,11 @@ import shutil
 import argparse
 import sys
 import subprocess
+import traceback
 
 # Specify the directory where your .frag files are located
 source_directory = 'src'
-temp_directory = 'processed'
+temp_directory = 'packs_processed'
 output_directory = 'build'
 dirname = ''
 
@@ -78,11 +79,11 @@ Examples:
                        help='Enable verbose output')
     
     parser.add_argument('-o', '--output', 
-                       default='build', 
+                       default='packs_build', 
                        help='Output Directory')
     
     parser.add_argument('-t', '--temp', 
-                       default='processed', 
+                       default='packs_processed', 
                        help='Temporary Files Directory')
     
     parser.add_argument('-q', '--qsb', 
@@ -267,6 +268,9 @@ def compile():
         sys.exit(1)
     except PermissionError:
         print(f"Error: Permission denied: '{args.input}'")
+        sys.exit(1)
+    except Exception as e:
+        print(traceback.format_exc())
         sys.exit(1)
 
 if __name__ == '__main__':
