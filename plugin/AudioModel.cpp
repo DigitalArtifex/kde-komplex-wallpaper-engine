@@ -123,6 +123,8 @@ void AudioModel::startCapture()
     if(!m_instance)
         m_instance = new AudioModel();
         
+    ++m_clients;
+
     if(m_thread->isRunning())
         return;
 
@@ -131,6 +133,12 @@ void AudioModel::startCapture()
 
 void AudioModel::stopCapture()
 {
+    if(--m_clients > 0)
+        return;
+    
+    if(m_thread->isRunning())
+        m_thread->quit();
+    
     m_running = false;
     pw_main_loop_quit(m_impl_data.loop);
 }
@@ -314,7 +322,7 @@ void AudioModel::on_process(void *userdata)
 
         painter.end();
 
-        if(m_mutex.tryLock(1))
+        if(m_mutex.tryLock(4))
         {
             m_instance->m_frame = audioTexture;
             m_mutex.unlock();

@@ -113,6 +113,7 @@ private:
     inline static AudioModel *m_instance = nullptr;
     inline static QThread *m_thread = nullptr;
     inline static QMutex m_mutex;
+    inline static quint64 m_clients = 0; // used to track 
 
     QPixmap m_frame;
 
