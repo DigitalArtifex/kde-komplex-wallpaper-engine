@@ -1,0 +1,32 @@
+{
+    "author": "XorDev",
+    "name": "Speak [470]",
+    "version": "1.0.0",
+    "description": "A ladybug on a mushroom. It renders really slowly. Sorry for that, this is not meant to be rendered with raymarching really, but well, here we are. I'll get a pass later",
+    "license": "CC BY-NC-SA 3.0",
+    "engine": "shadertoys",
+    "id": "4tByz3",
+    "tags": [
+        "reactive",
+        "color",
+        "space",
+        "glow",
+        "golf"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "type": 2,
+        "source": "./shaders/Buffer A.frag.qsb",
+        "frameBufferChannel": 0,
+
+        "channel1":
+        {
+            "type": 4,
+            "invert": true
+        }
+    }
+}
