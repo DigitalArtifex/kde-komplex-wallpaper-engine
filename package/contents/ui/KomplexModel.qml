@@ -242,7 +242,7 @@ Item
         }
         if (pack.channel3)
         {
-            if(typeof pack.channel0 === "string")
+            if(typeof pack.channel3 === "string")
             {
                 switch(pack.channel3)
                 {
@@ -414,7 +414,7 @@ Item
         }
         if (channel.channel3)
         {
-            if(typeof channel.channel0 === "string")
+            if(typeof channel.channel3 === "string")
             {
                 switch(channel.channel3)
                 {
