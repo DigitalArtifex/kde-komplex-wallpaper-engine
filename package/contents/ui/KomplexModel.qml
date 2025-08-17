@@ -54,6 +54,11 @@ Item
     property string iChannel2: ""
     property string iChannel3: ""
 
+    property var bufferA: null
+    property var bufferB: null
+    property var bufferC: null
+    property var bufferD: null
+
     id: mainItem
 
     Item
@@ -145,14 +150,123 @@ Item
         var pack = JSON.parse(json);
         var currentChannel = null;
 
+        if (pack.bufferA)
+            mainItem.bufferA = parseChannel(pack.bufferA, 2);
+        if (pack.bufferB)
+            mainItem.bufferB = parseChannel(pack.bufferB, 2);
+        if (pack.bufferC)
+            mainItem.bufferC = parseChannel(pack.bufferC, 2);
+        if (pack.bufferD)
+            mainItem.bufferD = parseChannel(pack.bufferD, 2);
+
         if (pack.channel0)
-            channelOutput.iChannel0 = parseChannel(pack.channel0, channelOutput);
+        {
+            if(typeof pack.channel0 === "string")
+            {
+                switch(pack.channel0)
+                {
+                    case "{bufferA}":
+                        channelOutput.iChannel0 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        channelOutput.iChannel0 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        channelOutput.iChannel0 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        channelOutput.iChannel0 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + pack.channel0)
+                        break;
+                }
+                
+            }
+            else if(typeof pack.channel0 === "object")
+                channelOutput.iChannel0 = parseChannel(pack.channel0);
+        }
         if (pack.channel1)
-            channelOutput.iChannel1 = parseChannel(pack.channel1, channelOutput);
+        {
+            if(typeof pack.channel1 === "string")
+            {
+                switch(pack.channel1)
+                {
+                    case "{bufferA}":
+                        channelOutput.iChannel1 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        channelOutput.iChannel1 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        channelOutput.iChannel1 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        channelOutput.iChannel1 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + pack.channel1)
+                        break;
+                }
+                
+            }
+            else if(typeof pack.channel1 === "object")
+                channelOutput.iChannel1 = parseChannel(pack.channel1);
+        }
         if (pack.channel2)
-            channelOutput.iChannel2 = parseChannel(pack.channel2, channelOutput);
+        {
+            if(typeof pack.channel2 === "string")
+            {
+                switch(pack.channel2)
+                {
+                    case "{bufferA}":
+                        channelOutput.iChannel2 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        channelOutput.iChannel2 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        channelOutput.iChannel2 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        channelOutput.iChannel2 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + pack.channel2)
+                        break;
+                }
+                
+            }
+            else if(typeof pack.channel2 === "object")
+                channelOutput.iChannel2 = parseChannel(pack.channel2);
+        }
         if (pack.channel3)
-            channelOutput.iChannel3 = parseChannel(pack.channel3, channelOutput);
+        {
+            if(typeof pack.channel0 === "string")
+            {
+                switch(pack.channel3)
+                {
+                    case "{bufferA}":
+                        channelOutput.iChannel3 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        channelOutput.iChannel3 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        channelOutput.iChannel3 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        channelOutput.iChannel3 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + pack.channel3)
+                        break;
+                }
+                
+            }
+            else if(typeof pack.channel3 === "object")
+                channelOutput.iChannel3 = parseChannel(pack.channel3);
+        }
 
         channelOutput.source = getFilePath(pack.source); // Set the shader source file
         channelOutput.type = ShaderChannel.Type.ShaderChannel; // Set the shader
@@ -165,7 +279,7 @@ Item
     }
 
     // Recursive helper function to parse channels
-    function parseChannel(channel, parent)
+    function parseChannel(channel, typeDefault = 0)
     {
         if (!channel) return;
 
@@ -181,9 +295,9 @@ Item
 
         if (component.status === Component.Ready) {
             result = component.createObject(mainItem, { x: 100, y: 100 });
-}
-        result.frameBufferChannel = channel.frameBufferChannel !== undefined ? channel.frameBufferChannel : -1
-        result.type = channel.type
+        }
+        result.frameBufferChannel = channel.frame_buffer_channel !== undefined ? channel.frame_buffer_channel : -1
+        result.type = channel.type ? channel.type : typeDefault
         result.anchors.fill = mainItem
         result.visible = false
         result.iMouse = Qt.binding(() => { return mainItem.iMouse; })
@@ -218,13 +332,113 @@ Item
         result.source = source
 
         if (channel.channel0)
-            result.iChannel0 = parseChannel(channel.channel0, result);
+        {
+            if(typeof channel.channel0 === "string")
+            {
+                switch(channel.channel0)
+                {
+                    case "{bufferA}":
+                        result.iChannel0 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        result.iChannel0 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        result.iChannel0 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        result.iChannel0 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + channel.channel0)
+                        break;
+                }
+                
+            }
+            else if(typeof channel.channel0 === "object")
+                result.iChannel0 = parseChannel(channel.channel0);
+        }
         if (channel.channel1)
-            result.iChannel1 = parseChannel(channel.channel1, result);
+        {
+            if(typeof channel.channel1 === "string")
+            {
+                switch(channel.channel1)
+                {
+                    case "{bufferA}":
+                        result.iChannel1 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        result.iChannel1 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        result.iChannel1 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        result.iChannel1 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + channel.channel1)
+                        break;
+                }
+                
+            }
+            else if(typeof channel.channel1 === "object")
+                result.iChannel1 = parseChannel(channel.channel1);
+        }
         if (channel.channel2)
-            result.iChannel2 = parseChannel(channel.channel2, result);
+        {
+            if(typeof channel.channel2 === "string")
+            {
+                switch(channel.channel2)
+                {
+                    case "{bufferA}":
+                        result.iChannel2 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        result.iChannel2 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        result.iChannel2 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        result.iChannel2 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + channel.channel2)
+                        break;
+                }
+                
+            }
+            else if(typeof channel.channel2 === "object")
+                result.iChannel2 = parseChannel(channel.channel2);
+        }
         if (channel.channel3)
-            result.iChannel3 = parseChannel(channel.channel3, result);
+        {
+            if(typeof channel.channel0 === "string")
+            {
+                switch(channel.channel3)
+                {
+                    case "{bufferA}":
+                        result.iChannel3 = mainItem.bufferA
+                        break;
+                    case "{bufferB}":
+                        result.iChannel3 = mainItem.bufferB
+                        break;
+                    case "{bufferC}":
+                        result.iChannel3 = mainItem.bufferC
+                        break;
+                    case "{bufferD}":
+                        result.iChannel3 = mainItem.bufferD
+                        break;
+                    default:
+                        console.log('Uknown channel type ' + channel.channel3)
+                        break;
+                }
+                
+            }
+            else if(typeof channel.channel3 === "object")
+                result.iChannel3 = parseChannel(channel.channel3);
+        }
 
         data.channels.push(result) // save for destroying
 
