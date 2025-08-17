@@ -26,7 +26,6 @@ void ShaderPackModel::loadJson(const QString &filePath)
     {
         setState(Idle); // Reset state to Idle
         qWarning("Could not open file %s for reading", qPrintable(filePath));
-        qWarning(file.errorString().toStdString().c_str());
         return;
     }
 
