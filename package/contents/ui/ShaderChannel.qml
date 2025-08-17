@@ -267,6 +267,8 @@ Item
                 wrapMode: ShaderEffectSource.Repeat
                 textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
                 textureMirroring: ShaderEffectSource.NoMirroring
+                recursive: true
+                mipmap: true
             }
 
             ShaderEffectSource
@@ -279,6 +281,8 @@ Item
                 wrapMode: ShaderEffectSource.Repeat
                 textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
                 textureMirroring: ShaderEffectSource.NoMirroring
+                recursive: true
+                mipmap: true
             }
 
             ShaderEffectSource
@@ -291,6 +295,8 @@ Item
                 wrapMode: ShaderEffectSource.Repeat
                 textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
                 textureMirroring: ShaderEffectSource.NoMirroring
+                recursive: true
+                mipmap: true
             }
 
             ShaderEffectSource
@@ -303,6 +309,8 @@ Item
                 wrapMode: ShaderEffectSource.Repeat
                 textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
                 textureMirroring: ShaderEffectSource.NoMirroring
+                recursive: true
+                mipmap: true
             }
 
             // recursive frame buffer
@@ -314,6 +322,7 @@ Item
                 sourceRect: Qt.rect(0,0, channelShaderContent.width, channelShaderContent.height)
                 wrapMode: ShaderEffectSource.Repeat
                 recursive: true
+                mipmap: true
                 textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
                 anchors.fill: parent
                 visible: false
