@@ -122,46 +122,15 @@ Kirigami.FormLayout
             onCurrentIndexChanged: root.cfg_komplex_mode = currentIndex
             textRole: "label"
             model: [
-                { "label": i18nd("@option:komplex_mode", "ShaderToys") },
+                { "label": i18nd("@option:komplex_mode", "Simple") },
                 { "label": i18nd("@option:komplex_mode", "Komplex") }
             ] 
         }
     }
-    TabBar 
-    {
-        Layout.fillWidth: true
-        id: navBar
-        width: parent.width
-        TabButton {
-            text: qsTr("Shader")
-        }
-        TabButton {
-            text: qsTr("Shader Settings")
-        }
-        TabButton {
-            text: qsTr("Extra Settings")
-        }
-    }
-    RowLayout
-    {
-        Layout.fillWidth: true
-        Kirigami.InlineMessage 
-        {
-            id: warningResources
-            Layout.fillWidth: true
-            type: Kirigami.MessageType.Warning
-            text: qsTr("Some shaders might consume more power and resources than others, beware!")
-            showCloseButton: true
-            visible: !root.cfg_warningResources_dismissed
-            onVisibleChanged: () =>
-            {
-                root.cfg_warningResources_dismissed = true;
-            }
-        }
-    }
+
     RowLayout 
     {
-        visible: root.cfg_komplex_mode === 0 && navBar.currentIndex === 0
+        visible: root.cfg_komplex_mode === 0
         
         id: shaderOutputLayout
         spacing: Kirigami.Units.smallSpacing
@@ -235,6 +204,114 @@ Kirigami.FormLayout
             {
                 root.cfg_selectedShaderIndex = -1;
                 root.cfg_selectedShaderPath = selectedFile;
+            }
+        }
+    }
+
+    RowLayout 
+    {
+        visible: root.cfg_komplex_mode === 1
+        
+        spacing: Kirigami.Units.smallSpacing
+        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Shader Pack:")
+
+        ComboBox 
+        {
+            property string shader
+
+            id: selectedShaderPack
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+            model: shaderPackModel.availableShaderPacks
+            delegate: Component 
+            {
+                id: packListDelegate
+                ItemDelegate 
+                {
+                    width: parent ? parent.width : 0
+                    text: modelData
+                }
+            }
+
+            textRole: "modelData"
+            currentIndex: root.cfg_shader_package_index
+            displayText: currentIndex === -1 ? "Custom File" : currentText.replace("_", " ").charAt(0).toUpperCase() + currentText.replace("_", " ").slice(1)
+
+            onCurrentTextChanged: 
+            {
+                root.cfg_shader_package_index = currentIndex;
+
+                if (root.cfg_shader_package_index === -1)
+                    return;
+
+                var source = currentText
+                shaderPackModel.loadMetadata(source)
+                root.cfg_shader_package = "file://" + shaderPackModel.path(source)
+            }
+        }
+
+        Button 
+        {
+            id: packFileButton
+            icon.name: "folder-symbolic"
+            text: i18nd("@button:toggle_select_shader", "Select File")
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 9
+            Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+            onClicked: 
+            {
+                packDialog.currentFolder = "file://" + shaderPackModel.shaderPackInstallPath;
+                packDialog.open();
+            }
+        }
+
+        FileDialog 
+        {
+            id: packDialog
+            fileMode: FileDialog.OpenFile
+            title: i18nd("@dialog_title:choose_shader", "Choose a shader")
+            // will accept and auto convert .frag in the near future
+            nameFilters: ["Shader Package files (*.json)", "All files (*)"]
+            visible: false
+            currentFolder: "file://" + shaderPackModel.shaderPackInstallPath
+            onAccepted: 
+            {
+                root.cfg_shader_package_index = -1;
+                root.cfg_shader_package = selectedFile;
+                shaderPackModel.loadMetadataFromFile(selectedFile)
+            }
+        }
+    }
+    TabBar 
+    {
+        Layout.fillWidth: true
+        id: navBar
+        width: parent.width
+        TabButton {
+        height: 36
+            text: root.cfg_komplex_mode === 0 ? qsTr("Channels") : qsTr("Information")
+        }
+        TabButton {
+        height: 36
+            text: qsTr("Settings")
+        }
+        TabButton {
+        height: 36
+            text: qsTr("Extra Settings")
+        }
+    }
+    RowLayout
+    {
+        Layout.fillWidth: true
+        Kirigami.InlineMessage 
+        {
+            id: warningResources
+            Layout.fillWidth: true
+            type: Kirigami.MessageType.Warning
+            text: qsTr("Some shaders might consume more power and resources than others, beware!")
+            showCloseButton: true
+            visible: !root.cfg_warningResources_dismissed
+            onVisibleChanged: () =>
+            {
+                root.cfg_warningResources_dismissed = true;
             }
         }
     }
@@ -743,83 +820,63 @@ Kirigami.FormLayout
             Qt.openUrlExternally("https://ko-fi.com/digitalartifex");
         }
     }
-
+    
     RowLayout 
     {
         visible: root.cfg_komplex_mode === 1 && navBar.currentIndex === 0
-        
-        spacing: Kirigami.Units.smallSpacing
-        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Shader Pack:")
 
-        ComboBox 
+        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Author:")
+        Text
         {
-            property string shader
-
-            id: selectedShaderPack
             Layout.preferredWidth: Kirigami.Units.gridUnit * 11
-            model: FolderListModel 
-            {
-                id: packListModel
-                showDirs: true
-                showFiles: false
-                showHidden: false
-                nameFilters: ["*.frag.qsb"]
-                folder: "file://" + shaderPackModel.shadersPath + "/generative"
-            }
-            delegate: Component 
-            {
-                id: packListDelegate
-                ItemDelegate 
-                {
-                    width: parent ? parent.width : 0
-                    text: fileBaseName.replace("_", " ").charAt(0).toUpperCase() + fileBaseName.replace("_", " ").slice(1)
-                }
-            }
-
-            textRole: "fileBaseName"
-            currentIndex: root.cfg_shader_package_index
-            displayText: currentIndex === -1 ? "Custom File" : currentText.replace("_", " ").charAt(0).toUpperCase() + currentText.replace("_", " ").slice(1)
-
-            onCurrentTextChanged: 
-            {
-                root.cfg_selectedShaderIndex = currentIndex;
-
-                if (root.cfg_selectedShaderIndex === -1)
-                    return;
-
-                var source = model.get(currentIndex, "fileUrl");
-                shader = source;
-            }
+            text: shaderPackModel.metadata.author
+            horizontalAlignment: Text.AlignLeft
+            color: palette.text
         }
+    }
+    
+    RowLayout 
+    {
+        visible: root.cfg_komplex_mode === 1 && navBar.currentIndex === 0
 
-        Button 
+        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Description:")
+        Text
         {
-            id: packFileButton
-            icon.name: "folder-symbolic"
-            text: i18nd("@button:toggle_select_shader", "Select File")
-            Layout.preferredWidth: Kirigami.Units.gridUnit * 9
-            Layout.preferredHeight: Kirigami.Units.gridUnit * 2
-            onClicked: 
-            {
-                packDialog.currentFolder = "file://" + shaderPackModel.shaderPackInstallPath;
-                packDialog.open();
-            }
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 16
+            text: shaderPackModel.metadata.description
+            horizontalAlignment: Text.AlignLeft
+            color: palette.text
+            wrapMode: Text.WordWrap
+            maximumLineCount: 2
+            elide: Text.ElideRight
         }
+    }
+    
+    RowLayout 
+    {
+        visible: root.cfg_komplex_mode === 1 && navBar.currentIndex === 0
 
-        FileDialog 
+        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "License:")
+        Text
         {
-            id: packDialog
-            fileMode: FileDialog.OpenFile
-            title: i18nd("@dialog_title:choose_shader", "Choose a shader")
-            // will accept and auto convert .frag in the near future
-            nameFilters: ["Shader Package files (*.json)", "All files (*)"]
-            visible: false
-            currentFolder: "file://" + shaderPackModel.shaderPackInstallPath
-            onAccepted: 
-            {
-                root.cfg_shader_package_index = -1;
-                root.cfg_shader_package = selectedFile;
-            }
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+            text: shaderPackModel.metadata.license
+            horizontalAlignment: Text.AlignLeft
+            color: palette.text
+        }
+    }
+    
+    RowLayout 
+    {
+        visible: root.cfg_komplex_mode === 1 && navBar.currentIndex === 0
+
+        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Version:")
+        Text
+        {
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+            text: shaderPackModel.metadata.version
+            horizontalAlignment: Text.AlignLeft
+            color: palette.text
         }
     }
 }

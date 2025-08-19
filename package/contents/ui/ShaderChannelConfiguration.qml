@@ -607,19 +607,15 @@ Item
         {
             case ShaderChannel.Type.CubeMapChannel:
                 window.currentFolder = window.cubemapFolder
-                window.tmp_source = ""
                 break;
             case ShaderChannel.Type.ImageChannel:
                 window.currentFolder = window.imageFolder
-                window.tmp_source = ""
                 break;
             case ShaderChannel.Type.ShaderChannel:
                 window.currentFolder = window.shaderFolder
-                window.tmp_source = ""
                 break;
             case ShaderChannel.Type.VideoChannel:
                 window.currentFolder = window.videoFolder
-                window.tmp_source = ""
                 break;
             case ShaderChannel.Type.AudioChannel:
                 window.tmp_source = "Audio Channel"

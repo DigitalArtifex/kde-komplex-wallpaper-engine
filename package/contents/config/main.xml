@@ -185,6 +185,10 @@
       <label>Shader Package</label>
       <default></default>
     </entry>
+    <entry name="shader_package_index" type="Int">
+      <label>Shader Package Index</label>
+      <default>-1</default>
+    </entry>
     <entry name="komplex_mode" type="Int">
       <label>Use the Komplex Mode</label>
       <default>0</default>

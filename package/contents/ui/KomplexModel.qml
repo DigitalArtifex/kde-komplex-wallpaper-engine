@@ -42,6 +42,8 @@ Item
     property vector4d iMouse
     property var iDate
     property bool running: true
+    property bool ready: false
+
 
     // Individual channel resolutions to customize performance and quality
     property var iChannelResolution: [Qt.vector3d(wallpaper.configuration.iChannel0_resolution_x, wallpaper.configuration.iChannel0_resolution_y, pixelRatio),
@@ -53,11 +55,20 @@ Item
     property string iChannel1: ""
     property string iChannel2: ""
     property string iChannel3: ""
+    
+    property var pack: wallpaper.configuration.shader_package
 
-    property var bufferA: ShaderChannel { visible: true; width: mainItem.width; height: mainItem.height }
-    property var bufferB: ShaderChannel { visible: true; width: mainItem.width; height: mainItem.height }
-    property var bufferC: ShaderChannel { visible: true; width: mainItem.width; height: mainItem.height }
-    property var bufferD: ShaderChannel { visible: true; width: mainItem.width; height: mainItem.height }
+    onPackChanged: ()=>
+    {
+        if(mainItem.ready)
+            shaderPackModel.loadJson(pack)
+    }
+
+    ShaderChannel { id: bufferA; visible: true; anchors.fill: parent }
+    ShaderChannel { id: bufferB; visible: true; anchors.fill: parent }
+    ShaderChannel { id: bufferC; visible: true; anchors.fill: parent }
+    ShaderChannel { id: bufferD; visible: true; anchors.fill: parent }
+    
 
     id: mainItem
 
@@ -139,17 +150,15 @@ Item
     // Load the default shader pack configuration on component completion
     Component.onCompleted:
     {
-        data.buffers.set("{bufferA}", mainItem.bufferA)
-        data.buffers.set("{bufferB}", mainItem.bufferB)
-        data.buffers.set("{bufferC}", mainItem.bufferC)
-        data.buffers.set("{bufferD}", mainItem.bufferD)
-
-        console.log(data.buffers.has("{bufferA}"))
+        data.buffers.set("{bufferA}", bufferA)
+        data.buffers.set("{bufferB}", bufferB)
+        data.buffers.set("{bufferC}", bufferC)
+        data.buffers.set("{bufferD}", bufferD)
 
         if(wallpaper.configuration.shader_package)
             shaderPackModel.loadJson(wallpaper.configuration.shader_package);
-        else
-            shaderPackModel.loadJson("/home/parametheus/kde/src/komplex/pack.json"); // Load a default shader pack if none is specified
+
+        ready = true
     }
 
     // Recursive helper function to parse channels
@@ -158,8 +167,8 @@ Item
         var source = getFilePath(json.source)
 
         channel.frameBufferChannel = json.frame_buffer_channel !== undefined ? json.frame_buffer_channel : -1
-        channel.type = json.type ? json.type : typeDefault
-        channel.anchors.fill = mainItem
+        channel.type = json.type !== undefined ? json.type : typeDefault
+        channel.anchors.fill = channel.parent
         channel.visible = false
         channel.iMouse = Qt.binding(() => { return mainItem.iMouse; })
         channel.iTime = Qt.binding(() => { return mainItem.iTime; })
@@ -295,13 +304,13 @@ Item
         var currentChannel = null;
 
         if (pack.bufferA)
-            parseChannel(mainItem.bufferA, pack.bufferA, 2);
+            parseChannel(bufferA, pack.bufferA, 2);
         if (pack.bufferB)
-            parseChannel(mainItem.bufferB, pack.bufferB, 2);
+            parseChannel(bufferB, pack.bufferB, 2);
         if (pack.bufferC)
-            parseChannel(mainItem.bufferC, pack.bufferC, 2);
+            parseChannel(bufferC, pack.bufferC, 2);
         if (pack.bufferD)
-            parseChannel(mainItem.bufferD, pack.bufferD, 2);
+            parseChannel(bufferD, pack.bufferD, 2);
 
         parseChannel(channelOutput, pack, 2)
 

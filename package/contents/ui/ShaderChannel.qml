@@ -98,7 +98,7 @@ Item
     Loader
     {
         id: loader
-        anchors.fill: channel.invert ? null : parent
+        anchors.fill: parent
 
         sourceComponent: channelImage
 
