@@ -14,6 +14,8 @@ add_library(
         AudioModel.cpp
         AudioImageProvider.cpp
         AudioImageProvider.h
+        ShaderPackMetadata.h
+        ShaderPackMetadata.cpp
 ) 
 
 qt_add_qml_module(
@@ -31,6 +33,7 @@ qt_add_qml_module(
         ShaderPackModel.cpp
         AudioModel.cpp
         AudioImageProvider.cpp
+        ShaderPackMetadata.cpp
     NO_GENERATE_PLUGIN_SOURCE
 )
 

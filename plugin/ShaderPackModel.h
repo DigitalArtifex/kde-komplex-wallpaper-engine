@@ -1,3 +1,26 @@
+/*
+ *  Komplex Wallpaper Engine
+ *  Copyright (C) 2025 @DigitalArtifex | github.com/DigitalArtifex
+ *
+ *  ShaderPackModel.h
+ * 
+ *  This class provides metadata and file data of the komplex packs
+ *  to the QML layer 
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>
+ */
+
 #ifndef SHADERPACKMODEL_H
 #define SHADERPACKMODEL_H
 
@@ -18,13 +41,15 @@
 #include <QEventLoop>
 #include <QtQml/qqmlregistration.h>
 
+#include "ShaderPackMetadata.h"
+
 class KOMPLEX_EXPORT ShaderPackModel : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
 public:
     explicit ShaderPackModel(QObject *parent = nullptr);
-    ~ShaderPackModel() override = default;
+    ~ShaderPackModel();
 
     // State enum to represent the current state of the model
     // for the UI and configuration
@@ -99,6 +124,20 @@ public:
      * @return State representing the current state of the model.
      */
     State state() const;
+
+    /**!
+     * @brief path
+     * This function returns the path of the requested shader pack
+     * by name
+     * 
+     * @return QString representing the filepath
+     */
+    Q_INVOKABLE QString path(const QString &name);
+
+    ShaderPackMetadata *metadata() const;
+    void setMetadata(ShaderPackMetadata *metadata);
+    Q_INVOKABLE void loadMetadata(const QString &name);
+    Q_INVOKABLE void loadMetadataFromFile(const QString &file);
     
     QString shaderPackPath() const;
     QString shaderPackName() const;
@@ -121,6 +160,7 @@ Q_SIGNALS:
     void shaderPacksChanged();
     void stateChanged();
     void error(const QString &errorString);
+    void metadataChanged();
 
 private:
     QString m_shaderPackPath;
@@ -132,8 +172,10 @@ private:
     const QString m_cubeMapsPath;
     const QString m_videosPath;
 
+    ShaderPackMetadata *m_metadata = nullptr; // currently reported metadata
+
     QString m_json;
-    QMap<QString, QString> m_availableShaderPacks; // Maps shader pack names to their file paths
+    QMap<QString, ShaderPackMetadata*> m_availableShaderPacks; // Maps shader pack names to their file paths
     State m_state = Idle;
 
     Q_PROPERTY(QString json READ json WRITE loadJson NOTIFY jsonChanged)
@@ -142,6 +184,7 @@ private:
     Q_PROPERTY(QString shaderPackPath READ shaderPackPath NOTIFY shaderPackPathChanged)
     Q_PROPERTY(QString shaderPackName READ shaderPackName NOTIFY shaderPackNameChanged)
     Q_PROPERTY(QString shaderPackInstallPath READ shaderPackInstallPath NOTIFY shaderPackInstallPathChanged)
+    Q_PROPERTY(ShaderPackMetadata *metadata READ metadata WRITE setMetadata NOTIFY metadataChanged)
 
     Q_PROPERTY(QString shadersPath READ shadersPath CONSTANT)
     Q_PROPERTY(QString imagesPath READ imagesPath CONSTANT)

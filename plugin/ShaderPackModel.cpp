@@ -10,6 +10,21 @@ ShaderPackModel::ShaderPackModel(QObject *parent)
     m_videosPath(QString::fromLatin1("/usr/share/komplex/videos")),
     m_json(QString())
 {
+    m_metadata = new ShaderPackMetadata;
+    refreshShaderPacks();
+}
+
+ShaderPackModel::~ShaderPackModel()
+{
+    const QStringList keys = m_availableShaderPacks.keys();
+
+    for(const QString &key : keys)
+    {
+        ShaderPackMetadata *metadata = m_availableShaderPacks.take(key);
+        metadata->deleteLater();
+    }
+
+    m_metadata->deleteLater();
 }
 
 void ShaderPackModel::loadJson(const QString &filePath)
@@ -88,12 +103,13 @@ void ShaderPackModel::refreshShaderPacks()
 
     // Get a list of directories in the shader pack path
     QStringList shaderPacks = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    QMap<QString,QString> verifiedShaderPacks;
+    QMap<QString, ShaderPackMetadata*> verifiedShaderPacks;
 
     // Only keep shader packs that contain a valid pack.json file
     for(const QString &pack : std::as_const(shaderPacks))
     {
         QDir packDir(dir.absoluteFilePath(pack));
+        ShaderPackMetadata *metadata = new ShaderPackMetadata;
         bool valid = false;
 
         // Check if the pack directory contains a pack.json file
@@ -113,25 +129,35 @@ void ShaderPackModel::refreshShaderPacks()
                 {
                     qWarning("Shader pack %s has invalid JSON: %s at offset %d",
                              qPrintable(pack), qPrintable(error.errorString()), error.offset);
+                    
+                    continue;
                 }
-                else
-                    valid = true; // JSON is valid
+                
+                metadata->setAuthor(doc.object().value(QLatin1String("author")).toString());
+                metadata->setDescription(doc.object().value(QLatin1String("description")).toString());
+                metadata->setEngine(doc.object().value(QLatin1String("engine")).toString());
+                metadata->setFile(packDir.absoluteFilePath(QLatin1String("pack.json")));
+                metadata->setId(doc.object().value(QLatin1String("id")).toString());
+                metadata->setLicense(doc.object().value(QLatin1String("license")).toString());
+                metadata->setName(doc.object().value(QLatin1String("name")).toString());
+                metadata->setVersion(doc.object().value(QLatin1String("version")).toString());
+
+                valid = true; // JSON is valid
             }
         }
 
         // If valid, add to the list of verified shader packs
         if(valid)
-            verifiedShaderPacks.insert(pack, packDir.absoluteFilePath(QString::fromLatin1("pack.json"))); // Store the path to the pack.json file
+        {
+            verifiedShaderPacks.insert(metadata->name(), metadata); // Store the path to the pack.json file
+        }
         // Otherwise, log a warning
         else
             qWarning("Shader pack %s does not contain a valid pack.json file", qPrintable(pack));
     }
 
-    if(m_availableShaderPacks != verifiedShaderPacks)
-    {
-        m_availableShaderPacks = verifiedShaderPacks;
-        Q_EMIT shaderPacksChanged(); // Emit signal to notify that the list has changed
-    }
+    m_availableShaderPacks = verifiedShaderPacks;
+    Q_EMIT shaderPacksChanged(); // Emit signal to notify that the list has changed
     
     setState(Idle); // Reset state to Idle
 }
@@ -146,7 +172,7 @@ void ShaderPackModel::loadShaderPack(const QString &name)
         return;
     }
 
-    QString filePath = m_availableShaderPacks.value(name);
+    QString filePath = m_availableShaderPacks.value(name)->file();
     loadJson(filePath); // Load the JSON content of the shader pack
 }
 
@@ -267,4 +293,69 @@ QString ShaderPackModel::cubeMapsPath() const
 QString ShaderPackModel::videosPath() const
 {
     return m_videosPath;
+}
+
+ShaderPackMetadata *ShaderPackModel::metadata() const { return m_metadata; }
+void ShaderPackModel::setMetadata(ShaderPackMetadata *metadata)
+{
+    m_metadata = metadata;
+    Q_EMIT metadataChanged();
+}
+
+void ShaderPackModel::loadMetadata(const QString &name)
+{
+    if(!m_availableShaderPacks.contains(name))
+        return;
+    
+    m_metadata->setAuthor(m_availableShaderPacks[name]->author());
+    m_metadata->setDescription(m_availableShaderPacks[name]->description());
+    m_metadata->setEngine(m_availableShaderPacks[name]->engine());
+    m_metadata->setFile(m_availableShaderPacks[name]->file());
+    m_metadata->setId(m_availableShaderPacks[name]->id());
+    m_metadata->setLicense(m_availableShaderPacks[name]->license());
+    m_metadata->setName(m_availableShaderPacks[name]->name());
+    m_metadata->setVersion(m_availableShaderPacks[name]->version());
+
+    Q_EMIT metadataChanged();
+}
+
+void ShaderPackModel::loadMetadataFromFile(const QString &file)
+{ 
+    // Load the pack.json data
+    QFile packFile(QUrl(file).toLocalFile());
+    if (packFile.open(QIODevice::ReadOnly | QIODevice::Text)) 
+    {
+        QByteArray packData = packFile.readAll();
+        packFile.close(); // close the file immediately after reading
+
+        // Parse the JSON data to validate it
+        QJsonParseError error;
+        QJsonDocument doc = QJsonDocument::fromJson(packData, &error);
+        if (error.error != QJsonParseError::NoError) 
+        {
+            qWarning("Shader pack %s has invalid JSON: %s at offset %d",
+                     qPrintable(file), qPrintable(error.errorString()), error.offset);
+            
+            return;
+        }
+        
+        m_metadata->setAuthor(doc.object().value(QLatin1String("author")).toString());
+        m_metadata->setDescription(doc.object().value(QLatin1String("description")).toString());
+        m_metadata->setEngine(doc.object().value(QLatin1String("engine")).toString());
+        m_metadata->setFile(file);
+        m_metadata->setId(doc.object().value(QLatin1String("id")).toString());
+        m_metadata->setLicense(doc.object().value(QLatin1String("license")).toString());
+        m_metadata->setName(doc.object().value(QLatin1String("name")).toString());
+        m_metadata->setVersion(doc.object().value(QLatin1String("version")).toString());
+
+        Q_EMIT metadataChanged();
+    }
+}
+
+QString ShaderPackModel::path(const QString &name)
+{
+    if(!m_availableShaderPacks.contains(name))
+        return QString();
+
+    return m_availableShaderPacks[name]->file();
 }

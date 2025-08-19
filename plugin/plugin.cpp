@@ -20,6 +20,9 @@ class KOMPLEX_EXPORT KomplexPlugin : public QQmlExtensionPlugin
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid FILE "plugin.json")
+
+    inline static AudioModel *m_model = nullptr;
+
 public:
 	void registerTypes(const char *uri) override
     {
@@ -27,6 +30,10 @@ public:
     
         qmlRegisterSingletonType<AudioModel*>(uri, 1, 0, "AudioModel", komplexAudioSingletonProvider);
         qmlRegisterType<ShaderPackModel>(uri, 1, 0, "ShaderPackModel");
+    }
+
+    void unregisterTypes() override
+    {
     }
 
     void initializeEngine(QQmlEngine *engine, const char *uri) override
