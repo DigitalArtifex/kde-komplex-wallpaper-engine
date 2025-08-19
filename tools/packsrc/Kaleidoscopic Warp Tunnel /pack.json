@@ -1,0 +1,28 @@
+{
+    "author": "Hyeve",
+    "name": "Kaleidoscopic Warp Tunnel",
+    "version": "1.0.0",
+    "description": "",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "sddBzl",
+    "tags": [
+        "3d",
+        "raymarching",
+        "transparency",
+        "glass",
+        "reflections",
+        "crystal"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 0.5,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb",
+        "frame_buffer_channel": 0
+    },
+
+    "channel0":"{bufferA}"
+}

@@ -1,0 +1,22 @@
+{
+    "author": "JelyMe314",
+    "name": "Audio Reactive Galaxy",
+    "version": "1.0.0",
+    "description": "A version of CBS's simplicity galaxy shader, to be used with lively wallpaper.",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "ms3Gzl",
+    "tags": [
+        "reactive",
+        "galaxy",
+        "fractal"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "type": 4
+    }
+}

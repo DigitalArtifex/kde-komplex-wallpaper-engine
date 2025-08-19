@@ -1,0 +1,36 @@
+{
+    "author": "loicvdb",
+    "name": "Neon Ball Pit",
+    "version": "1.0.0",
+    "description": "Raytracing in a grid to instantiate objects, cheap enough to run multisampling",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "WlVcWK",
+    "tags": [
+        "reflection",
+        "dof",
+        "bloom",
+        "aa",
+        "fresnel",
+        "neon",
+        "multisampling",
+        "aces",
+        "fsaa"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1.0,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb"
+    },
+
+    "bufferB":
+    {
+        "source": "./shaders/Buffer B.frag.qsb",
+        "channel0": "{bufferA}"
+    },
+
+    "channel0":"{bufferB}"
+}

@@ -1,0 +1,28 @@
+{
+    "author": "Hyeve",
+    "name": "Simulated Swampland",
+    "version": "1.0.0",
+    "description": "this scene is a awful, awful mess... but at least with this lighting and these effects, you can't tell (;",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "ms3Gzl",
+    "tags": [
+        "3d",
+        "raymarching",
+        "transparency",
+        "glass",
+        "reflections",
+        "crystal"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb",
+        "frame_buffer_channel": 0
+    },
+
+    "channel0":"{bufferA}"
+}

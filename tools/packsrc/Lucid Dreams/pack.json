@@ -1,0 +1,36 @@
+{
+    "author": "DigitalArtifex",
+    "name": "Lucid Dreams",
+    "version": "1.0.0",
+    "description": "A mix of xx by XX and Watercolor Filter by mds2",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "ms3Gzl",
+    "tags": [
+        "reactive",
+        "galaxy",
+        "fractal"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb",
+        "frame_buffer_channel": 0,
+
+        "channel1":
+        {
+            "type": 2,
+            "source":"./shaders/"
+        },
+        "channel2":
+        {
+            "type": 0,
+            "source": "./images/iChannel2.png"
+        }
+    },
+
+    "channel0":"{bufferA}"
+}

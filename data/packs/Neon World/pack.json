@@ -1,0 +1,39 @@
+{
+    "author": "zguerrero",
+    "name": "Neon World",
+    "version": "1.0.0",
+    "description": "experimenting witch ray marching and distance field",
+    "license": "CC BY-NC-SA 3.0",
+    "engine": "shadertoys",
+    "id": "MlscDj",
+    "tags": [
+        "reflection",
+        "raymarching",
+        "distance",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb"
+    },
+
+    "bufferB":
+    {
+        "source": "./shaders/Buffer B.frag.qsb",
+        "frame_buffer_channel": 1,
+
+        "channel0": "{bufferA}"
+    },
+
+    "channel0": "{bufferB}",
+
+    "channel1":
+    {
+        "type": 0,
+        "source": "./images/iChannel1.png"
+    }
+}

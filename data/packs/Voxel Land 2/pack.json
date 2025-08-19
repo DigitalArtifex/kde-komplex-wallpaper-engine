@@ -1,0 +1,21 @@
+{
+    "author": "Nrx",
+    "name": "Voxel Land 2",
+    "version": "1.0.0",
+    "description": "Rework of Voxel land to be faster on mobile devices (no reflection) and propose different colors...",
+    "license": "CC BY-NC-SA 3.0",
+    "engine": "shadertoy",
+    "id": "XlfGR4",
+    "tags": [
+        "reactive",
+        "voxels"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 0.5,
+
+    "channel0":
+    {
+        "type": 4
+    }
+}

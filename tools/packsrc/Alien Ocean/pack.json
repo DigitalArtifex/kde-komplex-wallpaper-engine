@@ -1,0 +1,31 @@
+{
+    "author": "NLIBS",
+    "name": "Alien Ocean",
+    "version": "1.0.0",
+    "description": "A stylized alien ocean inspired by Very fast procedural ocean by afl_ext Can you spot the other planet in the sky?",
+    "license": "CC BY-NC-SA 3.0",
+    "engine": "shadertoy",
+    "id": "wldBRf",
+    "tags": [
+        "reflection",
+        "raymarching",
+        "distance",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb"
+    },
+
+    "channel0": "{bufferA}",
+
+    "channel1":
+    {
+        "type": 0,
+        "source": "./images/iChannel1.png"
+    }
+}

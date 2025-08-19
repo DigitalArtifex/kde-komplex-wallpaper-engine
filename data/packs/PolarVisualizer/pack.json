@@ -1,0 +1,21 @@
+{
+    "author": "Lallis",
+    "name": "PolarVisualizer",
+    "version": "1.0.0",
+    "description": "Yet another audio visualizer. Tried to fake some depth with the light and reflection. Try reversing the band order.",
+    "license": "CC BY-NC-SA 3.0",
+    "engine": "shadertoy",
+    "id": "4lySzy",
+    "tags": [
+        "reactive",
+        "2d"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1.0,
+
+    "channel0":
+    {
+        "type": 4
+    }
+}
