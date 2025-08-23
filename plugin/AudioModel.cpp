@@ -16,7 +16,7 @@
 
 AudioModel::AudioModel(QObject *parent) : QObject(parent)
 {
-    m_impl_data = { nullptr, nullptr, 0, 1, {}, {}};
+    m_impl_data = { nullptr, nullptr, {0, 0, {}}, 1, {}, {}, 0.0};
     m_impl_data.samples.reserve(4096);
     m_impl_data.smoothed.reserve(2048);
 
@@ -212,11 +212,11 @@ void AudioModel::on_process(void *userdata)
     n_samples = buf->datas[0].chunk->size / sizeof(float);
 
     // convert channels to mono
-    for(int index = 0; index < n_samples; index += n_channels)
+    for(uint32_t index = 0; index < n_samples; index += n_channels)
     {
         float average = 0;
 
-        for(int channel = 0; channel < n_channels; channel++)
+        for(uint32_t channel = 0; channel < n_channels; channel++)
             average += samples[index + channel];
 
         average /= n_channels;
