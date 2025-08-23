@@ -40,6 +40,7 @@ WallpaperItem
     {
         property int resolution_x: wallpaper.configuration.resolution_x
         property int resolution_y: wallpaper.configuration.resolution_y
+        property string shaderPack: wallpaper.configuration.shader_package
         property bool changing: false
 
         anchors.fill: parent
@@ -93,6 +94,7 @@ WallpaperItem
             }
         }
 
+        // band-aid section
         onResolution_xChanged: () =>
         {
             if(changing)
@@ -111,6 +113,23 @@ WallpaperItem
         }
 
         onResolution_yChanged: () =>
+        {
+            if(changing)
+                return;
+
+            changing = true
+
+            pageLoader.sourceComponent = null
+
+            if(wallpaper.configuration.komplex_mode === 0)
+                pageLoader.sourceComponent = shaderToyContent
+            else
+                pageLoader.sourceComponent = packContent
+
+            changing = false
+        }
+
+        onShaderPackChanged: () =>
         {
             if(changing)
                 return;

@@ -58,13 +58,13 @@ Rectangle
     
     property var pack: wallpaper.configuration.shader_package
 
-    onPackChanged: () =>
-    {
-        if(mainItem.ready)
-        {
-            shaderPackModel.loadJson(pack)
-        }
-    }
+    // onPackChanged: () =>
+    // {
+    //     if(mainItem.ready)
+    //     {
+    //         shaderPackModel.loadJson(pack)
+    //     }
+    // }
 
     id: mainItem
     color: "black"
@@ -80,16 +80,7 @@ Rectangle
     {
         id: shaderPackModel
         onJsonChanged: () =>
-        {
-            // clean up old channels
-            while(data.channels.length > 0)
-                data.channels.pop().destroy()
-            
-            bufferA.source = ""
-            bufferB.source = ""
-            bufferC.source = ""
-            bufferD.source = ""
-                
+        {                
             // Handle the JSON change if needed
             mainItem.parsePack(shaderPackModel.json);
         }
@@ -113,11 +104,15 @@ Rectangle
         // This channel must be set to a shader source file that has been pre-compiled to a QSB Fragment Shader
         ShaderChannel
         {
-            ShaderChannel { id: bufferA; visible: false; anchors.fill: parent }
-            ShaderChannel { id: bufferB; visible: false; anchors.fill: parent }
-            ShaderChannel { id: bufferC; visible: false; anchors.fill: parent }
-            ShaderChannel { id: bufferD; visible: false; anchors.fill: parent }
+            property var bufferA
+            property var bufferB
+            property var bufferC
+            property var bufferD
             
+            // ShaderChannel { id: bufferA; visible: false; anchors.fill: parent }
+            // ShaderChannel { id: bufferB; visible: false; anchors.fill: parent }
+            // ShaderChannel { id: bufferC; visible: false; anchors.fill: parent }
+            // ShaderChannel { id: bufferD; visible: false; anchors.fill: parent }
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
             iResolution: mainItem.iResolution
@@ -183,10 +178,10 @@ Rectangle
     // Load the default shader pack configuration on component completion
     Component.onCompleted:
     {
-        data.buffers.set("{bufferA}", bufferA)
-        data.buffers.set("{bufferB}", bufferB)
-        data.buffers.set("{bufferC}", bufferC)
-        data.buffers.set("{bufferD}", bufferD)
+        data.buffers.set("{bufferA}", channelOutput.bufferA)
+        data.buffers.set("{bufferB}", channelOutput.bufferB)
+        data.buffers.set("{bufferC}", channelOutput.bufferC)
+        data.buffers.set("{bufferD}", channelOutput.bufferD)
 
         if(wallpaper.configuration.shader_package)
             shaderPackModel.loadJson(wallpaper.configuration.shader_package);
@@ -233,13 +228,12 @@ Rectangle
     }
 
     // Recursive helper function to parse channels
-    function parseChannel(channel, json, typeDefault = 2)
+    function parseChannel(channel, json, typeDefault = 2, autodestroy = true)
     {
         var source = getFilePath(json.source)
 
         channel.frameBufferChannel = json.frame_buffer_channel !== undefined ? json.frame_buffer_channel : -1
         channel.type = json.type !== undefined ? json.type : typeDefault
-        //channel.anchors.fill = channel.parent
         channel.visible = false
         channel.iMouse = Qt.binding(() => { return mainItem.iMouse; })
         channel.iTime = Qt.binding(() => { return mainItem.iTime; })
@@ -250,15 +244,6 @@ Rectangle
         channel.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
         channel.width = Qt.binding(() => channel.iResolution.x)
         channel.height = Qt.binding(() => channel.iResolution.y)
-
-        // channel.iChannelResolution = Qt.binding(() => {
-        //     return [
-        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
-        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
-        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
-        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0)
-        //     ];
-        // });
  
         channel.iChannelTime = Qt.binding(() => {
             return [
@@ -291,7 +276,6 @@ Rectangle
                 if (component.status === Component.Ready) { 
                     channel.iChannel0 = component.createObject(mainItem, {  })
                     parseChannel(channel.iChannel0, json.channel0)
-                    data.channels.push(channel.iChannel0) // save for destroying
                 }
             }
             else
@@ -314,8 +298,6 @@ Rectangle
                 if (component.status === Component.Ready) { 
                     channel.iChannel1 = component.createObject(mainItem, { })
                     parseChannel(channel.iChannel1, json.channel1)
-
-                    data.channels.push(channel.iChannel1) // save for destroying
                 }
             }
             else
@@ -338,8 +320,6 @@ Rectangle
                 if (component.status === Component.Ready) { 
                     channel.iChannel2 = component.createObject(mainItem, { })
                     parseChannel(channel.iChannel2, json.channel2)
-
-                    data.channels.push(channel.iChannel2) // save for destroying
                 }
             }
             else
@@ -362,31 +342,50 @@ Rectangle
                 if (component.status === Component.Ready) { 
                     channel.iChannel3 = component.createObject(mainItem, { })
                     parseChannel(channel.iChannel3, json.channel3)
-
-                    data.channels.push(channel.iChannel3) // save for destroying
                 }
             }
             else
                 console.log('Uknown channel type 3 ' + typeof json.channel3)
         }
+
+        if(autodestroy)
+            data.channels.push(channel)
     }
 
     // Function to parse the pack.json file and set the properties of the ShaderChannel
     function parsePack(json) 
     {
+        // clean up old channels
+        while(data.channels.length > 0)
+            data.channels.pop().destroy()
+
         var pack = JSON.parse(json);
         var currentChannel = null;
 
-        if (pack.bufferA)
-            parseChannel(bufferA, pack.bufferA, 2);
-        if (pack.bufferB)
-            parseChannel(bufferB, pack.bufferB, 2);
-        if (pack.bufferC)
-            parseChannel(bufferC, pack.bufferC, 2);
-        if (pack.bufferD)
-            parseChannel(bufferD, pack.bufferD, 2);
+        var component = Qt.createComponent("./ShaderChannel.qml")
 
-        parseChannel(channelOutput, pack, 2)
+        if (component.status === Component.Ready) { 
+            channelOutput.bufferA = component.createObject(channelOutput, { visible: false })
+            channelOutput.bufferB = component.createObject(channelOutput, { visible: false })
+            channelOutput.bufferC = component.createObject(channelOutput, { visible: false })
+            channelOutput.bufferD = component.createObject(channelOutput, { visible: false })
+            data.buffers.set("{bufferA}", channelOutput.bufferA)
+            data.buffers.set("{bufferB}", channelOutput.bufferB)
+            data.buffers.set("{bufferC}", channelOutput.bufferC)
+            data.buffers.set("{bufferD}", channelOutput.bufferD)
+            //parseChannel(channel.iChannel0, json.channel0)
+        }
+
+        if (pack.bufferA)
+            parseChannel(channelOutput.bufferA, pack.bufferA, 2);
+        if (pack.bufferB)
+            parseChannel(channelOutput.bufferB, pack.bufferB, 2);
+        if (pack.bufferC)
+            parseChannel(channelOutput.bufferC, pack.bufferC, 2);
+        if (pack.bufferD)
+            parseChannel(channelOutput.bufferD, pack.bufferD, 2);
+
+        parseChannel(channelOutput, pack, 2, false)
 
         channelOutput.source = getFilePath(pack.source); // Set the shader source file
         channelOutput.type = ShaderChannel.Type.ShaderChannel; // Set the shader

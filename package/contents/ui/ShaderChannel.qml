@@ -293,6 +293,7 @@ Item
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
+                visible: false
             }
 
             ShaderEffectSource
@@ -310,6 +311,7 @@ Item
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
+                visible: false
             }
 
             ShaderEffectSource
@@ -327,6 +329,7 @@ Item
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
+                visible: false
             }
 
             ShaderEffectSource
@@ -344,6 +347,7 @@ Item
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
+                visible: false
             }
 
             // recursive frame buffer
