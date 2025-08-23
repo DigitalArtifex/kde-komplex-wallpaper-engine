@@ -248,8 +248,8 @@ Rectangle
         channel.mouseBias = json.mouse_scale ? json.mouse_scale : 1.0
         channel.iTimeScale = json.time_scale ? json.time_scale : 1.0
         channel.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
-        channel.width = mainItem.iResolution.x
-        channel.height = mainItem.iResolution.y
+        channel.width = Qt.binding(() => channel.iResolution.x)
+        channel.height = Qt.binding(() => channel.iResolution.y)
 
         // channel.iChannelResolution = Qt.binding(() => {
         //     return [

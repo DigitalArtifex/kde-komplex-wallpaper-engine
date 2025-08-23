@@ -112,6 +112,8 @@ Item
 
     id: channel
     visible: false // Set to false by default, main shader needs be set to true in MainWindow.qml
+    width: iResolution.x
+    height: iResolution.y
 
     // This is used to dynamically load the appropriate channel type based on the `type` property of the channel
     Loader
