@@ -37,7 +37,7 @@ Item
 {
     property var screenGeometry
     property real pixelRatio: 1 //This will (hopefully) be set to PlasmaCore.Units.devicePixelRatio in onCompleted
-    property vector3d iResolution: Qt.vector3d(wallpaper.configuration.resolution_x,wallpaper.configuration.resolution_y,1)//width, height, pixel aspect ratio
+    property vector3d iResolution: Qt.vector3d(wallpaper.configuration.resolution_x || mainItem.width,wallpaper.configuration.resolution_y || mainItem.height,1)//width, height, pixel aspect ratio
     property real iTime: 0 //used by most motion shaders 
     property real iTimeDelta: iTime 
     property var iChannelTime: [iTime, iTime, iTime, iTime] //individual channel time values
@@ -84,9 +84,11 @@ Item
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
             iResolution: mainItem.iChannelResolution[0]
+            iFrame: mainItem.iFrame
 
             id: channel0
-            anchors.fill: parent
+            width: mainItem.iResolution.x
+            height: mainItem.iResolution.y
             type: wallpaper.configuration.iChannel0_flag ? wallpaper.configuration.iChannel0_type : 0
 
             source: wallpaper.configuration.iChannel0_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel0) : ""
@@ -101,9 +103,11 @@ Item
             visible: wallpaper.configuration.iChannel1_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
             iResolution: mainItem.iChannelResolution[1]
+            iFrame: mainItem.iFrame
 
             id: channel1
-            anchors.fill: parent
+            width: mainItem.iResolution.x
+            height: mainItem.iResolution.y
             type: wallpaper.configuration.iChannel1_flag ? wallpaper.configuration.iChannel1_type : 0
 
             source: wallpaper.configuration.iChannel1_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel1) : ""
@@ -118,9 +122,11 @@ Item
             visible: wallpaper.configuration.iChannel2_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
             iResolution: mainItem.iChannelResolution[2]
+            iFrame: mainItem.iFrame
 
             id: channel2
-            anchors.fill: parent
+            width: mainItem.iResolution.x
+            height: mainItem.iResolution.y
             type: wallpaper.configuration.iChannel2_flag ? wallpaper.configuration.iChannel2_type : 0
 
             source: wallpaper.configuration.iChannel2_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel2) : ""
@@ -137,9 +143,11 @@ Item
             iChannelTime: [mainItem.iTime, mainItem.iTime, mainItem.iTime, mainItem.iTime]
             iResolution: mainItem.iChannelResolution[3]
             iDate: mainItem.iDate
+            iFrame: mainItem.iFrame
 
             id: channel3
-            anchors.fill: parent
+            width: mainItem.iResolution.x
+            height: mainItem.iResolution.y
             type: wallpaper.configuration.iChannel3_flag ? wallpaper.configuration.iChannel3_type : 0
 
             source: wallpaper.configuration.iChannel3_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel3) : ""
@@ -155,9 +163,11 @@ Item
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
             iResolution: mainItem.iResolution
+            iFrame: mainItem.iFrame
 
             id: channelOutput
-            anchors.fill: parent
+            width: mainItem.iResolution.x
+            height: mainItem.iResolution.y
             type: ShaderChannel.Type.ShaderChannel
             source: wallpaper.configuration.selectedShaderPath ? wallpaper.configuration.selectedShaderPath : ""
 
@@ -167,11 +177,27 @@ Item
             iChannel3: channel3
 
             visible: true // Set to true to display the output
+            blending: true
+        }
+
+        ShaderEffectSource
+        {
+            anchors.fill: parent
+            sourceItem: channelOutput
+            sourceRect: Qt.rect(0,0, mainItem.iResolution.x, mainItem.iResolution.y)
+            textureSize: Qt.size(mainItem.iResolution.x, mainItem.iResolution.y)
+            hideSource: true
+            visible: true
+            smooth: true
+            live: true
+
+            id: finalSource
         }
 
         // To save on performance, just use one timer for all channels
         Timer
         {
+            property var date: new Date();
             id: channelTimer
 
             //Not entirely sure if this will actually limit the frame rate
@@ -183,7 +209,6 @@ Item
             triggeredOnStart: true
             onTriggered: 
             {
-                var date = new Date();
                 var startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
                 var secondsSinceMidnight = (date - startOfDay) / 1000;
 

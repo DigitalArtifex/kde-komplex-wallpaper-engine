@@ -28,11 +28,11 @@ import QtQuick
 
 import com.github.digitalartifex.komplex 1.0 as Komplex
 
-Item
+Rectangle
 {
     property var screenGeometry
     property real pixelRatio: 1 //This will (hopefully) be set to PlasmaCore.Units.devicePixelRatio in onCompleted
-    property vector3d iResolution: Qt.vector3d(wallpaper.configuration.resolution_x ? wallpaper.configuration.resolution_x : 1920, wallpaper.configuration.resolution_y ? wallpaper.configuration.resolution_y : 1080, 1)//width, height, pixel aspect ratio
+    property vector3d iResolution: Qt.vector3d(wallpaper.configuration.resolution_x, wallpaper.configuration.resolution_y, 1)//width, height, pixel aspect ratio
     property real iTime: 0 //used by most motion shaders 
     property real iTimeDelta: iTime 
     property var iChannelTime: [iTime, iTime, iTime, iTime] //individual channel time values
@@ -41,7 +41,7 @@ Item
     property real iFrameRate: wallpaper.configuration.framerate_limit ? wallpaper.configuration.framerate_limit : 60 // Default frame rate for the shader
     property vector4d iMouse
     property var iDate
-    property bool running: true
+    property bool running: windowModel.runShader && wallpaper.configuration.running
     property bool ready: false
 
 
@@ -58,19 +58,16 @@ Item
     
     property var pack: wallpaper.configuration.shader_package
 
-    onPackChanged: ()=>
+    onPackChanged: () =>
     {
         if(mainItem.ready)
+        {
             shaderPackModel.loadJson(pack)
+        }
     }
 
-    ShaderChannel { id: bufferA; visible: true; anchors.fill: parent }
-    ShaderChannel { id: bufferB; visible: true; anchors.fill: parent }
-    ShaderChannel { id: bufferC; visible: true; anchors.fill: parent }
-    ShaderChannel { id: bufferD; visible: true; anchors.fill: parent }
-    
-
     id: mainItem
+    color: "black"
 
     Item
     {
@@ -87,6 +84,11 @@ Item
             // clean up old channels
             while(data.channels.length > 0)
                 data.channels.pop().destroy()
+            
+            bufferA.source = ""
+            bufferB.source = ""
+            bufferC.source = ""
+            bufferD.source = ""
                 
             // Handle the JSON change if needed
             mainItem.parsePack(shaderPackModel.json);
@@ -102,23 +104,33 @@ Item
 
     Rectangle
     {
-        anchors.fill: parent
+        width: mainItem.iResolution.x
+        height: mainItem.iResolution.y
         color: "black"
+        id: channelRect
 
         // The output channel that combines all the input channels and displays the final shader output
         // This channel must be set to a shader source file that has been pre-compiled to a QSB Fragment Shader
         ShaderChannel
         {
+            ShaderChannel { id: bufferA; visible: false; anchors.fill: parent }
+            ShaderChannel { id: bufferB; visible: false; anchors.fill: parent }
+            ShaderChannel { id: bufferC; visible: false; anchors.fill: parent }
+            ShaderChannel { id: bufferD; visible: false; anchors.fill: parent }
+            
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
             iResolution: mainItem.iResolution
+            width: mainItem.iResolution.x
+            height: mainItem.iResolution.y
+            iFrame: mainItem.iFrame
 
             id: channelOutput
-            anchors.fill: parent
             type: ShaderChannel.Type.ShaderChannel
 
             visible: true // Set to true to display the output
             z: 9000
+            blending: true
         }
 
         // To save on performance, just use one timer for all channels and shaders
@@ -131,7 +143,7 @@ Item
             interval: (1 / mainItem.iFrameRate) * 1000 //fps to ms cycles :: fps = 60 = 1 / 60 = 0.01666 * 1000 = 16
             repeat: true
 
-            running: true //wallpaper.configuration.running ? mainItem.running : true
+            running: mainItem.running //wallpaper.configuration.running ? mainItem.running : true
 
             triggeredOnStart: true
             onTriggered: 
@@ -147,6 +159,27 @@ Item
         }
     }
 
+    ShaderEffectSource
+    {
+        anchors.fill: parent
+        sourceItem: channelRect
+        sourceRect: Qt.rect(0,0, mainItem.iResolution.x, mainItem.iResolution.y)
+        textureSize: Qt.size(mainItem.iResolution.x, mainItem.iResolution.y)
+        hideSource: true
+        visible: true
+        smooth: true
+        antialiasing: true
+        live: true
+
+        id: finalSource
+
+        onSourceRectChanged: () =>
+        {
+            live = false;
+            live = true;
+        }
+    }
+
     // Load the default shader pack configuration on component completion
     Component.onCompleted:
     {
@@ -158,6 +191,44 @@ Item
         if(wallpaper.configuration.shader_package)
             shaderPackModel.loadJson(wallpaper.configuration.shader_package);
 
+        Qt.createQmlObject(`import QtQuick
+        MouseArea 
+        {
+            id: mouseTrackingArea
+            propagateComposedEvents: true
+            preventStealing: false
+            enabled: wallpaper.configuration.mouseAllowed
+            anchors.fill: parent
+            hoverEnabled: true
+            onPositionChanged: (mouse) => {
+                mouse.accepted = false
+                mainItem.iMouse.x = mouse.x * wallpaper.configuration.mouseSpeedBias
+                mainItem.iMouse.y = -mouse.y * wallpaper.configuration.mouseSpeedBias
+            }
+            onClicked:(mouse) => {
+                mouse.accepted = false
+                mainItem.iMouse.z = mouse.x
+                mainItem.iMouse.w = mouse.y
+            }
+            // this still doesnt work... guess a C++ wrapper is all that can be done?
+            onPressed:(mouse) => {
+                mouse.accepted = false
+            }
+            onPressAndHold:(mouse) => {
+                mouse.accepted = false
+            }
+            onDoubleClicked:(mouse) => {
+                mouse.accepted = false
+            }
+            //cancelled, entered, and exited do not pass mouse events, so we can remove them
+            onReleased:(mouse) => {
+                mouse.accepted = false
+            }
+            onWheel: (mouse) => {
+                mouse.accepted = false
+            }
+        }`, parent.parent, "mouseTrackerArea");
+
         ready = true
     }
 
@@ -168,24 +239,27 @@ Item
 
         channel.frameBufferChannel = json.frame_buffer_channel !== undefined ? json.frame_buffer_channel : -1
         channel.type = json.type !== undefined ? json.type : typeDefault
-        channel.anchors.fill = channel.parent
+        //channel.anchors.fill = channel.parent
         channel.visible = false
         channel.iMouse = Qt.binding(() => { return mainItem.iMouse; })
         channel.iTime = Qt.binding(() => { return mainItem.iTime; })
-        channel.iResolution = Qt.binding(() => { return Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0); })
+        channel.iResolutionScale = json.resolution_scale ? json.resolution_scale : 1.0
+        channel.iResolution = Qt.binding(() => { return json.resolution_x ? Qt.vector3d(json.resolution_x, json.resolution_y, 1.0) : Qt.vector3d(mainItem.iResolution.x,mainItem.iResolution.y,1.0); })
         channel.mouseBias = json.mouse_scale ? json.mouse_scale : 1.0
         channel.iTimeScale = json.time_scale ? json.time_scale : 1.0
         channel.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
+        channel.width = mainItem.iResolution.x
+        channel.height = mainItem.iResolution.y
 
-        channel.iChannelResolution = Qt.binding(() => {
-            return [
-                Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
-                Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
-                Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
-                Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0)
-            ];
-        });
-
+        // channel.iChannelResolution = Qt.binding(() => {
+        //     return [
+        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
+        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
+        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0),
+        //         Qt.vector3d(json.resolution_x || mainItem.width, json.resolution_y || mainItem.height, 1.0)
+        //     ];
+        // });
+ 
         channel.iChannelTime = Qt.binding(() => {
             return [
                 mainItem.iTime * channel.iTimeScale,
@@ -196,7 +270,7 @@ Item
         });
 
         channel.iFrameRate = Qt.binding(() => { return mainItem.iFrameRate; })
-        channel.iFrame = Qt.binding(() => { return mainItem.iFrame; })
+        channel.iFrame = mainItem.iFrame
         channel.invert = json.invert ? json.invert : false
 
         channel.source = source
@@ -347,6 +421,8 @@ Item
                 recursive: false,
                 mipmap: false
             });
+
+            data.channels.push(result) // save for destroying
         }
 
         return result;

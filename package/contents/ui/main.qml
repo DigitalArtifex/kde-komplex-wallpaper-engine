@@ -38,6 +38,10 @@ WallpaperItem
     id: wallpaperItem
     Item
     {
+        property int resolution_x: wallpaper.configuration.resolution_x
+        property int resolution_y: wallpaper.configuration.resolution_y
+        property bool changing: false
+
         anchors.fill: parent
         
         Loader 
@@ -53,7 +57,7 @@ WallpaperItem
                     when: wallpaper.configuration.komplex_mode === 0
                     PropertyChanges
                     {
-                        pageLoader.sourceComponent: shaderToysContent
+                        pageLoader.sourceComponent: shaderToyContent
                     }
                 },
                 State
@@ -69,7 +73,7 @@ WallpaperItem
 
         Component
         {
-            id: shaderToysContent
+            id: shaderToyContent
 
             ShaderToyModel
             {
@@ -87,6 +91,40 @@ WallpaperItem
                 screenGeometry: wallpaperItem.parent.screenGeometry
                 anchors.fill: parent
             }
+        }
+
+        onResolution_xChanged: () =>
+        {
+            if(changing)
+                return;
+
+            changing = true
+
+            pageLoader.sourceComponent = null
+
+            if(wallpaper.configuration.komplex_mode === 0)
+                pageLoader.sourceComponent = shaderToyContent
+            else
+                pageLoader.sourceComponent = packContent
+
+                changing = false
+        }
+
+        onResolution_yChanged: () =>
+        {
+            if(changing)
+                return;
+
+            changing = true
+
+            pageLoader.sourceComponent = null
+
+            if(wallpaper.configuration.komplex_mode === 0)
+                pageLoader.sourceComponent = shaderToyContent
+            else
+                pageLoader.sourceComponent = packContent
+
+            changing = false
         }
     }
 }

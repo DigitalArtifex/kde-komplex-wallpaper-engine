@@ -93,6 +93,8 @@ Kirigami.FormLayout
     property alias cfg_resolution_x: resolutionXField.value
     property alias cfg_resolution_y: resolutionYField.value
 
+    property alias cfg_framerate_limit: frameRateField.value
+
     Palette 
     {
         id: palette
@@ -116,7 +118,7 @@ Kirigami.FormLayout
         Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Engine Mode:")
         ComboBox
         {
-            Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 11.5
             id: engineModeSelect
             currentIndex: root.cfg_komplex_mode
             onCurrentIndexChanged: root.cfg_komplex_mode = currentIndex
@@ -141,7 +143,7 @@ Kirigami.FormLayout
             property string shader
 
             id: selectedShader
-            Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 11.5
             model: FolderListModel 
             {
                 id: folderListModel
@@ -182,8 +184,8 @@ Kirigami.FormLayout
             id: shaderFileButton
             icon.name: "folder-symbolic"
             text: i18nd("@button:toggle_select_shader", "Select File")
-            Layout.preferredWidth: Kirigami.Units.gridUnit * 9
-            Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 8.5
+            Layout.preferredHeight: selectedShader.height
             onClicked: 
             {
                 fileDialog.currentFolder = "file://" + shaderPackModel.shadersPath;
@@ -220,7 +222,7 @@ Kirigami.FormLayout
             property string shader
 
             id: selectedShaderPack
-            Layout.preferredWidth: Kirigami.Units.gridUnit * 11
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 11.5
             model: shaderPackModel.availableShaderPacks
             delegate: Component 
             {
@@ -254,8 +256,8 @@ Kirigami.FormLayout
             id: packFileButton
             icon.name: "folder-symbolic"
             text: i18nd("@button:toggle_select_shader", "Select File")
-            Layout.preferredWidth: Kirigami.Units.gridUnit * 9
-            Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 8.5
+            Layout.preferredHeight: selectedShaderPack.height
             onClicked: 
             {
                 packDialog.currentFolder = "file://" + shaderPackModel.shaderPackInstallPath;
@@ -280,8 +282,13 @@ Kirigami.FormLayout
             }
         }
     }
+    Kirigami.Separator 
+    {
+        Kirigami.FormData.isSection: false
+    }
     TabBar 
     {
+        Layout.topMargin: 6
         Layout.fillWidth: true
         id: navBar
         width: parent.width
@@ -352,7 +359,7 @@ Kirigami.FormLayout
     {
         id: shaderChannelOverlay0
         parent: applicationWindow().overlay
-        implicitHeight: 400
+        implicitHeight: 420
 
         ShaderChannelConfiguration
         {
@@ -398,7 +405,7 @@ Kirigami.FormLayout
     {
         id: shaderChannelOverlay1
         parent: applicationWindow().overlay
-        implicitHeight: 400
+        implicitHeight: 420
 
         ShaderChannelConfiguration
         {
@@ -443,7 +450,7 @@ Kirigami.FormLayout
     {
         id: shaderChannelOverlay2
         parent: applicationWindow().overlay
-        implicitHeight: 400
+        implicitHeight: 420
 
         ShaderChannelConfiguration
         {
@@ -487,7 +494,7 @@ Kirigami.FormLayout
     {
         id: shaderChannelOverlay3
         parent: applicationWindow().overlay
-        implicitHeight: 400
+        implicitHeight: 420
 
         ShaderChannelConfiguration
         {
@@ -577,6 +584,49 @@ Kirigami.FormLayout
         }
     }
 
+    RowLayout
+    {
+        visible: navBar.currentIndex === 1
+
+        Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Frame Rate:")
+
+        TextField
+        {
+            property int value
+
+            id: frameRateField
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            Layout.preferredWidth: Kirigami.Units.gridUnit * 4
+
+            onEditingFinished: () =>
+            {
+                value = parseInt(text)
+            }
+            Keys.onPressed: (event) => 
+            {
+                if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) 
+                {
+                    frameRateField.focus = false; // Unfocus the TextField
+                    event.accepted = true; // Prevent further propagation of the key event
+                }
+            }
+            background: Rectangle 
+            {
+                color: resolutionXField.activeFocus ? palette.base : "transparent"
+                border.color: resolutionXField.activeFocus ? palette.highlight : "transparent"
+                border.width: 1
+                radius: 4
+                anchors.fill: resolutionXField
+                anchors.margins: -2
+            }
+
+            Component.onCompleted: () =>
+            {
+                text = value
+            }
+        }
+    }
+
     RowLayout 
     {
         visible: navBar.currentIndex === 1
@@ -589,8 +639,8 @@ Kirigami.FormLayout
         {
             id: speedSlider
             Layout.fillWidth: true
-            from: -10.0
-            to: 10.0
+            from: -4.0
+            to: 4.0
             stepSize: 0.01
             onValueChanged: shaderSpeedField.text = String(value.toFixed(2));
         }
@@ -699,7 +749,7 @@ Kirigami.FormLayout
         }
     }
     
-    RowLayout 
+    RowLayout
     {
         visible: navBar.currentIndex === 2
         id: mouseLayout
@@ -716,20 +766,20 @@ Kirigami.FormLayout
         }
     }
 
-    RowLayout 
+    RowLayout
     {
         id: mouseBiasLayout
         visible: root.cfg_mouseAllowed && navBar.currentIndex === 2
 
         Kirigami.FormData.label: i18nd("com.github.digitalartifex.komplex", "Mouse bias:")
-        ColumnLayout 
+        ColumnLayout
         {
-            Slider 
+            Slider
             {
                 id: mouseBiasSlider
                 Layout.preferredWidth: Kirigami.Units.gridUnit * 16
-                from: -10.0
-                to: 10.0
+                from: 0.0
+                to: 4.0
                 stepSize: 0.01
                 value: root.cfg_mouseSpeedBias ? root.cfg_mouseSpeedBias : 1.0
                 onValueChanged: () =>
@@ -740,7 +790,7 @@ Kirigami.FormLayout
                 }
             }
         }
-        ColumnLayout 
+        ColumnLayout
         {
             TextField 
             {

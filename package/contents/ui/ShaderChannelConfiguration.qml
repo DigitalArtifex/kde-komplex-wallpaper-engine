@@ -339,7 +339,7 @@ Item
                 id: speedSlider
                 Layout.fillWidth: true
                 from: 0
-                to: 16
+                to: 4
                 stepSize: 0.1
                 onValueChanged: shaderSpeedField.text = String(value.toFixed(2));
             }

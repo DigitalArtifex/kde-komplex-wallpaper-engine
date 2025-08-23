@@ -69,10 +69,29 @@ Item
     property var iDate
     property real iTimeScale: 1 // This is used to scale the time for the shader, allowing for slow motion or fast forward effects per channel
     property int frameBufferChannel: -1
+    property bool blending: false
+
+    // bind to ShaderEffectSource.live to prevent data being updated causing a refresh between intended frames. I think this may be why
+    // the shaders are using so many resources. This is likely to cause issues of its own since we have no way of knowing the progress
+    // of the current capture, but we'll cross that bridge later
+    property bool active: true
+
+    // this seems to work better than doubling the timer frequency and setting active/inactive states,
+    // but god damn does it feel hacky. Try to find a better way to actually limit framerate
+    onIFrameChanged: () =>
+    {
+        active = true;
+        active = false;
+    }
 
     property bool invert
 
-    property var iChannelResolution: [Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1), Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1), Qt.vector3d(channel.width * iResolutionScale, channel.height * iResolutionScale, 1)]
+    property var iChannelResolution: [Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1), Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1), Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1)]
+
+    onIResolutionChanged: () =>
+    {
+        channel.iChannelResolution = [Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1), Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1), Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1)]
+    }
 
     QtObject
     {
@@ -142,8 +161,9 @@ Item
                 {
                     loader.sourceComponent: channelAudio
 
-                    loader.width: 512
-                    loader.height: 2
+                    // loader.width: 512
+                    // loader.height: 2
+                    // loader.and
                 }
             }
         ]
@@ -251,7 +271,6 @@ Item
 
         Item
         {
-            property var frameBufferData: undefined
             id: channelShaderContent
             anchors.fill: parent
 
@@ -261,72 +280,85 @@ Item
             {
                 id: channelSource0
                 sourceItem: channel.iChannel0 ? channel.iChannel0 : null
-                live: true
-                smooth: true
-                sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
-                wrapMode: ShaderEffectSource.Repeat
-                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                live: channel.active
+                smooth: false
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                wrapMode: ShaderEffectSource.ClampToEdge
+                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: true
+                recursive: false
                 mipmap: true
+                hideSource: true
+                width: channel.iResolution.x
+                height: channel.iResolution.y
             }
 
             ShaderEffectSource
             {
                 id: channelSource1
                 sourceItem: channel.iChannel1 ? channel.iChannel1 : null
-                live: true
-                smooth: true
-                sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
-                wrapMode: ShaderEffectSource.Repeat
-                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                live: channel.active
+                smooth: false
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                wrapMode: ShaderEffectSource.ClampToEdge
+                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: true
+                recursive: false
                 mipmap: true
+                hideSource: true
+                width: channel.iResolution.x
+                height: channel.iResolution.y
             }
 
             ShaderEffectSource
             {
                 id: channelSource2
                 sourceItem: channel.iChannel2 ? channel.iChannel2 : null
-                live: true
-                smooth: true
-                sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
-                wrapMode: ShaderEffectSource.Repeat
-                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                live: channel.active
+                smooth: false
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                wrapMode: ShaderEffectSource.ClampToEdge
+                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: true
+                recursive: false
                 mipmap: true
+                hideSource: true
+                width: channel.iResolution.x
+                height: channel.iResolution.y
             }
 
             ShaderEffectSource
             {
                 id: channelSource3
                 sourceItem: channel.iChannel3 ? channel.iChannel3 : null
-                live: true
-                smooth: true
-                sourceRect: Qt.rect(0,0, sourceItem ? sourceItem.width : 0, sourceItem ? sourceItem.height : 0)
-                wrapMode: ShaderEffectSource.Repeat
-                textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
+                live: channel.active
+                smooth: false
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                wrapMode: ShaderEffectSource.ClampToEdge
+                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: true
+                recursive: false
                 mipmap: true
+                hideSource: true
+                width: channel.iResolution.x
+                height: channel.iResolution.y
             }
 
             // recursive frame buffer
             ShaderEffectSource
             {
                 id: frameBufferSource
-                sourceItem: channelShaderContent
-                live: true
+                sourceItem: channel.frameBufferChannel === -1 ? null : channelShaderContent
                 sourceRect: Qt.rect(0,0, channelShaderContent.width, channelShaderContent.height)
-                wrapMode: ShaderEffectSource.Repeat
-                recursive: true
+                wrapMode: ShaderEffectSource.ClampToEdge
+                live: channel.active
                 mipmap: true
+                recursive: true
                 textureSize: Qt.size(channelShaderContent.width, channelShaderContent.height)
-                anchors.fill: parent
                 visible: false
                 textureMirroring: ShaderEffectSource.NoMirroring
+                width: channel.iResolution.x
+                height: channel.iResolution.y
             }
 
             // The shader effect that will be used to render the shader
@@ -350,10 +382,21 @@ Item
                 property var iChannelResolution: channel.iResolution
 
                 fragmentShader: Qt.resolvedUrl(channel.source)
-                anchors.fill: parent
+                width: channel.iResolution.x
+                height: channel.iResolution.y
 
                 id: channelShaderOutput
+
+                blending: channel.blending
             }
+
+            // ShaderEffectSource
+            // {
+            //     anchors.fill: parent
+            //     sourceItem: channelShaderOutput
+            //     hideSource: true
+            //     visible: true
+            // }
         }
     }
 
@@ -430,11 +473,29 @@ Item
             {
                 width: 512
                 height: 2
-                anchors.top: channel.invert ? undefined : parent.top
-                anchors.bottom: channel.invert ? parent.bottom : undefined
+                anchors.top: !channel.invert ? undefined : parent.top
+                anchors.bottom: !channel.invert ? parent.bottom : undefined
                 id: textureImage
                 source: "image://audiotexture/frame"
-                fillMode: Image.PreserveAspectFit
+                fillMode: Image.Pad
+
+                // we need to flip the texture when the channel itself is flipped
+                // so the orientation of the audio data is preserved
+                transform: Rotation
+                {
+                    origin.x: textureImage.width / 2
+                    origin.y: textureImage.height / 2
+
+                    // For vertical flipping, we need to transform the x axis
+                    axis
+                    {
+                        x: 1
+                        y: 0
+                        z: 0
+                    }
+
+                    angle: data.angle + 180
+                }
             }
 
             Timer
