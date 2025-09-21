@@ -196,8 +196,8 @@ void AudioModel::on_process(void *userdata)
     struct pw_buffer *b;
     struct spa_buffer *buf;
 
-    float *samples, max;
-    uint32_t c, n, n_channels, n_samples, peak;
+    float *samples;
+    uint32_t n_channels, n_samples;
 
     if ((b = pw_stream_dequeue_buffer(data->stream)) == NULL) {
         pw_log_warn("out of buffers: %m");
