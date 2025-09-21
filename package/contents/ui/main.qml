@@ -43,6 +43,13 @@ WallpaperItem
         property string shaderPack: wallpaper.configuration.shader_package
         property bool changing: false
 
+        property bool updated: wallpaper.configuration.shader_updated
+
+        property bool iChannel0_inverted: wallpaper.configuration.iChannel0_inverted
+        property bool iChannel1_inverted: wallpaper.configuration.iChannel1_inverted
+        property bool iChannel2_inverted: wallpaper.configuration.iChannel2_inverted
+        property bool iChannel3_inverted: wallpaper.configuration.iChannel3_inverted
+
         anchors.fill: parent
         
         Loader 
@@ -78,6 +85,7 @@ WallpaperItem
 
             ShaderToyModel
             {
+                //wallpaper: wallpaper
                 screenGeometry: wallpaperItem.parent.screenGeometry
                 anchors.fill: parent
             }
@@ -95,41 +103,18 @@ WallpaperItem
         }
 
         // band-aid section
-        onResolution_xChanged: () =>
+        onResolution_xChanged: () => reload();
+        onResolution_yChanged: () => reload();
+        onShaderPackChanged: () => reload();
+        onIChannel0_invertedChanged: () => reload();
+
+        onUpdatedChanged: () =>
         {
-            if(changing)
-                return;
-
-            changing = true
-
-            pageLoader.sourceComponent = null
-
-            if(wallpaper.configuration.komplex_mode === 0)
-                pageLoader.sourceComponent = shaderToyContent
-            else
-                pageLoader.sourceComponent = packContent
-
-                changing = false
+            if(updated)
+                reload();
         }
 
-        onResolution_yChanged: () =>
-        {
-            if(changing)
-                return;
-
-            changing = true
-
-            pageLoader.sourceComponent = null
-
-            if(wallpaper.configuration.komplex_mode === 0)
-                pageLoader.sourceComponent = shaderToyContent
-            else
-                pageLoader.sourceComponent = packContent
-
-            changing = false
-        }
-
-        onShaderPackChanged: () =>
+        function reload()
         {
             if(changing)
                 return;

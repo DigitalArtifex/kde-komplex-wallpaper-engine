@@ -24,7 +24,6 @@
  *  This software uses some of the QML code from JaredTao/jared2020@163.com's ToyShader for Android.
  *  See: https://github.com/jaredtao/TaoShaderToy/
  */
-pragma ComponentBehavior: Bound
 
 import QtCore
 import QtQuick
@@ -94,7 +93,7 @@ Item
             source: wallpaper.configuration.iChannel0_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel0) : ""
 
             // ShaderToy seems to start at bottom left for 0,0
-            invert: wallpaper.configuration.iChannel0_inverted
+            invert: wallpaper.configuration.iChannel0_inverted !== undefined ? wallpaper.configuration.iChannel0_inverted : true
         }
 
         ShaderChannel

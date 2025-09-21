@@ -58,14 +58,6 @@ Rectangle
     
     property var pack: wallpaper.configuration.shader_package
 
-    // onPackChanged: () =>
-    // {
-    //     if(mainItem.ready)
-    //     {
-    //         shaderPackModel.loadJson(pack)
-    //     }
-    // }
-
     id: mainItem
     color: "black"
 
@@ -108,11 +100,7 @@ Rectangle
             property var bufferB
             property var bufferC
             property var bufferD
-            
-            // ShaderChannel { id: bufferA; visible: false; anchors.fill: parent }
-            // ShaderChannel { id: bufferB; visible: false; anchors.fill: parent }
-            // ShaderChannel { id: bufferC; visible: false; anchors.fill: parent }
-            // ShaderChannel { id: bufferD; visible: false; anchors.fill: parent }
+
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
             iResolution: mainItem.iResolution
@@ -230,35 +218,7 @@ Rectangle
     // Recursive helper function to parse channels
     function parseChannel(channel, json, typeDefault = 2, autodestroy = true)
     {
-        var source = getFilePath(json.source)
-
-        channel.frameBufferChannel = json.frame_buffer_channel !== undefined ? json.frame_buffer_channel : -1
-        channel.type = json.type !== undefined ? json.type : typeDefault
-        channel.visible = false
-        channel.iMouse = Qt.binding(() => { return mainItem.iMouse; })
-        channel.iTime = Qt.binding(() => { return mainItem.iTime; })
-        channel.iResolutionScale = json.resolution_scale ? json.resolution_scale : 1.0
-        channel.iResolution = Qt.binding(() => { return json.resolution_x ? Qt.vector3d(json.resolution_x, json.resolution_y, 1.0) : Qt.vector3d(mainItem.iResolution.x,mainItem.iResolution.y,1.0); })
-        channel.mouseBias = json.mouse_scale ? json.mouse_scale : 1.0
-        channel.iTimeScale = json.time_scale ? json.time_scale : 1.0
-        channel.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
-        channel.width = Qt.binding(() => channel.iResolution.x)
-        channel.height = Qt.binding(() => channel.iResolution.y)
- 
-        channel.iChannelTime = Qt.binding(() => {
-            return [
-                mainItem.iTime * channel.iTimeScale,
-                mainItem.iTime * channel.iTimeScale,
-                mainItem.iTime * channel.iTimeScale,
-                mainItem.iTime * channel.iTimeScale
-            ];
-        });
-
-        channel.iFrameRate = Qt.binding(() => { return mainItem.iFrameRate; })
-        channel.iFrame = mainItem.iFrame
-        channel.invert = json.invert ? json.invert : false
-
-        channel.source = source
+        var component = Qt.createComponent("./ShaderChannel.qml")
 
         if (json.channel0)
         {
@@ -271,9 +231,8 @@ Rectangle
             }
             else if(typeof json.channel0 === "object")
             {
-                var component = Qt.createComponent("./ShaderChannel.qml")
-
-                if (component.status === Component.Ready) { 
+                if (component.status === Component.Ready) 
+                { 
                     channel.iChannel0 = component.createObject(mainItem, {  })
                     parseChannel(channel.iChannel0, json.channel0)
                 }
@@ -293,9 +252,8 @@ Rectangle
             }
             else if(typeof json.channel1 === "object")
             {
-                var component = Qt.createComponent("./ShaderChannel.qml")
-
-                if (component.status === Component.Ready) { 
+                if (component.status === Component.Ready) 
+                { 
                     channel.iChannel1 = component.createObject(mainItem, { })
                     parseChannel(channel.iChannel1, json.channel1)
                 }
@@ -315,9 +273,8 @@ Rectangle
             }
             else if(typeof json.channel2 === "object")
             {
-                var component = Qt.createComponent("./ShaderChannel.qml")
-
-                if (component.status === Component.Ready) { 
+                if (component.status === Component.Ready) 
+                {
                     channel.iChannel2 = component.createObject(mainItem, { })
                     parseChannel(channel.iChannel2, json.channel2)
                 }
@@ -337,9 +294,8 @@ Rectangle
             }
             else if(typeof json.channel3 === "object")
             {
-                var component = Qt.createComponent("./ShaderChannel.qml")
-
-                if (component.status === Component.Ready) { 
+                if (component.status === Component.Ready) 
+                { 
                     channel.iChannel3 = component.createObject(mainItem, { })
                     parseChannel(channel.iChannel3, json.channel3)
                 }
@@ -347,6 +303,37 @@ Rectangle
             else
                 console.log('Uknown channel type 3 ' + typeof json.channel3)
         }
+
+        channel.frameBufferChannel = json.frame_buffer_channel !== undefined ? json.frame_buffer_channel : -1
+        channel.type = json.type !== undefined ? json.type : typeDefault
+        channel.visible = false
+        channel.iMouse = Qt.binding(() => { return mainItem.iMouse; })
+        channel.iTime = Qt.binding(() => { return mainItem.iTime; })
+        channel.iResolutionScale = json.resolution_scale ? json.resolution_scale : 1.0
+        channel.iResolution = Qt.binding(() => { return json.resolution_x ? Qt.vector3d(json.resolution_x, json.resolution_y, 1.0) : Qt.vector3d(mainItem.iResolution.x,mainItem.iResolution.y,1.0); })
+        channel.mouseBias = json.mouse_scale ? json.mouse_scale : 1.0
+        channel.iTimeScale = json.time_scale ? json.time_scale : 1.0
+        channel.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
+        channel.width = Qt.binding(() => channel.iResolution.x)
+        channel.height = Qt.binding(() => channel.iResolution.y)
+        channel.materialTexture = json.materialTexture !== undefined ? getFilePath(json.materialTexture) : ""
+        channel.materialShader = json.materialShader !== undefined ? getFilePath(json.materialShader) : ""
+ 
+        channel.iChannelTime = Qt.binding(() => {
+            return [
+                mainItem.iTime * channel.iTimeScale,
+                mainItem.iTime * channel.iTimeScale,
+                mainItem.iTime * channel.iTimeScale,
+                mainItem.iTime * channel.iTimeScale
+            ];
+        });
+
+        channel.iFrameRate = Qt.binding(() => { return mainItem.iFrameRate; })
+        channel.iFrame = mainItem.iFrame
+        channel.invert = json.invert ? json.invert : false
+
+        var source = getFilePath(json.source)
+        channel.source = source
 
         if(autodestroy)
             data.channels.push(channel)
@@ -364,11 +351,13 @@ Rectangle
 
         var component = Qt.createComponent("./ShaderChannel.qml")
 
-        if (component.status === Component.Ready) { 
+        if (component.status === Component.Ready)
+        { 
             channelOutput.bufferA = component.createObject(channelOutput, { visible: false })
             channelOutput.bufferB = component.createObject(channelOutput, { visible: false })
             channelOutput.bufferC = component.createObject(channelOutput, { visible: false })
             channelOutput.bufferD = component.createObject(channelOutput, { visible: false })
+
             data.buffers.set("{bufferA}", channelOutput.bufferA)
             data.buffers.set("{bufferB}", channelOutput.bufferB)
             data.buffers.set("{bufferC}", channelOutput.bufferC)
@@ -401,11 +390,11 @@ Rectangle
     // Generate a new ShaderEffectSource for the requested buffer
     function createBufferAssociation(buffer)
     {
-
         var component = Qt.createComponent('./ShaderBuffer.qml')
         var result
 
-        if (component.status === Component.Ready) {
+        if (component.status === Component.Ready) 
+        {
             result = component.createObject(mainItem, {
                 x:0,
                 y:0,

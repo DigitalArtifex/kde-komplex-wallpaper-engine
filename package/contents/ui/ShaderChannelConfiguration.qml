@@ -74,6 +74,7 @@ Item
     property int resolution_y
     property bool enabled
     property bool invert
+    property bool changed
 
     id: window
 
@@ -114,6 +115,16 @@ Item
             title: "Select an Image File"
             filter: "Image Files (*.jpg *.jpeg *.png *.svg *.gif *.tiff *.webp)"
             type: ShaderChannel.Type.ImageChannel
+        }
+
+        ListElement
+        {
+            file: true
+            name: "Scene"
+            icon: "./icons/image.svg"
+            title: "Select a scene file"
+            filter: "Image Files (*.qml)"
+            type: ShaderChannel.Type.SceneChannel
         }
 
         ListElement
@@ -574,8 +585,8 @@ Item
     function accept()
     {
         // copy over temp values
-        source = tmp_source
         type = tmp_type
+        source = tmp_source
         timeScale = tmp_timeScale
         resolution_scale = tmp_resolution_scale
         resolution_x = tmp_resolution_x
@@ -629,6 +640,12 @@ Item
     // Function to reset the selection to default values
     function resetSelection()
     {
+        if((tmp_source !== source) || (tmp_enabled !== enabled) ||
+        (tmp_invert !== invert) || (tmp_resolution_scale !== resolution_scale) ||
+        (tmp_resolution_x !== resolution_x) || (tmp_resolution_y !== resolution_y) ||
+        (tmp_timeScale !== timeScale) || (tmp_type !== type))
+            changed = true;
+        
         tmp_source = source
         tmp_timeScale = timeScale
         tmp_resolution_scale = resolution_scale

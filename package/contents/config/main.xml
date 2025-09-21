@@ -5,6 +5,10 @@
   <kcfgfile name=""/>
 
   <group name="General">
+    <entry name="shader_updated" type="Bool">
+      <label>shaderUpdated</label>
+      <default>false</default>
+    </entry>
     <entry name="selectedShaderPath" type="String">
       <label>SelectedShader</label>
       <default>Shaders6/Ps3menu.frag.qsb</default>

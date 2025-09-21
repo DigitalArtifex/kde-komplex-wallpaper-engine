@@ -43,7 +43,8 @@ Item
         VideoChannel,
         ShaderChannel,
         CubeMapChannel,
-        AudioChannel
+        AudioChannel,
+        SceneChannel
     }
 
     property int type: ShaderChannel.Type.ImageChannel
@@ -70,6 +71,9 @@ Item
     property real iTimeScale: 1 // This is used to scale the time for the shader, allowing for slow motion or fast forward effects per channel
     property int frameBufferChannel: -1
     property bool blending: false
+    property string materialTexture:""
+    property string materialShader:""
+    property var windowModel
 
     // bind to ShaderEffectSource.live to prevent data being updated causing a refresh between intended frames. I think this may be why
     // the shaders are using so many resources. This is likely to cause issues of its own since we have no way of knowing the progress
@@ -80,8 +84,20 @@ Item
     // but god damn does it feel hacky. Try to find a better way to actually limit framerate
     onIFrameChanged: () =>
     {
-        active = true;
-        active = false;
+        // this method of frame limiting breaks video playback
+        // even when the video is the source of an item being limited
+        // in this way
+
+        // if(type === ShaderChannel.ShaderChannel)
+        // {
+        //     active = true;
+        //     active = false;
+
+        //     return;
+        // }
+
+        // if(active === false)
+        //     active = true;
     }
 
     property bool invert
@@ -162,10 +178,14 @@ Item
                 PropertyChanges
                 {
                     loader.sourceComponent: channelAudio
-
-                    // loader.width: 512
-                    // loader.height: 2
-                    // loader.and
+                }
+            },
+            State
+            {
+                when: channel.type === ShaderChannel.Type.SceneChannel
+                PropertyChanges
+                {
+                    loader.sourceComponent: Qt.createComponent(channel.source)
                 }
             }
         ]
@@ -206,35 +226,42 @@ Item
     Component
     {
         id: channelVideo
-
-        VideoOutput
+        Rectangle
         {
-            property alias duration: mediaPlayer.duration
-            property alias mediaSource: mediaPlayer.source
-            property alias metaData: mediaPlayer.metaData
-            property alias playbackRate: mediaPlayer.playbackRate
-            property alias position: mediaPlayer.position
-            property alias seekable: mediaPlayer.seekable
-            property alias volume: audioOutput.volume
-
-            signal sizeChanged
-            signal fatalError
-
-            id: videoOutput
-
-            visible: true
             anchors.fill: parent
-            fillMode: VideoOutput.PreserveAspectCrop
-            smooth: true
+            color: "black"
 
-            onHeightChanged: this.sizeChanged()
+            VideoOutput
+            {
+                property alias duration: mediaPlayer.duration
+                property alias mediaSource: mediaPlayer.source
+                property alias metaData: mediaPlayer.metaData
+                property alias playbackRate: mediaPlayer.playbackRate
+                property alias position: mediaPlayer.position
+                property alias seekable: mediaPlayer.seekable
+                property alias volume: audioOutput.volume
+                property bool loaded: false
 
-            MediaPlayer 
+                signal sizeChanged
+                signal fatalError
+
+                id: videoComponent
+
+                visible: true
+                anchors.fill: parent
+                fillMode: VideoOutput.PreserveAspectCrop
+                smooth: true
+
+                onHeightChanged: this.sizeChanged()
+            }
+
+            MediaPlayer
             {
                 id: mediaPlayer
-                videoOutput: videoOutput
+                videoOutput: videoComponent
                 loops: MediaPlayer.Infinite
                 source: Qt.resolvedUrl(channel.source)
+                playbackRate: channel.iTimeScale >= 0.01 ? channel.iTimeScale : 0.01
 
                 audioOutput: AudioOutput 
                 {
@@ -242,22 +269,96 @@ Item
                     volume: 0
                 }
 
-                onErrorOccurred: function(error, errorString) 
+                onErrorOccurred: (error, errorString) =>
                 {
                     if (MediaPlayer.NoError !== error) 
                     {
                         console.log("[qmlvideo] VideoItem.onError error " + error + " errorString " + errorString)
-                        videoOutput.fatalError()
+                        videoComponent.fatalError()
                     }
                 }
 
                 onSourceChanged: 
                 {
-                    if(mediaPlayer.source != "")
-                        mediaPlayer.play()
-                    else
-                        mediaPlayer.stop()
+                    if(!videoComponent.loaded)
+                        return;
+                    delayedStartTimer.start()
                 }
+
+                onMediaStatusChanged:
+                {
+                    switch(mediaStatus)
+                    {
+                        case MediaPlayer.NoMedia:
+                            console.log("No media loaded")
+                            break;
+                        case MediaPlayer.LoadingMedia:
+                            console.log("Video loading")
+                            break;
+                        case MediaPlayer.LoadedMedia:
+                            console.log("Video Loaded")
+                            break;
+                        case MediaPlayer.BufferingMedia:
+                            console.log("Video buffering")
+                            break;
+                        case MediaPlayer.StalledMedia:
+                            console.log("Video stalled")
+                            break;
+                        case MediaPlayer.BufferedMedia:
+                            console.log("Video buffered")
+                            break;
+                        case MediaPlayer.EndOfMedia:
+                            console.log("Video EOF")
+                            break;
+                        case MediaPlayer.InvalidMedia:
+                            console.log("Video invalid")
+                            break;
+                    }
+                }
+
+                onPlaybackStateChanged:
+                {
+                    switch(playbackState)
+                    {
+                        case MediaPlayer.PlayingState:
+                            console.log("Video playback started")
+                            break;
+                        case MediaPlayer.PausedState:
+                            console.log("Video playback paused")
+                            break;
+                        case MediaPlayer.StoppedState:
+                            console.log("Video playback stopped")
+                            break;
+                    }
+                }
+
+                Component.onCompleted:
+                {
+                    videoComponent.loaded = true
+                    delayedStartTimer.start()
+                }
+
+                function autoStart()
+                {
+                    if(mediaPlayer.source !== "" && mediaPlayer.source !== undefined)
+                    {
+                        console.log("Starting playback of " + mediaPlayer.source)
+                        mediaPlayer.play()
+                    }
+                    else
+                    {
+                        console.log("Stopping playback")
+                        mediaPlayer.stop()
+                    }
+                }
+            }
+
+            Timer
+            {
+                id: delayedStartTimer
+                interval: 500
+                repeat: false
+                onTriggered: mediaPlayer.autoStart()
             }
 
             function start() { mediaPlayer.play() }
@@ -395,14 +496,6 @@ Item
 
                 blending: channel.blending
             }
-
-            // ShaderEffectSource
-            // {
-            //     anchors.fill: parent
-            //     sourceItem: channelShaderOutput
-            //     hideSource: true
-            //     visible: true
-            // }
         }
     }
 
@@ -527,6 +620,131 @@ Item
             Component.onDestruction:
             {
                 Komplex.AudioModel.stopCapture()
+            }
+        }
+    }
+
+    // Scene is directly loaded, no comp needed
+
+    // 3D Model
+    Component
+    {
+        id: modelComponent
+
+        Item
+        {
+            anchors.fill: parent
+            id: channelModelContent
+
+            // recursive frame buffer
+            ShaderEffectSource
+            {
+                id: frameBufferSource
+                sourceItem: channel.frameBufferChannel === -1 ? null : channelModelContent
+                sourceRect: Qt.rect(0,0, channelModelContent.width, channelModelContent.height)
+                wrapMode: ShaderEffectSource.ClampToEdge
+                live: channel.active
+                mipmap: true
+                recursive: true
+                textureSize: Qt.size(channelModelContent.width, channelModelContent.height)
+                visible: false
+                textureMirroring: ShaderEffectSource.NoMirroring
+                width: channel.iResolution.x
+                height: channel.iResolution.y
+            }
+
+            View3D 
+            {
+                id: view3d
+                anchors.fill: parent
+
+                property real lastX: 0
+                property real lastY: 0
+                property bool mousePressed: false
+                property real yaw: 0
+                property real pitch: 0
+
+                environment: SceneEnvironment 
+                {
+                    backgroundMode: SceneEnvironment.SkyBoxCubeMap
+                    skyBoxCubeMap: CubeMapTexture 
+                    {
+                        source: channel.source !== "" ? Qt.resolvedUrl(channel.source) + "/%p.jpg" : ""
+                    }
+                }
+
+                camera: PerspectiveCamera 
+                {
+                    id: camera
+                    position: Qt.vector3d(0, 0, 10)
+                }
+
+                function updateCamera() 
+                {
+                    yaw -= (data.iMouse.x - lastX) * 0.5
+                    pitch -= (data.iMouse.y - lastY) * -0.5
+                    pitch = Math.max(-89, Math.min(89, pitch))
+                    lastX = data.iMouse.x
+                    lastY = data.iMouse.y
+
+                    var radYaw = yaw * Math.PI / 180
+                    var radPitch = pitch * Math.PI / 180
+                    var x = Math.cos(radPitch) * Math.sin(radYaw)
+                    var y = Math.sin(radPitch)
+                    var z = Math.cos(radPitch) * Math.cos(radYaw)
+
+                    camera.eulerRotation = Qt.vector3d((radPitch * 180 / Math.PI), (radYaw * 180 / Math.PI), 0)
+                }
+
+                Connections
+                {
+                    target: channel
+                    function onIMouseChanged() 
+                    {
+                        view3d.updateCamera()
+                    }
+                }
+
+                Model
+                {
+                    source: Qt.resolvedUrl(channel.source)
+                    scale: Qt.vector3d(channel.scale)
+                    geometry: Komplex.GeometryProvider
+                    {
+                        source: Qt.resolvedUrl(channel.source)
+                    }
+                    materials:
+                    [
+                        CustomMaterial
+                        {
+                            property var iChannel0: channel.frameBufferChannel === 0 ? frameBufferSource : channelSource0
+                            property var iChannel1: channel.frameBufferChannel === 1 ? frameBufferSource : channelSource1
+                            property var iChannel2: channel.frameBufferChannel === 2 ? frameBufferSource : channelSource2
+                            property var iChannel3: channel.frameBufferChannel === 3 ? frameBufferSource : channelSource3
+
+                            property var iResolution: channel.iResolution
+                            property var iTime: data.iTime
+                            property var iTimeDelta: channel.iTimeDelta
+                            property var iChannelTime: channel.iChannelTime
+                            property var iSampleRate: channel.iSampleRate
+                            property var iFrame: channel.iFrame
+                            property var iFrameRate: channel.iFrameRate
+                            property var iMouse: data.iMouse
+                            property var iDate: channel.iDate
+
+                            property var iChannelResolution: channel.iResolution
+
+                            Texture 
+                            {
+                                id: baseColorMap
+                                source: Qt.resolvedUrl(channel.materialTexture)
+                            }
+
+                            cullMode: PrincipledMaterial.NoCulling
+                            fragmentShader: Qt.resolvedUrl(channel.materialShader)
+                        }
+                    ]
+                }
             }
         }
     }

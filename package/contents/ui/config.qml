@@ -94,6 +94,7 @@ Kirigami.FormLayout
     property alias cfg_resolution_y: resolutionYField.value
 
     property alias cfg_framerate_limit: frameRateField.value
+    property bool cfg_shader_updated
 
     Palette 
     {
@@ -366,7 +367,13 @@ Kirigami.FormLayout
             id: shaderChannelConfig0
             palette: palette
             height: 350
-            onAccepted: shaderChannelOverlay0.close(); // Close the overlay after configuration
+            onAccepted: () =>
+            {
+                if(shaderChannelConfig0.changed)
+                    root.cfg_shader_updated = true
+
+                shaderChannelOverlay0.close(); // Close the overlay after configuration
+            }
             onRejected: shaderChannelOverlay0.close();
         }
     }
@@ -411,7 +418,13 @@ Kirigami.FormLayout
         {
             id: shaderChannelConfig1
             height: 350
-            onAccepted: shaderChannelOverlay1.close(); // Close the overlay after configuration
+            onAccepted: () =>
+            {
+                if(shaderChannelConfig1.changed)
+                    root.cfg_shader_updated = true
+
+                shaderChannelOverlay1.close(); // Close the overlay after configuration
+            }
             onRejected: shaderChannelOverlay1.close();
         }
     }
@@ -456,7 +469,13 @@ Kirigami.FormLayout
         {
             id: shaderChannelConfig2
             height: 350
-            onAccepted: shaderChannelOverlay2.close(); // Close the overlay after configuration
+            onAccepted: () =>
+            {
+                if(shaderChannelConfig2.changed)
+                    root.cfg_shader_updated = true
+
+                shaderChannelOverlay2.close(); // Close the overlay after configuration
+            }
             onRejected: shaderChannelOverlay2.close();
         }
     }
@@ -500,7 +519,13 @@ Kirigami.FormLayout
         {
             id: shaderChannelConfig3
             height: 350
-            onAccepted: shaderChannelOverlay3.close(); // Close the overlay after configuration
+            onAccepted: () =>
+            {
+                if(shaderChannelConfig3.changed)
+                    root.cfg_shader_updated = true
+
+                shaderChannelOverlay3.close(); // Close the overlay after configuration
+            }
             onRejected: shaderChannelOverlay3.close();
         }
     }
