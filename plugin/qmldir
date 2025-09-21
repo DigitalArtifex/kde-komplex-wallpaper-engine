@@ -2,3 +2,6 @@ module com.github.digitalartifex.komplex
 plugin komplex
 classname AudioModel
 classname ShaderPackModel
+classname PexelsImageSearchModel
+classname PexelsVideoSearchModel
+classname ShaderToySearchModel

@@ -13,9 +13,22 @@ add_library(
         ShaderPackModel.cpp
         AudioModel.cpp
         AudioImageProvider.cpp
-        AudioImageProvider.h
-        ShaderPackMetadata.h
         ShaderPackMetadata.cpp
+        GeometryProvider.cpp
+        GeometryProvider.h
+        PexelsImageMetadata.h
+        PexelsImageSearch.h
+        PexelsImageSearch.cpp
+        PexelsVideoMetadata.h
+        PexelsVideoModel.h
+        PexelsVideoModel.cpp
+        PexelsVideoSearch.h
+        PexelsVideoSearch.cpp
+        ShaderToyMetadata.h
+        ShaderToySearchModel.h
+        ShaderToySearchModel.cpp
+        ShaderToyAPI.h
+        PexelsAPI.h
 ) 
 
 qt_add_qml_module(
@@ -34,6 +47,21 @@ qt_add_qml_module(
         AudioModel.cpp
         AudioImageProvider.cpp
         ShaderPackMetadata.cpp
+        GeometryProvider.cpp
+        GeometryProvider.h
+        PexelsImageMetadata.h
+        PexelsImageSearch.h
+        PexelsImageSearch.cpp
+        PexelsVideoMetadata.h
+        PexelsVideoModel.h
+        PexelsVideoModel.cpp
+        PexelsVideoSearch.h
+        PexelsVideoSearch.cpp
+        ShaderToyMetadata.h
+        ShaderToySearchModel.h
+        ShaderToySearchModel.cpp
+        ShaderToyAPI.h
+        PexelsAPI.h
     NO_GENERATE_PLUGIN_SOURCE
 )
 
