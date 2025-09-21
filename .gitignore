@@ -72,3 +72,6 @@ PKGBUILD
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+plugin/ShaderToyAPI.h
+plugin/PexelsAPI.h
