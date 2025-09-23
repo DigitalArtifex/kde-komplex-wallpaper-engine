@@ -2,15 +2,17 @@
 
 ShaderPackModel::ShaderPackModel(QObject *parent)
     : QObject(parent), 
-    m_shaderPackPath(QString::fromLatin1("/usr/share/komplex/packs/default")),
-    m_shaderPackInstallPath(QString::fromLatin1("/usr/share/komplex/packs")),
-    m_shadersPath(QString::fromLatin1("/usr/share/komplex/shaders")),
-    m_imagesPath(QString::fromLatin1("/usr/share/komplex/images")),
-    m_cubeMapsPath(QString::fromLatin1("/usr/share/komplex/cubemaps")),
-    m_videosPath(QString::fromLatin1("/usr/share/komplex/videos")),
+    m_shaderPackPath(QStringLiteral("%1/.local/share/komplex/packs/default")),
+    m_shaderPackInstallPath(QStringLiteral("%1/.local/share/komplex/packs").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_shadersPath(QStringLiteral("%1/.local/share/komplex/shaders").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_imagesPath(QStringLiteral("%1/.local/share/komplex/images").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_cubeMapsPath(QStringLiteral("%1/.local/share/komplex/cubemaps").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_videosPath(QStringLiteral("%1/.local/share/komplex/videos").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
+    m_scenesPath(QStringLiteral("%1/.local/share/komplex/scenes").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation))),
     m_json(QString())
 {
     m_metadata = new ShaderPackMetadata;
+    initialize();
     refreshShaderPacks();
 }
 
@@ -25,6 +27,88 @@ ShaderPackModel::~ShaderPackModel()
     }
 
     m_metadata->deleteLater();
+}
+
+void ShaderPackModel::initialize()
+{
+    QString komplexLocation = QStringLiteral("/usr/share/komplex");
+    QString komplexHomeLocation = QStringLiteral("%1/.local/share/komplex").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+    QDir komplexHomeDirectory(komplexHomeLocation);
+    QDir komplexDirectory(komplexLocation);
+
+    if(!komplexHomeDirectory.exists())
+        komplexHomeDirectory.mkpath(komplexHomeLocation);
+
+    QStringList directories = komplexDirectory.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
+
+    for(const QString &direcoryName : directories)
+    {
+        if(!komplexHomeDirectory.exists(direcoryName))
+        {
+            komplexHomeDirectory.mkpath(direcoryName);
+            copyDirectoryFiles(komplexDirectory.absoluteFilePath(direcoryName), komplexHomeDirectory.absoluteFilePath(direcoryName));
+        }
+    }
+
+    // make sure all home dirs are created even if the usr/share data
+    // is missing
+    QStringList requiredSubDirectories =
+    {
+        QStringLiteral("images"),
+        QStringLiteral("videos"),
+        QStringLiteral("shaders"),
+        QStringLiteral("cubemaps"),
+        QStringLiteral("scenes"),
+        QStringLiteral("packs")
+    };
+
+    for(const QString &homeDirectory : std::as_const(requiredSubDirectories))
+    {
+        if(!komplexHomeDirectory.exists(homeDirectory))
+            komplexHomeDirectory.mkpath(homeDirectory);
+    }
+}
+
+void ShaderPackModel::copyDirectoryFiles(QString source, QString destination)
+{
+    QDir sourceDirectory(source);
+
+    if(destination.endsWith(QLatin1Char('/')))
+        destination.removeLast();
+
+    if(sourceDirectory.exists())
+    {
+        // recurse into directories first
+        QStringList directories = sourceDirectory.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
+
+        for(const QString &directory : std::as_const(directories))
+        {
+            QDir dir;
+            if(!dir.exists(QStringLiteral("%1/%2").arg(destination, directory)))
+                dir.mkpath(QStringLiteral("%1/%2").arg(destination, directory));
+            
+            copyDirectoryFiles(sourceDirectory.absoluteFilePath(directory), QStringLiteral("%1/%2").arg(destination, directory));
+        }
+        
+        QStringList fileList = sourceDirectory.entryList(QDir::NoDotAndDotDot | QDir::Files);
+
+        for(const QString &fileName : std::as_const(fileList))
+        {
+            QFile file(sourceDirectory.absoluteFilePath(fileName));
+
+            if(!file.exists())
+            {
+                qWarning() << QStringLiteral("File population error. %1 doesn't exist in the source directory").arg(fileName);
+                continue;
+            }
+
+            if(!file.link(QStringLiteral("%1/%2").arg(destination, fileName)))
+            {
+                qWarning() << QStringLiteral("File population error. Could not create symlink for %1").arg(fileName);
+                continue;
+            }
+        }
+    }
 }
 
 void ShaderPackModel::loadJson(const QString &filePath)
@@ -293,6 +377,11 @@ QString ShaderPackModel::cubeMapsPath() const
 QString ShaderPackModel::videosPath() const
 {
     return m_videosPath;
+}
+
+QString ShaderPackModel::scenesPath() const
+{
+    return m_scenesPath;
 }
 
 ShaderPackMetadata *ShaderPackModel::metadata() const { return m_metadata; }

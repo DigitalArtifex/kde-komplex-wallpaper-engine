@@ -147,6 +147,7 @@ public:
     QString imagesPath() const;
     QString cubeMapsPath() const;
     QString videosPath() const;
+    QString scenesPath() const;
 
     protected:
     void setState(State state);
@@ -163,6 +164,8 @@ Q_SIGNALS:
     void metadataChanged();
 
 private:
+    void initialize();
+    void copyDirectoryFiles(QString source, QString destination);
     QString m_shaderPackPath;
     QString m_shaderPackName;
     const QString m_shaderPackInstallPath;
@@ -171,6 +174,7 @@ private:
     const QString m_imagesPath;
     const QString m_cubeMapsPath;
     const QString m_videosPath;
+    const QString m_scenesPath;
 
     ShaderPackMetadata *m_metadata = nullptr; // currently reported metadata
 
@@ -190,6 +194,7 @@ private:
     Q_PROPERTY(QString imagesPath READ imagesPath CONSTANT)
     Q_PROPERTY(QString cubeMapsPath READ cubeMapsPath CONSTANT)
     Q_PROPERTY(QString videosPath READ videosPath CONSTANT)
+    Q_PROPERTY(QString scenesPath READ scenesPath CONSTANT)
 };
 
 Q_DECLARE_METATYPE(ShaderPackModel)
