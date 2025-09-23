@@ -14,6 +14,10 @@ add_library(
         AudioModel.cpp
         AudioImageProvider.cpp
         ShaderPackMetadata.cpp
+        ShaderPackModel.h
+        AudioModel.h
+        AudioImageProvider.h
+        ShaderPackMetadata.h
         GeometryProvider.cpp
         GeometryProvider.h
         PexelsImageMetadata.h

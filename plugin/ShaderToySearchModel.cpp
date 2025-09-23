@@ -459,6 +459,8 @@ void ShaderToySearchModel::save(quint64 index)
 
     const QStringList keys = externalMedia.keys();
 
+    qWarning() << QStringLiteral("Downloading %1 Images").arg(externalMedia.count());
+
     setStatus(Compiling, QStringLiteral("Downloading images"));
 
     setTotalDownloads(externalMedia.count());
@@ -475,7 +477,7 @@ void ShaderToySearchModel::install(quint64 index)
     setCompletedDownloads(0);
     setTotalDownloads(0);
 
-    QString tempLocation = QStringLiteral("%1/komplex/src/%2").arg(QStandardPaths::writableLocation(QStandardPaths::TempLocation), entry.metadata.id);
+    QString tempLocation = QStringLiteral("%1/komplex/build/%2").arg(QStandardPaths::writableLocation(QStandardPaths::TempLocation), entry.metadata.id);
     QString installLocation = QStringLiteral("%1/.local/share/komplex/packs/%2").arg(QStandardPaths::writableLocation(QStandardPaths::HomeLocation), entry.metadata.id);
 
     QDir installDirectory(installLocation);
@@ -605,11 +607,11 @@ void ShaderToySearchModel::download(quint64 index)
                 tags,
                 static_cast<bool>(infoObject[QStringLiteral("usePreview")].toInt()),
                 infoObject[QStringLiteral("username")].toString(),
-                rootObject[QStringLiteral("version")].toString(),
+                rootObject[QStringLiteral("ver")].toString(),
                 static_cast<quint64>(infoObject[QStringLiteral("views")].toInt())
             };
 
-            QJsonArray ShaderToyRenderPassArray = rootObject[QStringLiteral("ShaderToyRenderPass")].toArray();
+            QJsonArray ShaderToyRenderPassArray = rootObject[QStringLiteral("renderpass")].toArray();
 
             for(const QJsonValue &ShaderToyRenderPassValue : std::as_const(ShaderToyRenderPassArray))
             {
@@ -667,7 +669,7 @@ void ShaderToySearchModel::download(quint64 index)
 
             entry.status = ShaderToyEntry::Idle;
 
-            m_data[index] = entry;
+            m_data.replace(index, entry);
             QModelIndex modelIndex = this->index(index, 0);
             Q_EMIT dataChanged(modelIndex, modelIndex);
         }

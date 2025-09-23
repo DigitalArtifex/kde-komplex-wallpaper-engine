@@ -44,9 +44,9 @@ public:
         qmlRegisterSingletonType<AudioModel*>(uri, 1, 0, "AudioModel", komplexAudioSingletonProvider);
         qmlRegisterType<ShaderPackModel>(uri, 1, 0, "ShaderPackModel");
         qmlRegisterType<GeometryProvider>(uri, 1, 0, "GeometryProvider");
-        qmlRegisterType<ShaderToySearchModel>(stUri, 1, 0, "SearchModel");
-        qmlRegisterType<PexelsVideoSearchModel>(pvUri, 1, 0, "SearchModel");
-        qmlRegisterType<PexelsImageSearchModel>(piUri, 1, 0, "SearchModel");
+        qmlRegisterType<ShaderToySearchModel>(uri, 1, 0, "ShaderToySearchModel");
+        qmlRegisterType<PexelsVideoSearchModel>(uri, 1, 0, "PexelsVideoSearchModel");
+        qmlRegisterType<PexelsImageSearchModel>(uri, 1, 0, "PexelsImageSearchModel");
     }
 
     void unregisterTypes() override
