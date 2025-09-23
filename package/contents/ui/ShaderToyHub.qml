@@ -5,22 +5,26 @@ import QtQuick.Dialogs
 import QtQuick.Layouts
 import QtMultimedia
 import QtWebView
+import org.kde.kirigami as Kirigami
 
-import Komplex.ShaderToy as ShaderToy
+import com.github.digitalartifex.komplex as Komplex
 
 Item
 {
     id: mainItem
-    anchors.fill: parent
+    //anchors.fill: parent
 
-    ShaderToy.SearchModel
+    signal accepted
+
+    Komplex.ShaderToySearchModel
     {
         id: searchModel
     }
 
     ColumnLayout
     {
-        anchors.fill: parent
+        width: mainItem.width
+        height: mainItem.height
 
         RowLayout
         {
@@ -180,7 +184,8 @@ Item
                                 Layout.alignment: Qt.AlignRight
                                 Layout.preferredHeight: 32
                                 Layout.fillWidth: true
-                                icon.name: "emblem-downloads"
+                                icon.source: "./icons/download.svg"
+                                icon.name: "download-symbolic"
                                 text: qsTr("Preview & Download")
                                 onClicked: () =>
                                 {
@@ -231,7 +236,8 @@ Item
                                 Button
                                 {
                                     Layout.fillWidth: true
-                                    icon.name: "image-symbolic"
+                                    icon.source: "./icons/download.svg"
+                                    icon.name: "download-symbolic"
 
                                     id: downloadButton
                                     text: qsTr("Convert to Komplex Pack")
@@ -324,8 +330,10 @@ Item
     Rectangle
     {
         color: palette.base
-        anchors.fill: parent
-        visible: searchModel.status === ShaderToy.SearchModel.Searching || searchModel.status === ShaderToy.SearchModel.Compiling
+
+        width: mainItem.width
+        height: mainItem.height
+        visible: searchModel.status === Komplex.ShaderToySearchModel.Searching || searchModel.status === Komplex.ShaderToySearchModel.Compiling
 
         RowLayout
         {
@@ -333,7 +341,7 @@ Item
 
             Image
             {
-                visible: searchModel.status === ShaderToy.SearchModel.Compiling
+                visible: searchModel.status === Komplex.ShaderToySearchModel.Compiling
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
@@ -347,7 +355,7 @@ Item
                 text: searchModel.statusMessage
                 color: palette.text
                 elide: Text.ElideRight
-                visible: searchModel.status === ShaderToy.SearchModel.Compiling
+                visible: searchModel.status === Komplex.ShaderToySearchModel.Compiling
             }
 
             ProgressBar
@@ -355,7 +363,7 @@ Item
                 id: totalProgress
                 Layout.fillWidth: true
                 Layout.preferredHeight: 6
-                visible: searchModel.status === ShaderToy.SearchModel.Compiling
+                visible: searchModel.status === Komplex.ShaderToySearchModel.Compiling
             }
 
             Text
@@ -364,7 +372,7 @@ Item
                 text: qsTr(searchModel.downloadText)
                 color: palette.text
                 elide: Text.ElideRight
-                visible: searchModel.totalDownloads > 0 && searchModel.status === ShaderToy.SearchModel.Compiling
+                visible: searchModel.totalDownloads > 0 && searchModel.status === Komplex.ShaderToySearchModel.Compiling
             }
 
             ProgressBar
@@ -375,7 +383,7 @@ Item
                 from: 0
                 to: searchModel.totalDownloads
                 value: searchModel.completedDownloads
-                visible: searchModel.totalDownloads > 0 && searchModel.status === ShaderToy.SearchModel.Compiling
+                visible: searchModel.totalDownloads > 0 && searchModel.status === Komplex.ShaderToySearchModel.Compiling
             }
         }
 
@@ -389,32 +397,36 @@ Item
         }
     }
 
-    Rectangle
+    Kirigami.OverlaySheet
     {
         property int totalVideos: searchModel.videoSelections.length
         property int selectedVideos: 0
+        title: "Select Media"
 
-        anchors.fill: parent
-        color: palette.base
-        visible: searchModel.status === ShaderToy.SearchModel.Compiled
+
+        implicitWidth: mainItem.width
+        implicitHeight: mainItem.height
+
         enabled: visible
 
         id: mediaSelectionItem
 
         signal accepted
 
+        Connections
+        {
+            target: searchModel
+
+            function onStatusChanged()
+            {
+                if(searchModel.status === Komplex.ShaderToySearchModel.Compiled)
+                    mediaSelectionItem.open()
+            }
+        }
+
         ColumnLayout
         {
             anchors.fill: parent
-            Text
-            {
-                Layout.margins: 6
-                Layout.alignment: Qt.AlignTop
-                Layout.fillWidth: true
-                Layout.preferredHeight: 50
-                color: palette.text
-                text: "<h2>Select Media</h2>";
-            }
 
             Text
             {
@@ -428,6 +440,7 @@ Item
 
             Repeater
             {
+                Layout.alignment: Qt.AlignTop
                 Layout.fillWidth: true
                 Layout.margins: 6
                 model: searchModel.videoSelections
@@ -481,17 +494,20 @@ Item
                         }
                     }
 
-                    Dialog
+                    Kirigami.OverlaySheet
                     {
-                        width: 640
-                        height: 480
+                        implicitWidth: 640
+                        implicitHeight: 480
                         id: pexelsDialog
+                        title: "Pexels Video Search"
 
                         parent: mainItem
                         anchors.centerIn: parent
 
                         PexelsVideoHub
                         {
+                            width: pexelsDialog.width - 10
+                            height: pexelsDialog.height - 40
                             onSelectedFileChanged:
                             {
                                 mediaSelectionField.text = selectedFile
@@ -517,6 +533,8 @@ Item
                 color: "transparent"
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                Layout.minimumHeight: 50
+                Layout.alignment: Qt.AlignCenter
             }
 
             Button
@@ -531,11 +549,35 @@ Item
         }
     }
 
-    MessageDialog
+    Dialog
     {
-        buttons: MessageDialog.Ok
+        width: 420
+        height: 105
+
         id: warningDialog
-        text: searchModel.statusMessage
+        ColumnLayout
+        {
+            Text
+            {
+                id: header
+                text: "Installation Error"
+                font.pointSize: 14
+                color: palette.text
+            }
+            Text
+            {
+                id: informative
+                text: searchModel.statusMessage
+                font.pointSize: 10
+                color: palette.text
+            }
+            DialogButtonBox
+            {
+                Layout.alignment: Qt.AlignRight
+                standardButtons: DialogButtonBox.Ok
+                onAccepted: messageDialog.close()
+            }
+        }
 
         Connections
         {
@@ -544,7 +586,7 @@ Item
             {
                 console.log("Search Model Status " + searchModel.status)
 
-                if(searchModel.status === ShaderToy.SearchModel.Error)
+                if(searchModel.status === Komplex.ShaderToySearchModel.Error)
                 {
                     warningDialog.open();
                 }
@@ -552,11 +594,39 @@ Item
         }
     }
 
-    MessageDialog
+    Dialog
     {
-        buttons: MessageDialog.Ok
+        width: 420
+        height: 105
+
         id: messageDialog
-        text: searchModel.statusMessage
+        ColumnLayout
+        {
+            Text
+            {
+                id: header2
+                text: "Shader Installation"
+                font.pointSize: 14
+                color: palette.text
+            }
+            Text
+            {
+                id: informative2
+                text: searchModel.statusMessage
+                font.pointSize: 10
+                color: palette.text
+            }
+            DialogButtonBox
+            {
+                Layout.alignment: Qt.AlignRight
+                standardButtons: DialogButtonBox.Ok
+                onAccepted: 
+                {
+                    messageDialog.close()
+                    mainItem.accepted()
+                }
+            }
+        }
 
         Connections
         {

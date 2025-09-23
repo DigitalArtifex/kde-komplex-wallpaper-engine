@@ -256,13 +256,34 @@ Kirigami.FormLayout
         {
             id: packFileButton
             icon.name: "folder-symbolic"
-            text: i18nd("@button:toggle_select_shader", "Select File")
-            Layout.preferredWidth: Kirigami.Units.gridUnit * 8.5
+            hoverEnabled: true
+
+            ToolTip.visible: hovered
+            ToolTip.text: i18nd("@button:toggle_select_shader", "Select File")
+            Layout.preferredWidth: selectedShaderPack.height
             Layout.preferredHeight: selectedShaderPack.height
             onClicked: 
             {
                 packDialog.currentFolder = "file://" + shaderPackModel.shaderPackInstallPath;
                 packDialog.open();
+            }
+        }
+
+        Button 
+        {
+            id: shaderToyHubButton
+            icon.name: "network-symbolic"
+            hoverEnabled: true
+
+            ToolTip.visible: hovered
+            ToolTip.text: i18nd("@button:toggle_select_shader", "ShaderToy Import")
+            Layout.preferredWidth: selectedShaderPack.height
+            Layout.preferredHeight: selectedShaderPack.height
+            onClicked: 
+            {
+                // packDialog.currentFolder = "file://" + shaderPackModel.shaderPackInstallPath;
+                // packDialog.open();
+                komplexHubDialog.open()
             }
         }
 
@@ -282,7 +303,29 @@ Kirigami.FormLayout
                 shaderPackModel.loadMetadataFromFile(selectedFile)
             }
         }
+
+        Kirigami.OverlaySheet 
+        {
+            title: "ShaderToy Import"
+            parent: applicationWindow().overlay
+            implicitHeight: 420
+            implicitWidth: 960
+            id: komplexHubDialog
+
+            ShaderToyHub
+            {
+                width: komplexHubDialog.width - 10
+                height: komplexHubDialog.height - 40
+
+                onAccepted:
+                {
+                    komplexHubDialog.close()
+                    shaderPackModel.refreshShaderPacks()
+                }
+            }
+        }
     }
+
     Kirigami.Separator 
     {
         Kirigami.FormData.isSection: false
@@ -358,9 +401,11 @@ Kirigami.FormLayout
 
     Kirigami.OverlaySheet 
     {
+        title: "Channel Configuration"
         id: shaderChannelOverlay0
         parent: applicationWindow().overlay
         implicitHeight: 420
+        implicitWidth: 960
 
         ShaderChannelConfiguration
         {
@@ -410,6 +455,7 @@ Kirigami.FormLayout
 
     Kirigami.OverlaySheet 
     {
+        title: "Channel Configuration"
         id: shaderChannelOverlay1
         parent: applicationWindow().overlay
         implicitHeight: 420
@@ -461,6 +507,7 @@ Kirigami.FormLayout
 
     Kirigami.OverlaySheet 
     {
+        title: "Channel Configuration"
         id: shaderChannelOverlay2
         parent: applicationWindow().overlay
         implicitHeight: 420
@@ -511,6 +558,7 @@ Kirigami.FormLayout
 
     Kirigami.OverlaySheet 
     {
+        title: "Channel Configuration"
         id: shaderChannelOverlay3
         parent: applicationWindow().overlay
         implicitHeight: 420

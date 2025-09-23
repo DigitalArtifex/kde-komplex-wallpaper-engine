@@ -3,21 +3,24 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 
-import Komplex.Pexels.Image as Pexels
+import com.github.digitalartifex.komplex as Komplex
 
 Item
 {
+    property alias selectedFile: searchModel.lastSavedFile
+
     id: mainItem
     anchors.fill: parent
 
-    Pexels.SearchModel
+    Komplex.PexelsImageSearchModel
     {
         id: searchModel
     }
 
     ColumnLayout
     {
-        anchors.fill: parent
+        width: mainItem.width
+        height: mainItem.height
 
         RowLayout
         {
@@ -193,10 +196,14 @@ Item
                             Button
                             {
                                 Layout.topMargin: 4
-                                Layout.alignment: Qt.AlignRight
+                                Layout.alignment: Qt.AlignHCenter
                                 Layout.preferredHeight: 32
-                                Layout.preferredWidth: 32
-                                icon.name: "emblem-downloads"
+                                Layout.fillWidth: true
+                                text: "Download & Preview"
+                                
+                                icon.source: "./icons/download.svg"
+                                icon.name: "download-symbolic"
+
                                 onClicked: {
                                     downloadDialog.imageHeight = entry.originalHeight
                                     downloadDialog.imageWidth = entry.originalWidth
@@ -272,8 +279,9 @@ Item
     Rectangle
     {
         color: palette.base
-        anchors.fill: parent
-        visible: searchModel.status === Pexels.SearchModel.Searching
+        width: mainItem.width
+        height: mainItem.height
+        visible: searchModel.status === Komplex.PexelsImageSearchModel.Searching
 
         RowLayout
         {
@@ -360,7 +368,11 @@ Item
             {
                 Layout.fillWidth: true
                 text: "Download (" + downloadDialog.imageWidth + "x" + downloadDialog.imageHeight + ")"
-                icon.name: "image-symbolic"
+                icon.source: "./icons/download.svg"
+                icon.name: "download-symbolic"
+                hoverEnabled: true
+                ToolTip.text: "Download"
+                ToolTip.visible: hovered
 
                 onClicked: () =>
                 {

@@ -55,6 +55,7 @@ Item
     property string imageFolder: shaderPackModel.imagesPath
     property string videoFolder: shaderPackModel.videosPath
     property string cubemapFolder: shaderPackModel.cubeMapsPath
+    property string sceneFolder: shaderPackModel.scenesPath
 
     property alias tmp_source: sourceEdit.text
     property int tmp_type: 1
@@ -111,7 +112,7 @@ Item
         {
             file: true
             name: "Image"
-            icon: "./icons/image.svg"
+            icon: "./icons/camera.svg"
             title: "Select an Image File"
             filter: "Image Files (*.jpg *.jpeg *.png *.svg *.gif *.tiff *.webp)"
             type: ShaderChannel.Type.ImageChannel
@@ -123,7 +124,7 @@ Item
             name: "Scene"
             icon: "./icons/image.svg"
             title: "Select a scene file"
-            filter: "Image Files (*.qml)"
+            filter: "QML Scene Files (*.qml)"
             type: ShaderChannel.Type.SceneChannel
         }
 
@@ -213,29 +214,36 @@ Item
                     window.selectionTitle = parent.title
                     window.file = parent.file
 
+                    var source = ""
+
+                    if(parent.type === window.type)
+                        source = window.source
+
                     switch(parent.type) 
                     {
-                        // case ShaderChannel.Type.AudioChannel:
-                        //     break;
                         case ShaderChannel.Type.CubeMapChannel:
                             window.currentFolder = window.cubemapFolder
-                            window.tmp_source = ""
+                            window.tmp_source = source
                             break;
                         case ShaderChannel.Type.ImageChannel:
                             window.currentFolder = window.imageFolder
-                            window.tmp_source = ""
+                            window.tmp_source = source
                             break;
                         case ShaderChannel.Type.ShaderChannel:
                             window.currentFolder = window.shaderFolder
-                            window.tmp_source = ""
+                            window.tmp_source = source
                             break;
                         case ShaderChannel.Type.VideoChannel:
                             window.currentFolder = window.videoFolder
-                            window.tmp_source = ""
+                            window.tmp_source = source
+                            break;
+                        case ShaderChannel.Type.SceneChannel:
+                            window.currentFolder = window.sceneFolder
+                            window.tmp_source = source
                             break;
                         case ShaderChannel.Type.AudioChannel:
                             window.currentFolder = window.videoFolder
-                            window.tmp_source = "Audio Channel"
+                            window.tmp_source = "Desktop Audio Channel"
                             break;
                     }
                 }
@@ -319,6 +327,32 @@ Item
                         fileDialog.open()
                     else
                         folderDialog.open()
+                }
+            }
+
+            Button
+            {
+                visible: window.tmp_type === ShaderChannel.ImageChannel
+                icon.name: "network-symbolic"
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 2
+                Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+
+                onClicked: 
+                {
+                    pexelsImageDialog.open()
+                }
+            }
+
+            Button
+            {
+                visible: window.tmp_type === ShaderChannel.VideoChannel
+                icon.name: "network-symbolic"
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 2
+                Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+
+                onClicked: 
+                {
+                    pexelsVideoDialog.open()
                 }
             }
         }
@@ -580,6 +614,58 @@ Item
         title: window.selectionTitle
 
         onAccepted: window.tmp_source = selectedFolder
+    }
+
+    Kirigami.OverlaySheet
+    {
+        title: "Pexels Image Import"
+        id: pexelsImageDialog
+        implicitWidth: 960
+        implicitHeight: 480
+        parent: applicationWindow().overlay
+
+        PexelsImageHub
+        {
+            id: pexelsImageHub 
+            width: pexelsVideoDialog.width - 10
+            height: pexelsVideoDialog.height - 40
+
+            onSelectedFileChanged:
+            {
+                window.tmp_source = pexelsImageHub.selectedFile
+
+                if(selectedFile === "" || selectedFile === undefined)
+                    return;
+
+                pexelsImageDialog.close()
+            }
+        }
+    }
+
+    Kirigami.OverlaySheet
+    {
+        title: "Pexels Video Import"
+        id: pexelsVideoDialog
+        implicitWidth: 960
+        implicitHeight: 480
+        parent: applicationWindow().overlay
+
+        PexelsVideoHub
+        {
+            id: pexelsVideoHub 
+            width: pexelsVideoDialog.width - 10
+            height: pexelsVideoDialog.height - 40
+
+            onSelectedFileChanged:
+            {
+                window.tmp_source = pexelsVideoHub.selectedFile
+
+                if(selectedFile === "" || selectedFile === undefined)
+                    return;
+
+                pexelsVideoDialog.close()
+            }
+        }
     }
 
     function accept()

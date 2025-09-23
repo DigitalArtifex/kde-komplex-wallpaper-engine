@@ -1,10 +1,11 @@
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Dialogs
 import QtQuick.Layouts
 import QtMultimedia
 
-import Komplex.Pexels.Video as Pexels
+import com.github.digitalartifex.komplex as Komplex
 
 Item
 {
@@ -13,7 +14,7 @@ Item
     id: mainItem
     anchors.fill: parent
 
-    Pexels.SearchModel
+    Komplex.PexelsVideoSearchModel
     {
         id: searchModel
     }
@@ -191,7 +192,8 @@ Item
                                 Layout.alignment: Qt.AlignRight
                                 Layout.preferredHeight: 32
                                 Layout.fillWidth: true
-                                icon.name: "emblem-downloads"
+                                icon.name: "download-symbolic"
+                                icon.source: "./icons/download.svg"
                                 text: qsTr("Preview & Download")
 
                                 onClicked: () =>
@@ -277,7 +279,7 @@ Item
     {
         color: palette.base
         anchors.fill: parent
-        visible: searchModel.status === Pexels.SearchModel.Searching
+        visible: searchModel.status === Komplex.PexelsVideoSearchModel.Searching
 
         RowLayout
         {
@@ -434,6 +436,10 @@ Item
                                 Layout.preferredHeight: 18
                                 Layout.preferredWidth: 18
                                 icon.name: mediaPlayer.playing ? "stop-symbolic" : "play-symbolic"
+                                hoverEnabled: true
+                                ToolTip.text: mediaPlayer.playing ? "Play" : "Stop"
+                                ToolTip.visible: hovered
+                                icon.source: mediaPlayer.playing ? "./icons/stop.svg" : "./icons/play.svg"
                                 icon.height: 16
                                 icon.width: 16
                                 onClicked: () =>
@@ -476,7 +482,11 @@ Item
                     enabled: downloadSelector.currentIndex >= 0
                     Layout.preferredHeight: downloadSelector.height
                     Layout.preferredWidth: downloadSelector.height
-                    icon.name: "image-symbolic"
+                    icon.source: "./icons/download.svg"
+                    icon.name: "download-symbolic"
+                    hoverEnabled: true
+                    ToolTip.text: "Download"
+                    ToolTip.visible: hovered
 
                     id: downloadButton
 
