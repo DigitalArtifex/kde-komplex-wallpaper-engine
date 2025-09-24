@@ -49,12 +49,43 @@ Contents of the `data` directory should be placed in `~/.local/komplex/`
 - plasma-desktop
 - cmake
 
+### Additional Requirements
+- Pexels API Key - Free from [pexels.com](http://www.pexels.com)
+- ShaderToy API Key - Free from [shadertoy.com](http://www.shadertoy.com)
+
 ### Instructions
 
 After ensuring your system has all the required packages, run the following commands
 ```
 git clone https://github.com/DigitalArtifex/kde-komplex-wallpaper-engine.git
 cd kde-komplex-wallpaper-engine
+```
+
+Before we can compile the plugin, we will need to provide the ShaderToy and Pexels API keys through defines in `plugin/ShaderToyAPI.h` and `plugin/PlexelsAPI.h`
+
+`plugin/ShaderToyAPI.h`
+```cpp
+#ifndef SHADERTOYAPI_H
+#define SHADERTOYAPI_H
+
+#define STK "SHADERTOYKEY"
+
+#endif // SHADERTOYAPI_H
+```
+
+`plugin/ShaderToyAPI.h`
+```cpp
+#ifndef PEXELSAPI_H
+#define PEXELSAPI_H
+
+#define PAK "PEXELSKEY"
+
+#endif // PEXELSAPI_H
+```
+
+Now that we have the API keys setup, we can finally build from source
+```
+mkdir build
 cmake -S ./ -B ./build
 cmake --build ./build
 cmake --install ./build
@@ -68,7 +99,29 @@ This step is automatically executed by the Arch installation package.
 
 ## Installation (Release Packages)
 
-Currently only Arch packages are available at this time. I am working towards Debian and Gentoo releases as well.
+Currently only x86_64 binaries are provided through release packages. 
+
+### Installation (Arch)
+Download the provided `zst` package from one of the releases and install it via pacman. This example assumes you downloaded release 1.0.6.
+```
+pacman -U plasma6-wallpapers-komplex-bin-1.0.6-1-x86_64.pkg.tar.zst
+```
+
+### Installation (Generic x86_64 Linux - Qt 6.9.1)
+Download the provided `tar.gz` from one of the releases, unpack it and run `install.sh`. This example assumes you downloaded release 1.0.6
+```
+tar -xvzf plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
+cd plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
+sudo ./install.sh
+```
+
+## Post-installation
+In order for the plugin to be registered with Plasma 6, we will need to restart the plasmashell session. In order for the g-streamer backend to take effect, a reboot may be required.
+
+### Restart Plasmashell
+```
+systemctl --user restart plasma-plasmashell.service
+```
 
 ## Credits
 
