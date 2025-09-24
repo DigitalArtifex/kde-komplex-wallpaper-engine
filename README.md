@@ -5,7 +5,7 @@ Komplex Wallpaper Engine is an advanced wallpaper engine for the KDE Plasma 6 De
 [![Youtube Video](https://github.com/user-attachments/assets/19196d80-0a30-4e94-9260-6e450ae0f325)](https://www.youtube.com/watch?v=qjKEwrNts1A)
 
 ## Supported Engine Modes
-- ShaderToy
+- Simple
 - Komplex
 
 ### Supported Channel Buffers
@@ -14,6 +14,8 @@ Komplex Wallpaper Engine is an advanced wallpaper engine for the KDE Plasma 6 De
 - Videos
 - Cubemaps**
 - Audio***
+- QML Scenes
+- Recursive Frame Buffer
 
 *Shaders must be compiled with the `qsb` tool supplied with Qt. It may be available through your distribution's package manager. Follow the instructions in /tools/README.md to compile shaders for use with Qt.
 
@@ -21,58 +23,15 @@ Komplex Wallpaper Engine is an advanced wallpaper engine for the KDE Plasma 6 De
 
 ***Audio reactivity requires KDE to be using Pipewire
 
-### Engine Mode: ShaderToy
+### Engine Mode: Simple
 
-The [ShaderToy](http://www.shadertoy.com) Engine mode is designed to work with most* of the pages on [ShaderToy.com](http://www.shadertoy.com) and is the easiest to use and configure as it can be setup via the settings panel. Simply select a manipulative shader as the main output and setup the iChannels the shader supports. Try feeding it a generative shader!
-
-*Volumetric and audio channels are not currently supported, but are in development.
-
-ShaderToy import functionality is currently in development
+The **Simple** engine mode is meant to use a single generative or manipulative shader that can use up to 4 configurable channel buffers as the wallpaper. Channel buffers can be configured to be other shaders, images, videos, cubemaps, QML scenes and desktop audio capture. For video and images, you have the ability to import directly from the respective Pexels API.
 
 ### Engine Mode: Komplex
 
 The **Komplex** engine mode allows for a much more complex wallpaper experience. Instead of a simple configuration scheme, the Komplex engine mode uses a shader pack file that can contain it's own images, cubemaps, videos and shaders. This shader pack must contain a pack.json file that describes the output shader, resolution, speed and channel buffers 0-3. Each channel buffer can have channel buffers 0-3, which can in-turn have channel buffers 0-3 and so on. This allows near infinite arrangement complexity, only limited by hardware and reasoning.
 
-Example `pack.json` file:
-```json
-{
-    "author": "DigitalArtifex",
-    "name": "Test",
-    "version": "1.0.0",
-    "description": "Test",
-    "license": "GPLv3+",
-    "engine": "shadertoys",
-    "id": "sdE3sx",
-
-    "type": 2,
-    "source": "./shaders/video-glitch-extra.frag.qsb",
-    "speed": 0.14,
-
-    "channel0":
-    {
-        "type": 2,
-        "source": "./shaders/edge-detect-greyscale.frag.qsb",
-
-        "resolution_x": 1920,
-        "resolution_y": 1080,
-        "resolution_scale": 1.0,
-        "time_scale": 1.0,
-        "mouse_scale": 1.0,
-
-        "channel0":
-        {
-            "type": 2,
-            "source": "./shaders/Glow-City.frag.qsb",
-
-            "resolution_x": 1920,
-            "resolution_y": 1080,
-            "resolution_scale": 1.0,
-            "time_scale": 1.0,
-            "mouse_scale": 1.0
-        }
-    }
-}
-```
+The **Komplex** engine mode also allows for direct ShaderToy importing through the use of the ShaderToy API. Most ShaderToy functionality is supported, and features a media import function when the shader uses a video as a resource.
 
 ## Installation (manual)
 
@@ -116,5 +75,9 @@ Currently only Arch packages are available at this time. I am working towards De
 This project was inspired by `KDE Shader Wallpaper`, `Wallpaper Engine` and others. It uses code that was originally part of `KDE Shader Wallpaper`.
 
 This project uses icons donated by [Icons8](http://www.icons8.com)
+
+Shader import functionality provided by [ShaderToy](http://www.shadertoy.com) API
+
+Image and Video import functionality provided by [Pexels](http://www.pexels.com) API
 
 To support me, this project or to find Linux themed hot sauces, you can [Buy me a coffee](https://ko-fi.com/digitalartifex)
