@@ -967,7 +967,7 @@ void ShaderToySearchModel::replaceSource(qsizetype index, QString uuid, QString 
     if(index < 0 || index >= m_data.count() || m_data.count() == 0)
         return;
 
-    QString tempLocation = QStringLiteral("%1/komplex/src/%2").arg(QStandardPaths::writableLocation(QStandardPaths::TempLocation), m_data[index].metadata.id);
+    QString tempLocation = QStringLiteral("%1/komplex/build/%2").arg(QStandardPaths::writableLocation(QStandardPaths::TempLocation), m_data[index].metadata.id);
 
     QFile sourceFile(source);
     QFileInfo sourceInfo(source);
