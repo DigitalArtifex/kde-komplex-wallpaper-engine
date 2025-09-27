@@ -55,7 +55,7 @@ Contents of the `data` directory should be placed in `~/.local/komplex/`
 
 ### Instructions
 
-After ensuring your system has all the required packages, run the following commands
+After ensuring your system has all the required packages, run the following commands to clone the repo and enter it's directory.
 ```
 git clone https://github.com/DigitalArtifex/kde-komplex-wallpaper-engine.git
 cd kde-komplex-wallpaper-engine
