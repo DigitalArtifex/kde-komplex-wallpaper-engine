@@ -101,11 +101,13 @@ This step is automatically executed by the Arch installation package.
 
 Currently only x86_64 binaries are provided through release packages. 
 
-### Installation (Arch)
-Download the provided `zst` package from one of the releases and install it via pacman. This example assumes you downloaded release 1.0.6.
+### Installation (Arch - Manual)
+Manual: Download the provided `zst` package from one of the releases and install it via pacman. This example assumes you downloaded release 1.0.6.
 ```
 pacman -U plasma6-wallpapers-komplex-bin-1.0.6-1-x86_64.pkg.tar.zst
 ```
+### Installation (Arch - AUR)
+Use your favorite AUR helper to install `plasma6-wallpapers-komplex-bin`.
 
 ### Installation (Generic x86_64 Linux - Qt 6.9.1)
 Download the provided `tar.gz` from one of the releases, unpack it and run `install.sh`. This example assumes you downloaded release 1.0.6
