@@ -33,6 +33,41 @@ The **Komplex** engine mode allows for a much more complex wallpaper experience.
 
 The **Komplex** engine mode also allows for direct ShaderToy importing through the use of the ShaderToy API. Most ShaderToy functionality is supported, and features a media import function when the shader uses a video as a resource.
 
+
+## Installation (Release Packages)
+
+Currently only x86_64 binaries are provided through release packages. 
+
+### Arch - Manual
+Download the provided `zst` package from one of the releases and install it via pacman. This example assumes you downloaded release 1.0.6.
+```
+sudo pacman -U plasma6-wallpapers-komplex-bin-1.0.6-1-x86_64.pkg.tar.zst
+```
+### Arch - AUR
+Use your favorite AUR helper to install `plasma6-wallpapers-komplex-bin`.
+
+### Debian - Manual
+Download the provided `deb` package from one of the releases and install it via apt-get. This example assumes you downloaded release 1.0.6.
+```
+sudo apt-get install ./plasma6-wallpapers-komplex-bin-1.0.6-1-x86_64.deb
+```
+
+### Generic x86_64 Linux - Qt 6.9.1
+Download the provided `tar.gz` from one of the releases, unpack it and run `install.sh`. This example assumes you downloaded release 1.0.6
+```
+tar -xvzf plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
+cd plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
+sudo ./install.sh
+```
+
+## Post-installation
+In order for the plugin to be registered with Plasma 6, we will need to restart the plasmashell session. In order for the g-streamer backend to take effect, a reboot may be required.
+
+### Restart Plasmashell
+```
+systemctl --user restart plasma-plasmashell.service
+```
+
 ## Installation (manual)
 
 Contents of the `data` directory should be placed in `~/.local/komplex/`
@@ -96,32 +131,6 @@ After installation, it is likely that you may experience scan lines and other ar
 sudo echo "export QT_MEDIA_BACKEND=gstreamer" >> /etc/profile
 ```
 This step is automatically executed by the Arch installation package.
-
-## Installation (Release Packages)
-
-Currently only x86_64 binaries are provided through release packages. 
-
-### Installation (Arch)
-Download the provided `zst` package from one of the releases and install it via pacman. This example assumes you downloaded release 1.0.6.
-```
-pacman -U plasma6-wallpapers-komplex-bin-1.0.6-1-x86_64.pkg.tar.zst
-```
-
-### Installation (Generic x86_64 Linux - Qt 6.9.1)
-Download the provided `tar.gz` from one of the releases, unpack it and run `install.sh`. This example assumes you downloaded release 1.0.6
-```
-tar -xvzf plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
-cd plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
-sudo ./install.sh
-```
-
-## Post-installation
-In order for the plugin to be registered with Plasma 6, we will need to restart the plasmashell session. In order for the g-streamer backend to take effect, a reboot may be required.
-
-### Restart Plasmashell
-```
-systemctl --user restart plasma-plasmashell.service
-```
 
 ## Credits
 
