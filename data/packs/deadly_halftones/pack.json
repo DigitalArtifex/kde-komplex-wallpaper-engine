@@ -7,7 +7,6 @@
     "engine": "shadertoys",
     "id": "MddcRr",
 
-    "type": 2,
     "source": "./shaders/Image.frag.qsb",
     "speed": 0.14,
 
@@ -33,10 +32,5 @@
             "time_scale": 1.0,
             "mouse_scale": 1.0
         }
-    },
-
-    "channel1":
-    {
-        "type": 4
     }
 }
