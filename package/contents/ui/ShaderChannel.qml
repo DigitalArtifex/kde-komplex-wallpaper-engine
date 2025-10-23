@@ -384,7 +384,7 @@ Item
                 id: channelSource0
                 sourceItem: channel.iChannel0 ? channel.iChannel0 : null
                 live: channel.active
-                smooth: false
+                smooth: true
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
                 wrapMode: ShaderEffectSource.ClampToEdge
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
@@ -395,6 +395,7 @@ Item
                 width: channel.iResolution.x
                 height: channel.iResolution.y
                 visible: false
+                format: ShaderEffectSource.RGBA8
             }
 
             ShaderEffectSource
@@ -407,12 +408,13 @@ Item
                 wrapMode: ShaderEffectSource.ClampToEdge
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: false
+                recursive: true
                 mipmap: true
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
                 visible: false
+                format: ShaderEffectSource.RGBA8
             }
 
             ShaderEffectSource
@@ -425,12 +427,13 @@ Item
                 wrapMode: ShaderEffectSource.ClampToEdge
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: false
+                recursive: true
                 mipmap: true
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
                 visible: false
+                format: ShaderEffectSource.RGBA8
             }
 
             ShaderEffectSource
@@ -443,12 +446,13 @@ Item
                 wrapMode: ShaderEffectSource.ClampToEdge
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: false
+                recursive: true
                 mipmap: true
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
                 visible: false
+                format: ShaderEffectSource.RGBA8
             }
 
             // recursive frame buffer
@@ -466,6 +470,7 @@ Item
                 textureMirroring: ShaderEffectSource.NoMirroring
                 width: channel.iResolution.x
                 height: channel.iResolution.y
+                format: ShaderEffectSource.RGBA8
             }
 
             // The shader effect that will be used to render the shader
