@@ -82,7 +82,7 @@ Item
             visible: wallpaper.configuration.iChannel0_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
-            iResolution: mainItem.iChannelResolution[0]
+            iResolution: mainItem.iResolution
             iFrame: mainItem.iFrame
 
             id: channel0
@@ -101,7 +101,7 @@ Item
             //Fallback to a channel if the output channel is not set or there was an error loading the shader
             visible: wallpaper.configuration.iChannel1_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
-            iResolution: mainItem.iChannelResolution[1]
+            iResolution: mainItem.iResolution
             iFrame: mainItem.iFrame
 
             id: channel1
@@ -120,7 +120,7 @@ Item
             //Fallback to a channel if the output channel is not set or there was an error loading the shader
             visible: wallpaper.configuration.iChannel2_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
-            iResolution: mainItem.iChannelResolution[2]
+            iResolution: mainItem.iResolution
             iFrame: mainItem.iFrame
 
             id: channel2
@@ -139,8 +139,7 @@ Item
             //Fallback to a channel if the output channel is not set or there was an error loading the shader
             visible: wallpaper.configuration.iChannel3_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
-            iChannelTime: [mainItem.iTime, mainItem.iTime, mainItem.iTime, mainItem.iTime]
-            iResolution: mainItem.iChannelResolution[3]
+            iResolution: mainItem.iResolution
             iDate: mainItem.iDate
             iFrame: mainItem.iFrame
 
