@@ -181,7 +181,7 @@ def compile():
 
                     # Construct and execute the command
                     cmd = [
-                        qsb, '--glsl', '330', '--hlsl', '50', '--msl', '12',
+                        qsb, '--glsl', '330 es,330,320 es,320', '--hlsl', '50', '--msl', '12',
                         '-o', output_file_path, source_file_path
                     ]
 
@@ -266,11 +266,15 @@ def process():
             common_file_contents = re.sub(r'void\s+main\s*\([^)]*\)\s*\{[\s\S]*?\}', '', common_file_contents)
 
             # 3. Remove declarations in the common file that match the replacement vars
-            for var in variables_to_update:
-                pattern = r'(\w*\s*)(' + var + ')'
-                replacement = r'\1_\2'
+            # -- This really needs to be moved into a detection function that checks for 
+            # -- ubuf names within function scopes. This is messing with correctly formatted
+            # -- defines in the common file
+            
+            # for var in variables_to_update:
+            #     pattern = r'(\w*\s*)(' + var + ')'
+            #     replacement = r'\1_\2'
 
-                common_file_contents = re.sub(pattern, replacement, common_file_contents)
+            #     common_file_contents = re.sub(pattern, replacement, common_file_contents)
                 
             for file in files:# Stage for processing, if a shader
                 if file.endswith('.frag') and not file == 'Common.frag':
