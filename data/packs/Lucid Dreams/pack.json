@@ -23,7 +23,7 @@
         "channel1":
         {
             "type": 2,
-            "source":"./shaders/"
+            "source":"./shaders/Colorful_Lens.frag.qsb"
         },
         "channel2":
         {
