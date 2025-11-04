@@ -389,17 +389,18 @@ Item
                 wrapMode: ShaderEffectSource.ClampToEdge
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
-                recursive: false
+                recursive: true
                 mipmap: true
                 hideSource: true
                 width: channel.iResolution.x
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+                samples: 1
 
                 function isLive()
                 {
-                    if(!channel.iChannel0 || channel.iChannel0 === undefined || channel.iChannel0.type === ShaderChannel.ImageChannel)
+                    if(channel.iChannel0 === undefined)
                         return false;
                     
                     return channel.iChannel0.type != ShaderChannel.VideoChannel && channel.active;
@@ -413,7 +414,7 @@ Item
                 live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                wrapMode: ShaderEffectSource.ClampToEdge
+                wrapMode: ShaderEffectSource.Repeat
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
                 recursive: true
@@ -423,10 +424,11 @@ Item
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+                samples: 1
 
                 function isLive()
                 {
-                    if(!channel.iChannel1 || channel.iChannel1 === undefined || channel.iChannel1.type === ShaderChannel.ImageChannel)
+                    if(channel.iChannel1 === undefined)
                         return false;
                     
                     return channel.iChannel1.type != ShaderChannel.VideoChannel && channel.active;
@@ -440,7 +442,7 @@ Item
                 live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                wrapMode: ShaderEffectSource.ClampToEdge
+                wrapMode: ShaderEffectSource.Repeat
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
                 recursive: true
@@ -450,10 +452,11 @@ Item
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+                samples: 1
 
                 function isLive()
                 {
-                    if(!channel.iChannel2 || channel.iChannel2 === undefined || channel.iChannel2.type === ShaderChannel.ImageChannel)
+                    if(channel.iChannel2 === undefined)
                         return false;
                     
                     return channel.iChannel2.type != ShaderChannel.VideoChannel && channel.active;
@@ -467,7 +470,7 @@ Item
                 live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                wrapMode: ShaderEffectSource.ClampToEdge
+                wrapMode: ShaderEffectSource.Repeat
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
                 recursive: true
@@ -477,10 +480,11 @@ Item
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+                samples: 1
 
                 function isLive()
                 {
-                    if(!channel.iChannel3 || channel.iChannel3 === undefined || channel.iChannel3.type === ShaderChannel.ImageChannel)
+                    if(channel.iChannel3 === undefined)
                         return false;
                     
                     return channel.iChannel3.type != ShaderChannel.VideoChannel && channel.active;
@@ -493,7 +497,7 @@ Item
                 id: frameBufferSource
                 sourceItem: channel.frameBufferChannel === -1 ? null : channelShaderContent
                 sourceRect: Qt.rect(0,0, channelShaderContent.width, channelShaderContent.height)
-                wrapMode: ShaderEffectSource.ClampToEdge
+                wrapMode: ShaderEffectSource.Repeat
                 live: channel.active
                 mipmap: true
                 recursive: true
@@ -503,6 +507,7 @@ Item
                 width: channel.iResolution.x
                 height: channel.iResolution.y
                 format: ShaderEffectSource.RGBA8
+                samples: 1
             }
 
             // The shader effect that will be used to render the shader
@@ -531,7 +536,7 @@ Item
 
                 id: channelShaderOutput
 
-                blending: channel.blending
+                blending: true
             }
         }
     }
