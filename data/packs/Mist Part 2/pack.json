@@ -1,0 +1,17 @@
+{
+    "author": "lsdlive",
+    "name": "Mist by Ohno! - part2",
+    "version": "1.0.0",
+    "description": "This is my part for 'Mist' by Ohno, a 4 kilobytes demo released at the Cookie 2018.",
+    "license": "CC-BY-NC-SA",
+    "engine": "shadertoy",
+    "id": "wdBGWD",
+    "tags": [
+        "reactive",
+        "pixel",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1
+}

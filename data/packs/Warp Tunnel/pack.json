@@ -1,0 +1,34 @@
+{
+    "author": "stubbe",
+    "name": "Warp Tunnel",
+    "version": "1.0.0",
+    "description": "Warping Through A Wormhole In Space",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "XtdGR7",
+    "tags": [
+        "space",
+        "warp"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "source": "./images/iChannel0.png",
+        "type": 0
+    },
+
+    "channel1":
+    {
+        "source": "./images/iChannel1.png",
+        "type": 0
+    },
+
+    "channel2":
+    {
+        "source": "./images/iChannel2.png",
+        "type": 0
+    }
+}

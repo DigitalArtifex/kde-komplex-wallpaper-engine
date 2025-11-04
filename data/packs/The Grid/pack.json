@@ -1,0 +1,40 @@
+{
+    "author": "z0rg",
+    "name": "The Grid",
+    "version": "1.0.0",
+    "description": "A mix of two of my shaders to create a cyber / tron visual",
+    "license": "CC-BY-NC-SA",
+    "engine": "shadertoy",
+    "id": "7tGfWy",
+    "tags": [
+        "tron",
+        "cyber",
+        "retrowave"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb",
+        "frame_buffer_channel": 0,
+
+        "channel1":
+        {
+            "type": 0,
+            "source":"./images/iChannel1.png"
+        },
+        "channel2":
+        {
+            "type": 0,
+            "source":"./images/iChannel2.png"
+        },
+        "channel3":
+        {
+            "type": 4
+        }
+    },
+
+    "channel0":"{bufferA}"
+}
