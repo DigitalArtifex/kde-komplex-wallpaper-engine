@@ -88,16 +88,16 @@ Item
         // even when the video is the source of an item being limited
         // in this way
 
-        // if(type === ShaderChannel.ShaderChannel)
-        // {
-        //     active = true;
-        //     active = false;
+        if(type === ShaderChannel.ShaderChannel)
+        {
+            active = true;
+            active = false;
 
-        //     return;
-        // }
+            return;
+        }
 
-        // if(active === false)
-        //     active = true;
+        if(active === false)
+            active = true;
     }
 
     property bool invert
@@ -383,7 +383,7 @@ Item
             {
                 id: channelSource0
                 sourceItem: channel.iChannel0 ? channel.iChannel0 : null
-                live: channel.active
+                live: Qt.binding(() => { return isLive(); })
                 smooth: true
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
                 wrapMode: ShaderEffectSource.ClampToEdge
@@ -396,13 +396,21 @@ Item
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+
+                function isLive()
+                {
+                    if(!channel.iChannel0 || channel.iChannel0 === undefined || channel.iChannel0.type === ShaderChannel.ImageChannel)
+                        return false;
+                    
+                    return channel.iChannel0.type != ShaderChannel.VideoChannel && channel.active;
+                }
             }
 
             ShaderEffectSource
             {
                 id: channelSource1
                 sourceItem: channel.iChannel1 ? channel.iChannel1 : null
-                live: channel.active
+                live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
                 wrapMode: ShaderEffectSource.ClampToEdge
@@ -415,13 +423,21 @@ Item
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+
+                function isLive()
+                {
+                    if(!channel.iChannel1 || channel.iChannel1 === undefined || channel.iChannel1.type === ShaderChannel.ImageChannel)
+                        return false;
+                    
+                    return channel.iChannel1.type != ShaderChannel.VideoChannel && channel.active;
+                }
             }
 
             ShaderEffectSource
             {
                 id: channelSource2
                 sourceItem: channel.iChannel2 ? channel.iChannel2 : null
-                live: channel.active
+                live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
                 wrapMode: ShaderEffectSource.ClampToEdge
@@ -434,13 +450,21 @@ Item
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+
+                function isLive()
+                {
+                    if(!channel.iChannel2 || channel.iChannel2 === undefined || channel.iChannel2.type === ShaderChannel.ImageChannel)
+                        return false;
+                    
+                    return channel.iChannel2.type != ShaderChannel.VideoChannel && channel.active;
+                }
             }
 
             ShaderEffectSource
             {
                 id: channelSource3
                 sourceItem: channel.iChannel3 ? channel.iChannel3 : null
-                live: channel.active
+                live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
                 wrapMode: ShaderEffectSource.ClampToEdge
@@ -453,6 +477,14 @@ Item
                 height: channel.iResolution.y
                 visible: false
                 format: ShaderEffectSource.RGBA8
+
+                function isLive()
+                {
+                    if(!channel.iChannel3 || channel.iChannel3 === undefined || channel.iChannel3.type === ShaderChannel.ImageChannel)
+                        return false;
+                    
+                    return channel.iChannel3.type != ShaderChannel.VideoChannel && channel.active;
+                }
             }
 
             // recursive frame buffer
