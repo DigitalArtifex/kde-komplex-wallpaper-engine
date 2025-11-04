@@ -1,0 +1,22 @@
+{
+    "author": "kishimisu",
+    "name": "Pixel Room",
+    "version": "1.0.0",
+    "description": "An audio reactive shader",
+    "license": "CC-BY-NC-SA",
+    "engine": "shadertoy",
+    "id": "dtl3Dr",
+    "tags": [
+        "reactive",
+        "pixel",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "type": 4
+    }
+}

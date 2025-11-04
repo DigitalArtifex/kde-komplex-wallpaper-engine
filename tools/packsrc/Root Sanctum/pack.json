@@ -1,0 +1,23 @@
+{
+    "author": "diatribes",
+    "name": "Root Sanctum",
+    "version": "1.0.0",
+    "description": "Root Sanctum",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "3c2fz1",
+    "tags": [
+        "raymarched",
+        "fractal"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "source": "./images/iChannel0.png",
+        "type": 0,
+        "can_edit": true
+    }
+}

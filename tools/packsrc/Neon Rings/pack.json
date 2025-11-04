@@ -1,0 +1,30 @@
+{
+    "author": "cpdt",
+    "name": "Neon Rings",
+    "version": "1.0.0",
+    "description": "An audio-reactive set of smokey neon rings",
+    "license": "CC-BY-NC-SA",
+    "engine": "shadertoy",
+    "id": "XllcR4",
+    "tags": [
+        "reactive",
+        "rings",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb",
+        "frame_buffer_channel": 1,
+
+        "channel0":
+        {
+            "type": 4
+        }
+    },
+
+    "channel0": "{bufferA}"
+}

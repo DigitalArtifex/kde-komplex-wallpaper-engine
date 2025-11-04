@@ -1,0 +1,17 @@
+{
+    "author": "Kali",
+    "name": "Mist by Ohno! - part2",
+    "version": "1.0.0",
+    "description": "Audio reactive shader",
+    "license": "CC-BY-NC-SA",
+    "engine": "shadertoy",
+    "id": "fd2GD1",
+    "tags": [
+        "reactive",
+        "pixel",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1
+}

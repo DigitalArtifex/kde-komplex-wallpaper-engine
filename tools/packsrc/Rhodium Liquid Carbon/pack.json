@@ -1,0 +1,24 @@
+{
+    "author": "Virgill",
+    "name": "Rhodium Liquid Carbon",
+    "version": "1.0.0",
+    "description": "Liquid carbon effect from Rhodium 4k Intro",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "llK3Dy",
+    "tags": [
+        "fire",
+        "liquid",
+        "spheretracing"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "bufferA":
+    {
+        "source": "./shaders/Buffer A.frag.qsb"
+    },
+
+    "channel0":"{bufferA}"
+}

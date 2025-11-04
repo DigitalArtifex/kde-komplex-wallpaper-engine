@@ -1,0 +1,22 @@
+{
+    "author": "patu",
+    "name": "Sailing Beyond - Hyper Tunnel",
+    "version": "1.0.0",
+    "description": "Continuation of my attemps to extract audio features from a song",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "4t2cR1",
+    "tags": [
+        "reactive",
+        "tunnel",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "type": 4
+    }
+}

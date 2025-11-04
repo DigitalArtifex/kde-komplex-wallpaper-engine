@@ -5,8 +5,6 @@
 #define CEL rem(R)
 #define LOWRES 320.
 
-
-
 float rem(vec2 iR)
 {
     float slices = floor(iR.y / LOWRES);

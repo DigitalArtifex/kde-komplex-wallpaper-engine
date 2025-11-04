@@ -1,0 +1,22 @@
+{
+    "author": "mrange",
+    "name": "Neonwave Sunset",
+    "version": "1.0.0",
+    "description": "Code is hackish but I thought it looked good enough to share",
+    "license": "CC-BY-NC-SA",
+    "engine": "shadertoy",
+    "id": "7dtcRj",
+    "tags": [
+        "reactive",
+        "retro",
+        "neon"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "type": 4
+    }
+}

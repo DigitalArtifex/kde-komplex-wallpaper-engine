@@ -1,0 +1,22 @@
+{
+    "author": "Virgill",
+    "name": "Rhodium Liquid Carbon",
+    "version": "1.0.0",
+    "description": "Been reading up on psychedelics and got inspired. Put fullscreen, make sure sure you have sound and stare at it until the end! Use mouse to move.",
+    "license": "",
+    "engine": "shadertoy",
+    "id": "lscczl",
+    "tags": [
+        "reactive",
+        "universe",
+        "network"
+    ],
+
+    "source": "./shaders/Image.frag.qsb",
+    "speed": 1,
+
+    "channel0":
+    {
+        "type": 4
+    }
+}
