@@ -152,7 +152,7 @@ Kirigami.FormLayout
                 showFiles: true
                 showHidden: true
                 nameFilters: ["*.frag.qsb"]
-                folder: "file://" + shaderPackModel.shadersPath + "/generative"
+                folder: "file://" + shaderPackModel.shadersPath + "/manipulative"
             }
             delegate: Component 
             {

@@ -230,7 +230,7 @@ Item
                             window.tmp_source = source
                             break;
                         case ShaderChannel.Type.ShaderChannel:
-                            window.currentFolder = window.shaderFolder
+                            window.currentFolder = window.shaderFolder + "/generative"
                             window.tmp_source = source
                             break;
                         case ShaderChannel.Type.VideoChannel:
