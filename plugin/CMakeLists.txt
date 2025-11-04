@@ -33,6 +33,8 @@ add_library(
         ShaderToySearchModel.cpp
         ShaderToyAPI.h
         PexelsAPI.h
+        KomplexSearchModel.h
+        KomplexSearchModel.cpp
 ) 
 
 qt_add_qml_module(
@@ -66,6 +68,8 @@ qt_add_qml_module(
         ShaderToySearchModel.cpp
         ShaderToyAPI.h
         PexelsAPI.h
+        KomplexSearchModel.h
+        KomplexSearchModel.cpp
     NO_GENERATE_PLUGIN_SOURCE
 )
 

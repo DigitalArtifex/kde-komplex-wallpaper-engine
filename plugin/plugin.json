@@ -1,8 +1,8 @@
 {
     "Id" : "komplex",
     "Name" : "Komplex Wallpaper Plugin",
-    "Version" : "1.0.0",
-    "CompatVersion" : "1.0.0",
+    "Version" : "1.0.7",
+    "CompatVersion" : "1.0.7",
     "VendorId" : "digitalartifex",
     "Vendor" : "Digital Artifex",
     "Copyright" : "(C) 2025 Digital Artifex",
@@ -13,6 +13,6 @@
     "Description" : [
         "This plugin enables functionality for the Komplex wallpaper, allowing users to set and manage complex shader arrangements as wallpapers in their KDE environment."
     ],
-    "Url" : "http://www.github.com/digitalartifex/komplex",
-    "DocumentationUrl" : "http://www.github.com/digitalartifex/komplex/wiki"
+    "Url" : "https://github.com/DigitalArtifex/kde-komplex-wallpaper-engine",
+    "DocumentationUrl" : "https://github.com/DigitalArtifex/kde-komplex-wallpaper-engine/wiki"
 }

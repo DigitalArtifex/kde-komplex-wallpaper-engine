@@ -9,6 +9,7 @@
 #include "PexelsImageSearch.h"
 #include "ShaderToySearchModel.h"
 #include "GeometryProvider.h"
+#include "KomplexSearchModel.h"
 #include "Komplex_global.h"
 
 AudioModel *komplexAudioSingletonProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -47,6 +48,7 @@ public:
         qmlRegisterType<ShaderToySearchModel>(uri, 1, 0, "ShaderToySearchModel");
         qmlRegisterType<PexelsVideoSearchModel>(uri, 1, 0, "PexelsVideoSearchModel");
         qmlRegisterType<PexelsImageSearchModel>(uri, 1, 0, "PexelsImageSearchModel");
+        qmlRegisterType<KomplexSearchModel>(uri, 1, 0, "KomplexSearchModel");
     }
 
     void unregisterTypes() override

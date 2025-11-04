@@ -16,7 +16,7 @@ Item
 
     signal accepted
 
-    Komplex.ShaderToySearchModel
+    Komplex.KomplexSearchModel
     {
         id: searchModel
     }
@@ -176,6 +176,18 @@ Item
 
                         RowLayout
                         {
+                            width: thumbnailImage.width
+
+                            Text
+                            {
+                                color: palette.text
+                                anchors.fill: parent
+                                text: model.name
+                            }
+                        }
+
+                        RowLayout
+                        {
                             visible: parent.itemIndex === view.currentIndex
                             width: thumbnailImage.width
                             Button
@@ -245,7 +257,7 @@ Item
                                     onClicked: () =>
                                     {
                                         workingThumbnail.source = model.thumbnail
-                                        searchModel.convert(model.index);
+                                        searchModel.download(model.index);
                                         downloadDialog.close();
                                     }
                                 }
@@ -333,7 +345,7 @@ Item
 
         width: mainItem.width
         height: mainItem.height
-        visible: searchModel.status === Komplex.ShaderToySearchModel.Searching || searchModel.status === Komplex.ShaderToySearchModel.Compiling
+        visible: searchModel.status === Komplex.KomplexSearchModel.Searching || searchModel.status === Komplex.KomplexSearchModel.Compiling
 
         RowLayout
         {
@@ -341,7 +353,7 @@ Item
 
             Image
             {
-                visible: searchModel.status === Komplex.ShaderToySearchModel.Compiling
+                visible: searchModel.status === Komplex.KomplexSearchModel.Compiling
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
@@ -355,7 +367,7 @@ Item
                 text: searchModel.statusMessage
                 color: palette.text
                 elide: Text.ElideRight
-                visible: searchModel.status === Komplex.ShaderToySearchModel.Compiling
+                visible: searchModel.status === Komplex.KomplexSearchModel.Compiling
             }
 
             ProgressBar
@@ -363,7 +375,7 @@ Item
                 id: totalProgress
                 Layout.fillWidth: true
                 Layout.preferredHeight: 6
-                visible: searchModel.status === Komplex.ShaderToySearchModel.Compiling
+                visible: searchModel.status === Komplex.KomplexSearchModel.Compiling
             }
 
             Text
@@ -372,7 +384,7 @@ Item
                 text: qsTr(searchModel.downloadText)
                 color: palette.text
                 elide: Text.ElideRight
-                visible: searchModel.totalDownloads > 0 && searchModel.status === Komplex.ShaderToySearchModel.Compiling
+                visible: searchModel.totalDownloads > 0 && searchModel.status === Komplex.KomplexSearchModel.Compiling
             }
 
             ProgressBar
@@ -383,7 +395,7 @@ Item
                 from: 0
                 to: searchModel.totalDownloads
                 value: searchModel.completedDownloads
-                visible: searchModel.totalDownloads > 0 && searchModel.status === Komplex.ShaderToySearchModel.Compiling
+                visible: searchModel.totalDownloads > 0 && searchModel.status === Komplex.KomplexSearchModel.Compiling
             }
         }
 
@@ -419,7 +431,7 @@ Item
 
             function onStatusChanged()
             {
-                if(searchModel.status === Komplex.ShaderToySearchModel.Compiled)
+                if(searchModel.status === Komplex.KomplexSearchModel.Compiled)
                     mediaSelectionItem.open()
             }
         }
@@ -586,7 +598,7 @@ Item
             {
                 console.log("Search Model Status " + searchModel.status)
 
-                if(searchModel.status === Komplex.ShaderToySearchModel.Error)
+                if(searchModel.status === Komplex.KomplexSearchModel.Error)
                 {
                     warningDialog.open();
                 }

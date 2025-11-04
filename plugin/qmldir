@@ -5,3 +5,4 @@ classname ShaderPackModel
 classname PexelsImageSearchModel
 classname PexelsVideoSearchModel
 classname ShaderToySearchModel
+classname KomplexSearchModel
