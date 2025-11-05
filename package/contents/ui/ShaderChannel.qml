@@ -386,7 +386,12 @@ Item
                 live: Qt.binding(() => { return isLive(); })
                 smooth: true
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                wrapMode: ShaderEffectSource.ClampToEdge
+                wrapMode: Qt.binding(() => {
+                    if(channel.iChannel0 === undefined || channel.iChannel0.type === ShaderChannel.Audio)
+                        return ShaderEffectSource.ClampToEdge;
+                    else
+                        return ShaderEffectSource.Repeat;
+                })
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
                 recursive: true
@@ -414,7 +419,12 @@ Item
                 live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                wrapMode: ShaderEffectSource.Repeat
+                wrapMode: Qt.binding(() => {
+                    if(channel.iChannel1 === undefined || channel.iChannel1.type === ShaderChannel.Audio)
+                        return ShaderEffectSource.ClampToEdge;
+                    else
+                        return ShaderEffectSource.Repeat;
+                })
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
                 recursive: true
@@ -428,6 +438,8 @@ Item
 
                 function isLive()
                 {
+                    return true;
+
                     if(channel.iChannel1 === undefined)
                         return false;
                     
@@ -442,7 +454,12 @@ Item
                 live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                wrapMode: ShaderEffectSource.Repeat
+                wrapMode: Qt.binding(() => {
+                    if(channel.iChannel2 === undefined || channel.iChannel2.type === ShaderChannel.Audio)
+                        return ShaderEffectSource.ClampToEdge;
+                    else
+                        return ShaderEffectSource.Repeat;
+                })
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
                 recursive: true
@@ -470,7 +487,12 @@ Item
                 live: Qt.binding(() => { return isLive(); })
                 smooth: false
                 sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                wrapMode: ShaderEffectSource.Repeat
+                wrapMode: Qt.binding(() => {
+                    if(channel.iChannel1 === undefined || channel.iChannel1.type === ShaderChannel.Audio)
+                        return ShaderEffectSource.ClampToEdge;
+                    else
+                        return ShaderEffectSource.Repeat;
+                })
                 textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
                 textureMirroring: ShaderEffectSource.NoMirroring
                 recursive: true
