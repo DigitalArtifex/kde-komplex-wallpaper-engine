@@ -304,20 +304,162 @@ Rectangle
                 console.log('Uknown channel type 3 ' + typeof json.channel3)
         }
 
-        channel.frameBufferChannel = json.frame_buffer_channel !== undefined ? json.frame_buffer_channel : -1
-        channel.type = json.type !== undefined ? json.type : typeDefault
-        channel.visible = false
-        channel.iMouse = Qt.binding(() => { return mainItem.iMouse; })
-        channel.iTime = Qt.binding(() => { return mainItem.iTime; })
-        channel.iResolutionScale = json.resolution_scale ? json.resolution_scale : 1.0
+        /*
+            Channel Type
+
+            parse this one first so we can handle defaults, but not ignore overrides
+        */
+        if(typeof json.type === "number")
+        {
+            channel.type = json.type
+        }
+        else if(typeof json.type === "string")
+        {
+            switch(json.type.toLowerCase())
+            {
+                case "image":
+                    channel.type = ShaderChannel.ImageChannel
+                break;
+                case "audio":
+                    channel.type = ShaderChannel.AudioChannel
+                break;
+                case "video":
+                    channel.type = ShaderChannel.VideoChannel
+                break;
+                case "cubemap":
+                    channel.type = ShaderChannel.ImageChannel
+                break;
+                case "shader":
+                    channel.type = ShaderChannel.ShaderChannel
+                break;
+                case "scene":
+                    channel.type = ShaderChannel.SceneChannel
+                break;
+                default:
+                    channel.type = ShaderChannel.ImageChannel
+                break;
+            }
+        }
+
+        channel.frameBufferChannel = typeof json.frame_buffer_channel === "number" ? json.frame_buffer_channel : -1
+        channel.iTimeScale = typeof json.time_scale === "number" ? json.time_scale : 1.0
+        channel.iResolutionScale = typeof json.resolution_scale === "number" ? json.resolution_scale : 1.0
         channel.iResolution = Qt.binding(() => { return json.resolution_x ? Qt.vector3d(json.resolution_x, json.resolution_y, 1.0) : Qt.vector3d(mainItem.iResolution.x,mainItem.iResolution.y,1.0); })
         channel.mouseBias = json.mouse_scale ? json.mouse_scale : 1.0
-        channel.iTimeScale = json.time_scale ? json.time_scale : 1.0
-        channel.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
         channel.width = Qt.binding(() => channel.iResolution.x)
         channel.height = Qt.binding(() => channel.iResolution.y)
-        channel.materialTexture = json.materialTexture !== undefined ? getFilePath(json.materialTexture) : ""
-        channel.materialShader = json.materialShader !== undefined ? getFilePath(json.materialShader) : ""
+        channel.materialTexture = typeof json.materialTexture === "string" ? getFilePath(json.materialTexture) : ""
+        channel.materialShader = typeof json.materialShader === "string" ? getFilePath(json.materialShader) : ""
+        channel.mipmap = typeof json.mipmap === "boolean" ? json.mipmap : true
+        channel.blending = typeof json.blending === "boolean" ? json.blending : true
+        channel.samples = typeof json.samples === "number" ? json.samples : 1
+        channel.invert = typeof json.invert === "boolean" ? json.invert : false
+
+        if(typeof json.source === "string")
+        {
+            channel.source = getFilePath(json.source)
+        }
+        else
+        {
+            channel.source = ""
+        }
+
+        /*
+            Source Format
+        */
+        var format = ShaderEffectSource.RGB8A
+        
+        if(typeof json.format === "string")
+        {
+            switch(json.format.toLowerCase())
+            {
+                case "rgb8a":
+                    format = ShaderEffectSource.RGB8A
+                    break;
+                case "rgb16f":
+                    format = ShaderEffectSource.RGB16F
+                    break;
+                case "rgb32f":
+                    format = ShaderEffectSource.RGB32F
+                    break;
+                default:
+                    format = ShaderEffectSource.RGB8A
+                    break;
+            }
+
+            console.log("Set format mode to " + format)
+        }
+
+        channel.format = format
+
+        /*
+            Source Wrap Mode
+        */
+        var wrapMode = ShaderEffectSource.Repeat
+        
+        if(typeof json.wrap_mode === "string")
+        {
+            switch(json.wrap_mode.toLowerCase())
+            {
+                case "clamptoedge":
+                    wrapMode = ShaderEffectSource.ClampToEdge
+                    break;
+                case "repeathorizontally":
+                    wrapMode = ShaderEffectSource.RepeatHorizontally
+                    break;
+                case "repeatvertically":
+                    wrapMode = ShaderEffectSource.RepeatVertically
+                    break;
+                case "repeat":
+                    wrapMode = ShaderEffectSource.Repeat
+                    break;
+                default:
+                    wrapMode = ShaderEffectSource.Repeat
+                    break;
+            }
+
+            console.log("Set wrap mode to " + wrapMode)
+        }
+
+        channel.wrapMode = wrapMode
+
+        /*
+            Source Mirroring Mode
+        */
+        var mirrorMode = ShaderEffectSource.NoMirroring
+        
+        if(typeof json.texture_mirroring === "string")
+        {
+            switch(json.texture_mirroring.toLowerCase())
+            {
+                case "nomirroring":
+                    mirrorMode = ShaderEffectSource.NoMirroring
+                    break;
+                case "mirrorhorizontally":
+                    mirrorMode = ShaderEffectSource.MirrorHorizontally
+                    break;
+                case "mirrorvertically":
+                    mirrorMode = ShaderEffectSource.MirrorVertically
+                    break;
+                default:
+                    mirrorMode = ShaderEffectSource.NoMirroring
+                    break;
+            }
+
+            console.log("Set mirror mode to " + mirrorMode)
+        }
+
+        channel.textureMirroring = mirrorMode
+
+        /*
+            Non-configurable bindings
+        */
+        channel.iMouse = Qt.binding(() => { return mainItem.iMouse; })
+        channel.iTime = Qt.binding(() => { return mainItem.iTime; })
+        channel.iTimeDelta = Qt.binding(() => { return mainItem.iTimeDelta; })
+        channel.iFrameRate = Qt.binding(() => { return mainItem.iFrameRate; })
+        channel.iFrame = Qt.binding(() => { return mainItem.iFrame; })
+        channel.visible = false
  
         channel.iChannelTime = Qt.binding(() => {
             return [
@@ -327,13 +469,6 @@ Rectangle
                 mainItem.iTime * channel.iTimeScale
             ];
         });
-
-        channel.iFrameRate = Qt.binding(() => { return mainItem.iFrameRate; })
-        channel.iFrame = mainItem.iFrame
-        channel.invert = json.invert ? json.invert : false
-
-        var source = getFilePath(json.source)
-        channel.source = source
 
         if(autodestroy)
             data.channels.push(channel)
