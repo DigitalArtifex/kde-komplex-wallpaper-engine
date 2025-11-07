@@ -22,22 +22,14 @@
         "type": 2,
         "source": "./shaders/Buffer A.frag.qsb",
 
-        "channel0":
-        {
-            "type": 2,
-            "source": "./shaders/Buffer A.frag.qsb",
-
-            "channel1":
-            {
-                "type": 4,
-                "invert": true
-            }
-        },
+        "frame_buffer_channel": 0,
 
         "channel1":
         {
             "type": 4,
-            "invert": true
+            "invert": false,
+            "texture_mirroring": "MirrorVertically",
+            "wrap_mode": "Repeat"
         }
     }
 }
