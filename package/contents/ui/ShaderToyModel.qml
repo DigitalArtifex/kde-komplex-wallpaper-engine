@@ -79,15 +79,16 @@ Item
         ShaderChannel
         {
             //Fallback to a channel if the output channel is not set or there was an error loading the shader
-            visible: wallpaper.configuration.iChannel0_flag && (channelOutput.source === "" || channelOutput.source === undefined)
+            //visible: wallpaper.configuration.iChannel0_flag && (channelOutput.source === "" || channelOutput.source === undefined)
+            visible: true
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
             iResolution: mainItem.iResolution
             iFrame: mainItem.iFrame
 
             id: channel0
-            width: mainItem.iResolution.x
-            height: mainItem.iResolution.y
+            // width: mainItem.iResolution.x
+            // height: mainItem.iResolution.y
             type: wallpaper.configuration.iChannel0_flag ? wallpaper.configuration.iChannel0_type : 0
 
             source: wallpaper.configuration.iChannel0_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel0) : ""
@@ -175,22 +176,22 @@ Item
             iChannel3: channel3
 
             visible: true // Set to true to display the output
-            blending: true
+            blending: false
         }
 
-        ShaderEffectSource
-        {
-            anchors.fill: parent
-            sourceItem: channelOutput
-            sourceRect: Qt.rect(0,0, mainItem.iResolution.x, mainItem.iResolution.y)
-            textureSize: Qt.size(mainItem.iResolution.x, mainItem.iResolution.y)
-            hideSource: true
-            visible: true
-            smooth: true
-            live: true
+        // ShaderEffectSource
+        // {
+        //     anchors.fill: parent
+        //     sourceItem: channelOutput
+        //     sourceRect: Qt.rect(0,0, mainItem.iResolution.x, mainItem.iResolution.y)
+        //     textureSize: Qt.size(mainItem.iResolution.x, mainItem.iResolution.y)
+        //     hideSource: true
+        //     visible: true
+        //     smooth: true
+        //     live: true
 
-            id: finalSource
-        }
+        //     id: finalSource
+        // }
 
         // To save on performance, just use one timer for all channels
         Timer

@@ -70,14 +70,14 @@ Item
     property var iDate
     property real iTimeScale: 1 // This is used to scale the time for the shader, allowing for slow motion or fast forward effects per channel
     property int frameBufferChannel: -1
-    property bool blending: true
+    property bool blending: false
     property string materialTexture:""
     property string materialShader:""
-    property bool mipmap: false
-    property int samples: 1
+    property bool mipmap: true
+    property int samples: 2
     property var textureMirroring: ShaderEffectSource.NoMirroring
-    property var wrapMode: ShaderEffectSource.ClampToEdge
-    property var format: ShaderEffectSource.RGB8A
+    property var wrapMode: ShaderEffectSource.Repeat
+    property var format: ShaderEffectSource.RGBA8
     property var windowModel
     property bool invert: false
 
@@ -107,8 +107,10 @@ Item
 
     id: channel
     visible: false // Set to false by default, main shader needs be set to true in MainWindow.qml
-    width: iResolution.x
-    height: iResolution.y
+    width: channel.type === ShaderChannel.AudioChannel ? 512 : iResolution.x
+    height: channel.type === ShaderChannel.AudioChannel ? 2 : iResolution.y
+    anchors.left: parent.left
+    anchors.top: parent.top
 
     // This is used to dynamically load the appropriate channel type based on the `type` property of the channel
     Loader
@@ -168,23 +170,6 @@ Item
                 }
             }
         ]
-
-        transform: Rotation
-        {
-            id: channelRotation
-            origin.x: channel.width / 2
-            origin.y: channel.height / 2
-
-            // For vertical flipping, we need to transform the x axis
-            axis
-            {
-                x: 1
-                y: 0
-                z: 0
-            }
-
-            angle: data.angle
-        }
     }
 
     //The image channel will be the default channel type for backwards compatability
@@ -263,55 +248,7 @@ Item
                         return;
                     
                     autoStart()
-                    //delayedStartTimer.start()
                 }
-
-                // onMediaStatusChanged:
-                // {
-                //     switch(mediaStatus)
-                //     {
-                //         case MediaPlayer.NoMedia:
-                //             console.log("No media loaded")
-                //             break;
-                //         case MediaPlayer.LoadingMedia:
-                //             console.log("Video loading")
-                //             break;
-                //         case MediaPlayer.LoadedMedia:
-                //             console.log("Video Loaded")
-                //             break;
-                //         case MediaPlayer.BufferingMedia:
-                //             console.log("Video buffering")
-                //             break;
-                //         case MediaPlayer.StalledMedia:
-                //             console.log("Video stalled")
-                //             break;
-                //         case MediaPlayer.BufferedMedia:
-                //             console.log("Video buffered")
-                //             break;
-                //         case MediaPlayer.EndOfMedia:
-                //             console.log("Video EOF")
-                //             break;
-                //         case MediaPlayer.InvalidMedia:
-                //             console.log("Video invalid")
-                //             break;
-                //     }
-                // }
-
-                // onPlaybackStateChanged:
-                // {
-                //     switch(playbackState)
-                //     {
-                //         case MediaPlayer.PlayingState:
-                //             console.log("Video playback started")
-                //             break;
-                //         case MediaPlayer.PausedState:
-                //             console.log("Video playback paused")
-                //             break;
-                //         case MediaPlayer.StoppedState:
-                //             console.log("Video playback stopped")
-                //             break;
-                //     }
-                // }
 
                 Component.onCompleted:
                 {
@@ -351,199 +288,6 @@ Item
             id: channelShaderContent
             anchors.fill: parent
 
-            // Setup the shader effect sources for each channel
-            // These are needed to provide the uniform data to the shader channel buffers
-            ShaderEffectSource
-            {
-                id: channelSource0
-                live: false
-                smooth: true
-                recursive: false
-                hideSource: true
-                width: channel.iResolution.x
-                height: channel.iResolution.y
-                visible: false
-
-                format: channel.iChannel0 ? channel.iChannel0.format : ShaderEffectSource.RGB8A
-                sourceItem: channel.iChannel0 ? channel.iChannel0 : null
-                textureMirroring: channel.iChannel0 ? channel.iChannel0.textureMirroring : ShaderEffectSource.NoMirroring
-                wrapMode: channel.iChannel0 ? channel.iChannel0.wrapMode : ShaderEffectSource.Repeat
-                mipmap: channel.iChannel0 ? channel.iChannel0.mipmap : true
-                samples: channel.iChannel0 ? channel.iChannel0.samples : 1
-
-                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
-
-                Connections
-                {
-                    target: channel.iChannel0
-                    function onTypeChanged()
-                    {
-                        if(channel.iChannel0.type === ShaderChannel.AudioChannel)
-                        {
-                            //channelSource0.wrapMode = ShaderEffectSource.ClampToEdge
-                            channelSource0.live = true
-                        }
-                        else
-                        {
-                            //channelSource0.wrapMode = ShaderEffectSource.Repeat
-                            channelSource0.live = false
-                        }
-
-                        // if(!channelSource0.live)
-                        //     channelSource0.scheduleUpdate()
-                    }
-                }
-            }
-
-            ShaderEffectSource
-            {
-                id: channelSource1
-                live: false
-                smooth: false
-                recursive: false
-                hideSource: true
-                width: channel.iResolution.x
-                height: channel.iResolution.y
-                visible: false
-
-                format: channel.iChannel1 ? channel.iChannel1.format : ShaderEffectSource.RGB8A
-                sourceItem: channel.iChannel1 ? channel.iChannel1 : null
-                textureMirroring: channel.iChannel1 ? channel.iChannel1.textureMirroring : ShaderEffectSource.NoMirroring
-                wrapMode: channel.iChannel1 ? channel.iChannel1.wrapMode : ShaderEffectSource.Repeat
-                mipmap: channel.iChannel1 ? channel.iChannel1.mipmap : true
-                samples: channel.iChannel1 ? channel.iChannel1.samples : 1
-
-                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
-
-                Connections
-                {
-                    target: channel.iChannel1
-                    function onTypeChanged()
-                    {
-                        if(channel.iChannel1.type === ShaderChannel.AudioChannel)
-                        {
-                            //channelSource1.wrapMode = ShaderEffectSource.ClampToEdge
-                            channelSource1.live = true
-                        }
-                        else
-                        {
-                            //channelSource1.wrapMode = ShaderEffectSource.Repeat
-                            channelSource1.live = false
-                        }
-
-                        // if(!channelSource1.live)
-                        //     channelSource1.scheduleUpdate()
-                    }
-                }
-            }
-
-            ShaderEffectSource
-            {
-                id: channelSource2
-                live: false
-                smooth: false
-                recursive: true
-                hideSource: true
-                width: channel.iResolution.x
-                height: channel.iResolution.y
-                visible: false
-
-                format: channel.iChannel2 ? channel.iChannel2.format : ShaderEffectSource.RGB8A
-                sourceItem: channel.iChannel2 ? channel.iChannel2 : null
-                textureMirroring: channel.iChannel2 ? channel.iChannel2.textureMirroring : ShaderEffectSource.NoMirroring
-                wrapMode: channel.iChannel2 ? channel.iChannel2.wrapMode : ShaderEffectSource.Repeat
-                mipmap: channel.iChannel2 ? channel.iChannel2.mipmap : true
-                samples: channel.iChannel2 ? channel.iChannel2.samples : 1
-
-                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
-
-                Connections
-                {
-                    target: channel.iChannel2
-                    function onTypeChanged()
-                    {
-                        if(channel.iChannel2.type === ShaderChannel.AudioChannel)
-                        {
-                            //channelSource2.wrapMode = ShaderEffectSource.ClampToEdge
-                            channelSource2.live = true
-                        }
-                        else
-                        {
-                            //channelSource2.wrapMode = ShaderEffectSource.Repeat
-                            channelSource2.live = false
-                        }
-
-                        // if(!channelSource2.live)
-                        //     channelSource2.scheduleUpdate()
-                    }
-                }
-            }
-
-            ShaderEffectSource
-            {
-                id: channelSource3
-                live: false
-                smooth: false
-                recursive: true
-                hideSource: true
-                width: channel.iResolution.x
-                height: channel.iResolution.y
-                visible: false
-
-                format: channel.iChannel3 ? channel.iChannel1.format : ShaderEffectSource.RGB8A
-                sourceItem: channel.iChannel3 ? channel.iChannel3 : null
-                textureMirroring: channel.iChannel3 ? channel.iChannel3.textureMirroring : ShaderEffectSource.NoMirroring
-                wrapMode: channel.iChannel3 ? channel.iChannel3.wrapMode : ShaderEffectSource.Repeat
-                mipmap: channel.iChannel3 ? channel.iChannel3.mipmap : true
-                samples: channel.iChannel3 ? channel.iChannel3.samples : 1
-
-                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
-                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
-
-                Connections
-                {
-                    target: channel.iChannel3
-                    function onTypeChanged()
-                    {
-                        if(channel.iChannel3.type === ShaderChannel.AudioChannel)
-                        {
-                            //channelSource3.wrapMode = ShaderEffectSource.ClampToEdge
-                            channelSource3.live = true
-                        }
-                        else
-                        {
-                            //channelSource3.wrapMode = ShaderEffectSource.Repeat
-                            channelSource3.live = false
-                        }
-
-                        if(!channelSource3.live)
-                            channelSource3.scheduleUpdate()
-                    }
-                }
-            }
-
-            // recursive frame buffer
-            ShaderEffectSource
-            {
-                id: frameBufferSource
-                sourceItem: channel.frameBufferChannel === -1 ? null : channelShaderOutput
-                sourceRect: Qt.rect(0,0, channelShaderOutput.width, channelShaderOutput.height)
-                wrapMode: ShaderEffectSource.ClampToEdge
-                live: false
-                mipmap: true
-                recursive: true
-                textureSize: Qt.size(channelShaderOutput.width, channelShaderOutput.height)
-                visible: false
-                textureMirroring: ShaderEffectSource.NoMirroring
-                width: channel.iResolution.x
-                height: channel.iResolution.y
-                format: ShaderEffectSource.RGB8A
-                samples: 2
-            }
-
             // The shader effect that will be used to render the shader
             ShaderEffect
             {
@@ -570,7 +314,180 @@ Item
 
                 id: channelShaderOutput
 
-                blending: true
+                blending: false
+            }
+
+            // Setup the shader effect sources for each channel
+            // These are needed to provide the uniform data to the shader channel buffers
+            ShaderEffectSource
+            {
+                id: channelSource0
+                live: true
+                smooth: true
+                recursive: true
+                hideSource: true
+                visible: false
+
+                format: channel.iChannel0 ? channel.iChannel0.format : ShaderEffectSource.RGBA8
+                sourceItem: channel.iChannel0
+                textureMirroring: channel.iChannel0 ? channel.iChannel0.textureMirroring : ShaderEffectSource.NoMirroring
+                wrapMode: channel.iChannel0 ? channel.iChannel0.wrapMode : ShaderEffectSource.ClampToEdge
+                mipmap: channel.iChannel0 ? channel.iChannel0.mipmap : true
+                samples: channel.iChannel0 ? channel.iChannel0.samples : 1
+
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                textureSize: Qt.size(sourceItem.width, sourceItem.height)
+
+                Connections
+                {
+                    target: channel.iChannel0
+                    function onTypeChanged()
+                    {
+                        if(channel.iChannel0.type === ShaderChannel.AudioChannel)
+                        {
+                            channelSource0.wrapMode = ShaderEffectSource.ClampToEdge
+                            channelSource0.live = true
+                        }
+                        else
+                        {
+                            channelSource0.wrapMode = ShaderEffectSource.Repeat
+                            channelSource0.live = false
+                        }
+                    }
+                }
+            }
+
+            ShaderEffectSource
+            {
+                id: channelSource1
+                live: false
+                smooth: true
+                recursive: true
+                hideSource: true
+                visible: false
+
+                format: channel.iChannel1 ? channel.iChannel1.format : ShaderEffectSource.RGBA8
+                sourceItem: channel.iChannel1 ? channel.iChannel1 : null
+                textureMirroring: channel.iChannel1 ? channel.iChannel1.textureMirroring : ShaderEffectSource.NoMirroring
+                wrapMode: channel.iChannel1 ? channel.iChannel1.wrapMode : ShaderEffectSource.Repeat
+                mipmap: channel.iChannel1 ? channel.iChannel1.mipmap : true
+                samples: channel.iChannel1 ? channel.iChannel1.samples : 4
+
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
+
+                Connections
+                {
+                    target: channel.iChannel1
+                    function onTypeChanged()
+                    {
+                        if(channel.iChannel1.type === ShaderChannel.AudioChannel)
+                        {
+                            channelSource1.wrapMode = ShaderEffectSource.ClampToEdge
+                            channelSource1.live = true
+                        }
+                        else
+                        {
+                            channelSource1.wrapMode = ShaderEffectSource.Repeat
+                            channelSource1.live = false
+                        }
+                    }
+                }
+            }
+
+            ShaderEffectSource
+            {
+                id: channelSource2
+                live: false
+                smooth: true
+                recursive: true
+                hideSource: true
+                visible: false
+
+                format: channel.iChannel2 ? channel.iChannel2.format : ShaderEffectSource.RGBA8
+                sourceItem: channel.iChannel2 ? channel.iChannel2 : null
+                textureMirroring: channel.iChannel2 ? channel.iChannel2.textureMirroring : ShaderEffectSource.NoMirroring
+                wrapMode: channel.iChannel2 ? channel.iChannel2.wrapMode : ShaderEffectSource.Repeat
+                mipmap: channel.iChannel2 ? channel.iChannel2.mipmap : true
+                samples: channel.iChannel2 ? channel.iChannel2.samples : 1
+
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
+
+                Connections
+                {
+                    target: channel.iChannel2
+                    function onTypeChanged()
+                    {
+                        if(channel.iChannel2.type === ShaderChannel.AudioChannel)
+                        {
+                            channelSource2.wrapMode = ShaderEffectSource.ClampToEdge
+                            channelSource2.live = true
+                        }
+                        else
+                        {
+                            channelSource2.wrapMode = ShaderEffectSource.Repeat
+                            channelSource2.live = false
+                        }
+                    }
+                }
+            }
+
+            ShaderEffectSource
+            {
+                id: channelSource3
+                live: false
+                smooth: false
+                recursive: true
+                hideSource: true
+                visible: false
+
+                format: channel.iChannel3 ? channel.iChannel1.format : ShaderEffectSource.RGBA8
+                sourceItem: channel.iChannel3 ? channel.iChannel3 : null
+                textureMirroring: channel.iChannel3 ? channel.iChannel3.textureMirroring : ShaderEffectSource.NoMirroring
+                wrapMode: channel.iChannel3 ? channel.iChannel3.wrapMode : ShaderEffectSource.Repeat
+                mipmap: channel.iChannel3 ? channel.iChannel3.mipmap : true
+                samples: channel.iChannel3 ? channel.iChannel3.samples : 1
+
+                sourceRect: sourceItem ? Qt.rect(0,0, sourceItem.width, sourceItem.height) : Qt.rect(0,0,0,0)
+                textureSize: Qt.size(channel.iResolution.x, channel.iResolution.y)
+
+                Connections
+                {
+                    target: channel.iChannel3
+                    function onTypeChanged()
+                    {
+                        if(channel.iChannel3.type === ShaderChannel.AudioChannel)
+                        {
+                            channelSource3.wrapMode = ShaderEffectSource.ClampToEdge
+                            channelSource3.live = true
+                        }
+                        else
+                        {
+                            channelSource3.wrapMode = ShaderEffectSource.Repeat
+                            channelSource3.live = false
+                        }
+                    }
+                }
+            }
+
+            // recursive frame buffer
+            ShaderEffectSource
+            {    
+                id: frameBufferSource
+                sourceItem: channel.channelShaderOutput === -1 ? null : channelShaderOutput
+                sourceRect: Qt.rect(0,0, channelShaderOutput.width, channelShaderOutput.height)
+                wrapMode: ShaderEffectSource.Repeat
+                live: false
+                mipmap: true
+                recursive: true
+                textureSize: Qt.size(channelShaderOutput.width, channelShaderOutput.height)
+                visible: false
+                textureMirroring: ShaderEffectSource.NoMirroring
+                width: channelShaderOutput.width
+                height: channelShaderOutput.height
+                format: ShaderEffectSource.RGBA8
+                samples: 2
             }
 
             Connections
@@ -578,9 +495,6 @@ Item
                 target: channel
                 function onIFrameChanged()
                 {
-                    // skip first frame. frame 0 is a blank screen
-                    if(channel.frameBufferChannel > -1 )//&& channel.iFrame > 1)
-                        frameBufferSource.scheduleUpdate()
 
                     if(channel.iChannel0 !== undefined && !channelSource0.live)
                         channelSource0.scheduleUpdate()
@@ -593,6 +507,10 @@ Item
 
                     if(channel.iChannel3 !== undefined && !channelSource3.live)
                         channelSource3.scheduleUpdate()
+                        
+                    // skip first frame. frame 0 is a blank screen
+                    if(channel.frameBufferChannel > -1 )//&& channel.iFrame > 1)
+                        frameBufferSource.scheduleUpdate()
                 }
             }
         }
@@ -665,35 +583,17 @@ Item
 
         Rectangle
         {
-            anchors.fill: parent
+            width: 512
+            height: 2
             color: "black"
+            anchors.top: parent.top
             Image
             {
-                width: 512
-                height: 2
-                anchors.top: !channel.invert ? undefined : parent.top
-                anchors.bottom: !channel.invert ? parent.bottom : undefined
+                anchors.fill: parent
                 id: textureImage
                 source: "image://audiotexture/frame"
                 fillMode: Image.Pad
-
-                // we need to flip the texture when the channel itself is flipped
-                // so the orientation of the audio data is preserved
-                transform: Rotation
-                {
-                    origin.x: textureImage.width / 2
-                    origin.y: textureImage.height / 2
-
-                    // For vertical flipping, we need to transform the x axis
-                    axis
-                    {
-                        x: 1
-                        y: 0
-                        z: 0
-                    }
-
-                    angle: data.angle + 180
-                }
+                cache: false
             }
 
             Timer
@@ -701,23 +601,27 @@ Item
                 property int frame: 0
                 interval: 16
                 repeat: true
-                triggeredOnStart: true
-                running: true
+                triggeredOnStart: false
+                running: false
+                id: audioFrameTimer
 
-                onTriggered:
+                onTriggered: () =>
                 {
-                    frame++
+                    //lets hope there's no auto caching and we can prevent overflow like this
+                    frame = frame === 0 ? 1 : 0
                     textureImage.source = "image://audiotexture/frame" + frame
                 }
             }
 
-            Component.onCompleted:
+            Component.onCompleted: () =>
             {
                 Komplex.AudioModel.startCapture()
+                audioFrameTimer.start()
             }
 
-            Component.onDestruction:
+            Component.onDestruction: () =>
             {
+                audioFrameTimer.stop()
                 Komplex.AudioModel.stopCapture()
             }
         }

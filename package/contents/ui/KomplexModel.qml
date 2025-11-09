@@ -146,13 +146,13 @@ Rectangle
     {
         anchors.fill: parent
         sourceItem: channelRect
-        sourceRect: Qt.rect(0,0, mainItem.iResolution.x, mainItem.iResolution.y)
-        textureSize: Qt.size(mainItem.iResolution.x, mainItem.iResolution.y)
+        sourceRect: Qt.rect(0,0, channelRect.width, channelRect.height)
+        textureSize: Qt.size(channelRect.width, channelRect.height)
         hideSource: true
         visible: true
         smooth: true
         antialiasing: true
-        live: true
+        live: false
 
         id: finalSource
 
@@ -160,6 +160,15 @@ Rectangle
         {
             live = false;
             live = true;
+        }
+
+        Connections
+        {
+            target: mainItem
+            function onIFrameChanged()
+            {
+                finalSource.scheduleUpdate()
+            }
         }
     }
 
@@ -175,49 +184,54 @@ Rectangle
             shaderPackModel.loadJson(wallpaper.configuration.shader_package);
 
         Qt.createQmlObject(`import QtQuick
-        MouseArea 
-        {
-            id: mouseTrackingArea
-            propagateComposedEvents: true
-            preventStealing: false
-            enabled: wallpaper.configuration.mouseAllowed
-            anchors.fill: parent
-            hoverEnabled: true
-            onPositionChanged: (mouse) => {
-                mouse.accepted = false
-                mainItem.iMouse.x = mouse.x * wallpaper.configuration.mouseSpeedBias
-                mainItem.iMouse.y = -mouse.y * wallpaper.configuration.mouseSpeedBias
-            }
-            onClicked:(mouse) => {
-                mouse.accepted = false
-                mainItem.iMouse.z = mouse.x
-                mainItem.iMouse.w = mouse.y
-            }
-            // this still doesnt work... guess a C++ wrapper is all that can be done?
-            onPressed:(mouse) => {
-                mouse.accepted = false
-            }
-            onPressAndHold:(mouse) => {
-                mouse.accepted = false
-            }
-            onDoubleClicked:(mouse) => {
-                mouse.accepted = false
-            }
-            //cancelled, entered, and exited do not pass mouse events, so we can remove them
-            onReleased:(mouse) => {
-                mouse.accepted = false
-            }
-            onWheel: (mouse) => {
-                mouse.accepted = false
-            }
-        }`, parent.parent, "mouseTrackerArea");
+            MouseArea 
+            {
+                id: mouseTrackingArea
+                propagateComposedEvents: true
+                preventStealing: false
+                enabled: wallpaper.configuration.mouseAllowed
+                anchors.fill: parent
+                hoverEnabled: true
+                onPositionChanged: (mouse) => {
+                    mouse.accepted = false
+                    mainItem.iMouse.x = mouse.x * wallpaper.configuration.mouseSpeedBias
+                    mainItem.iMouse.y = -mouse.y * wallpaper.configuration.mouseSpeedBias
+                }
+                onClicked:(mouse) => {
+                    mouse.accepted = false
+                    mainItem.iMouse.z = mouse.x
+                    mainItem.iMouse.w = mouse.y
+                }
+                // this still doesnt work... guess a C++ wrapper is all that can be done?
+                onPressed:(mouse) => {
+                    mouse.accepted = false
+                }
+                onPressAndHold:(mouse) => {
+                    mouse.accepted = false
+                }
+                onDoubleClicked:(mouse) => {
+                    mouse.accepted = false
+                }
+                //cancelled, entered, and exited do not pass mouse events, so we can remove them
+                onReleased:(mouse) => {
+                    mouse.accepted = false
+                }
+                onWheel: (mouse) => {
+                    mouse.accepted = false
+                }
+            }`, 
+            parent.parent, 
+            "mouseTrackerArea"
+        );
 
         ready = true
     }
 
     // Recursive helper function to parse channels
-    function parseChannel(channel, json, typeDefault = 2, autodestroy = true)
+    function parseChannel(channel, json)
     {
+        var typeDefault = 2
+        var autodestroy = true
         var component = Qt.createComponent("./ShaderChannel.qml")
 
         if (json.channel0)
@@ -341,20 +355,6 @@ Rectangle
             }
         }
 
-        channel.frameBufferChannel = typeof json.frame_buffer_channel === "number" ? json.frame_buffer_channel : -1
-        channel.iTimeScale = typeof json.time_scale === "number" ? json.time_scale : 1.0
-        channel.iResolutionScale = typeof json.resolution_scale === "number" ? json.resolution_scale : 1.0
-        channel.iResolution = Qt.binding(() => { return json.resolution_x ? Qt.vector3d(json.resolution_x, json.resolution_y, 1.0) : Qt.vector3d(mainItem.iResolution.x,mainItem.iResolution.y,1.0); })
-        channel.mouseBias = json.mouse_scale ? json.mouse_scale : 1.0
-        channel.width = Qt.binding(() => channel.iResolution.x)
-        channel.height = Qt.binding(() => channel.iResolution.y)
-        channel.materialTexture = typeof json.materialTexture === "string" ? getFilePath(json.materialTexture) : ""
-        channel.materialShader = typeof json.materialShader === "string" ? getFilePath(json.materialShader) : ""
-        channel.mipmap = typeof json.mipmap === "boolean" ? json.mipmap : true
-        channel.blending = typeof json.blending === "boolean" ? json.blending : true
-        channel.samples = typeof json.samples === "number" ? json.samples : 1
-        channel.invert = typeof json.invert === "boolean" ? json.invert : false
-
         if(typeof json.source === "string")
         {
             channel.source = getFilePath(json.source)
@@ -364,26 +364,51 @@ Rectangle
             channel.source = ""
         }
 
+        if(channel.type === ShaderChannel.AudioChannel)
+        {
+            channel.visible = true
+            channel.width = 512
+            channel.height = 2
+        }
+        else
+        {
+            channel.width = Qt.binding(() => channel.iResolution.x)
+            channel.height = Qt.binding(() => channel.iResolution.y)
+        }
+
+        channel.frameBufferChannel = typeof json.frame_buffer_channel === "number" ? json.frame_buffer_channel : -1
+        channel.iTimeScale = typeof json.time_scale === "number" ? json.time_scale : 1.0
+        channel.iResolutionScale = typeof json.resolution_scale === "number" ? json.resolution_scale : 1.0
+        channel.iResolution = Qt.binding(() => { return json.resolution_x ? Qt.vector3d(json.resolution_x, json.resolution_y, 1.0) : Qt.vector3d(mainItem.iResolution.x,mainItem.iResolution.y,1.0); })
+        channel.mouseBias = json.mouse_scale ? json.mouse_scale : 1.0
+        channel.materialTexture = typeof json.materialTexture === "string" ? getFilePath(json.materialTexture) : ""
+        channel.materialShader = typeof json.materialShader === "string" ? getFilePath(json.materialShader) : ""
+        channel.mipmap = typeof json.mipmap === "boolean" ? json.mipmap : true
+        channel.blending = typeof json.blending === "boolean" ? json.blending : false
+        channel.samples = typeof json.samples === "number" ? json.samples : 1
+        channel.invert = typeof json.invert === "boolean" ? json.invert : false
+        channel.visible = false
+
         /*
             Source Format
         */
-        var format = ShaderEffectSource.RGB8A
+        var format = ShaderEffectSource.RGBA8
         
         if(typeof json.format === "string")
         {
             switch(json.format.toLowerCase())
             {
-                case "rgb8a":
-                    format = ShaderEffectSource.RGB8A
+                case "RGBA8":
+                    format = ShaderEffectSource.RGBA8
                     break;
                 case "rgb16f":
-                    format = ShaderEffectSource.RGB16F
+                    format = ShaderEffectSource.RGBA16F
                     break;
                 case "rgb32f":
-                    format = ShaderEffectSource.RGB32F
+                    format = ShaderEffectSource.RGBA32F
                     break;
                 default:
-                    format = ShaderEffectSource.RGB8A
+                    format = ShaderEffectSource.RGBA8
                     break;
             }
 
