@@ -157,13 +157,16 @@ def compile():
         print(f"Output directory: {output_directory}")
 
     last_file = ""
+    last_dir = ""
 
     # Ensure output directory exists
     os.makedirs(output_directory, exist_ok=True)
 
-    try:
-        # Iterate over all .frag files in the source directory
-        for root, dirs, files in os.walk(source_directory):
+    # Iterate over all .frag files in the source directory
+    for root, dirs, files in os.walk(source_directory):
+        try:
+            last_dir = root
+
             for file in files:
                 if file.endswith('.frag') and not file == 'Common.frag':
                     last_file = file
@@ -209,19 +212,24 @@ def compile():
 
                     shutil.copy(file_path, new_file_path)
 
-    except subprocess.CalledProcessError:
-        # If the command failed, do not delete the source file
-        print(f"Compiling failed for: {last_file}")
-        sys.exit(1)
-    except FileNotFoundError:
-        print(f"Error: Directory '{args.input}' not found")
-        sys.exit(1)
-    except PermissionError:
-        print(f"Error: Permission denied: '{args.input}'")
-        sys.exit(1)
-    except Exception as e:
-        print(traceback.format_exc())
-        sys.exit(1)
+        except subprocess.CalledProcessError:
+            # If the command failed, do not delete the source file
+            print(f"Compiling failed for: {last_file}")
+            print(f"Deleting: {last_dir}")
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except FileNotFoundError:
+            print(f"Error: Directory '{args.input}' not found")
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except PermissionError:
+            print(f"Error: Permission denied: '{args.input}'")
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except Exception as e:
+            print(traceback.format_exc())
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
 
 #  1) Process the Common.frag file, if it exists
 #  2) Read in the source file (.frag)
@@ -247,9 +255,12 @@ def process():
         print(f"--Output directory: {temp_directory}")
 
     last_file = ""
+    last_dir = ""
 
-    try:
-        for root, dirs, files in os.walk(source_directory):
+    for root, dirs, files in os.walk(source_directory):
+        try:
+
+            last_dir = root
 
             # Grab the Common shader file, if it exists
             common_file_path = os.path.join(root, 'Common.frag')
@@ -339,19 +350,23 @@ def process():
 
                     shutil.copy(file_path, new_file_path)
 
-    except subprocess.CalledProcessError:
-        # If the command failed, do not delete the source file
-        print(f"Compiling failed for: {last_file}")
-        sys.exit(1)
-    except FileNotFoundError:
-        print(f"Error: Directory '{args.input}' not found")
-        sys.exit(1)
-    except PermissionError:
-        print(f"Error: Permission denied: '{args.input}'")
-        sys.exit(1)
-    except Exception as e:
-        print(traceback.format_exc())
-        sys.exit(1)
+        except subprocess.CalledProcessError:
+            # If the command failed, do not delete the source file
+            print(f"Compiling failed for: {last_file}")
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except FileNotFoundError:
+            print(f"Error: Directory '{args.input}' not found")
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except PermissionError:
+            print(f"Error: Permission denied: '{args.input}'")
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except Exception as e:
+            print(traceback.format_exc())
+            shutil.rmtree(last_dir)
+            # sys.exit(1)
 
 
 #  7) Prepare `Name.frag` by adding ubuff struct and version info
@@ -367,8 +382,11 @@ def prepare():
         print(f"Preparing: {temp_directory}")
     
     last_file = ""
-    try:
-        for root, dirs, files in os.walk(temp_directory):
+    last_dir = "" # track for deleting
+
+    for root, dirs, files in os.walk(temp_directory):
+        try:
+            last_file = root
             for file in files:
 
                 # Stage for compiling, if a shader
@@ -400,19 +418,23 @@ def prepare():
                         with open(file_path, 'w', encoding='utf-8') as f:
                             f.write(final_content)
 
-    except subprocess.CalledProcessError:
-        # If the command failed, do not delete the source file
-        print(f"Compiling failed for: {last_file}")
-        sys.exit(1)
-    except FileNotFoundError:
-        print(f"Error: Directory '{args.input}' not found")
-        sys.exit(1)
-    except PermissionError:
-        print(f"Error: Permission denied: '{args.input}'")
-        sys.exit(1)
-    except Exception as e:
-        print(traceback.format_exc())
-        sys.exit(1)
+        except subprocess.CalledProcessError:
+            # If the command failed, do not delete the source file
+            print(f"Compiling failed for: {last_file}")
+            # shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except FileNotFoundError:
+            print(f"Error: Directory '{args.input}' not found")
+            # shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except PermissionError:
+            print(f"Error: Permission denied: '{args.input}'")
+            # shutil.rmtree(last_dir)
+            # sys.exit(1)
+        except Exception as e:
+            print(traceback.format_exc())
+            # shutil.rmtree(last_dir)
+            # sys.exit(1)
 
 
 if __name__ == '__main__':
