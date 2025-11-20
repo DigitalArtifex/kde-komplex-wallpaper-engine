@@ -33,15 +33,6 @@ public:
 	void registerTypes(const char *uri) override
     {
         Q_ASSERT(QLatin1String(uri) == QLatin1String("com.github.digitalartifex.komplex"));
-
-        char *stUri = new char[std::strlen(uri) + std::strlen(".ShaderToy")];
-        std::sprintf(stUri, "%s.ShaderToy", uri);
-
-        char *pvUri = new char[std::strlen(uri) + std::strlen(".Pexels.Video")];
-        std::sprintf(pvUri, "%s.Pexels.Video", uri);
-
-        char *piUri = new char[std::strlen(uri) + std::strlen(".Pexels.Image")];
-        std::sprintf(piUri, "%s.Pexels.Image", uri);
     
         qmlRegisterSingletonType<AudioModel*>(uri, 1, 0, "AudioModel", komplexAudioSingletonProvider);
         qmlRegisterType<ShaderPackModel>(uri, 1, 0, "ShaderPackModel");
