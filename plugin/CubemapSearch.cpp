@@ -344,8 +344,6 @@ void CubemapSearchModel::download(QString id)
                 setStatus(Error, message);
             }
 
-            qWarning() << process.errorString() << process.readAllStandardOutput();// << command;
-
             if(status() != Error)
             {
                 setLastSavedFile(fileLocation);
