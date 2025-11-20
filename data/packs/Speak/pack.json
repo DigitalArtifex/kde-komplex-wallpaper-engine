@@ -26,10 +26,7 @@
 
         "channel1":
         {
-            "type": 4,
-            "invert": false,
-            "texture_mirroring": "MirrorVertically",
-            "wrap_mode": "Repeat"
+            "type": 4
         }
     }
 }

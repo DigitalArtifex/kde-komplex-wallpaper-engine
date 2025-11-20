@@ -17,6 +17,7 @@
 
     "channel0":
     {
-        "type": 4
+        "type": 4,
+        "invert": false
     }
 }
