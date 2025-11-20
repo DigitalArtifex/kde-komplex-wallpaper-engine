@@ -36,29 +36,8 @@ The **Komplex** engine mode also allows for direct ShaderToy importing through t
 
 ## Installation (Release Packages)
 
-Currently only x86_64 binaries are provided through release packages. 
-
-### Arch - Manual
-Download the provided `zst` package from one of the releases and install it via pacman. This example assumes you downloaded release 1.0.6.
-```
-sudo pacman -U plasma6-wallpapers-komplex-bin-1.0.6-1-x86_64.pkg.tar.zst
-```
 ### Arch - AUR
-Use your favorite AUR helper to install `plasma6-wallpapers-komplex-bin`.
-
-### Debian - Manual
-Download the provided `deb` package from one of the releases and install it via apt-get. This example assumes you downloaded release 1.0.6.
-```
-sudo apt-get install ./plasma6-wallpapers-komplex-bin-1.0.6-1-x86_64.deb
-```
-
-### Generic x86_64 Linux - Qt 6.9.1
-Download the provided `tar.gz` from one of the releases, unpack it and run `install.sh`. This example assumes you downloaded release 1.0.6
-```
-tar -xvzf plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
-cd plasma6-wallpapers-komplex_1-0-6_linux_x86.tar.gz
-sudo ./install.sh
-```
+Use your favorite AUR helper to install `plasma6-wallpapers-komplex`.
 
 ## Post-installation
 In order for the plugin to be registered with Plasma 6, we will need to restart the plasmashell session. In order for the g-streamer backend to take effect, a reboot may be required.
@@ -70,8 +49,6 @@ systemctl --user restart plasma-plasmashell.service
 
 ## Installation (manual)
 
-Contents of the `data` directory should be placed in `~/.local/komplex/`
-
 ### Requirements
 - qt6-base
 - qt6-multimedia
@@ -80,13 +57,11 @@ Contents of the `data` directory should be placed in `~/.local/komplex/`
 - qt6-imageformats
 - qt6-quick3d
 - qt6-shadertools
+- qt6-webview
+- unzip
 - ECM (extra-cmake-modules)
 - plasma-desktop
 - cmake
-
-### Additional Requirements
-- Pexels API Key - Free from [pexels.com](http://www.pexels.com)
-- ShaderToy API Key - Free from [shadertoy.com](http://www.shadertoy.com)
 
 ### Instructions
 
@@ -94,36 +69,15 @@ After ensuring your system has all the required packages, run the following comm
 ```
 git clone https://github.com/DigitalArtifex/kde-komplex-wallpaper-engine.git
 cd kde-komplex-wallpaper-engine
-```
-
-Before we can compile the plugin, we will need to provide the ShaderToy and Pexels API keys through defines in `plugin/ShaderToyAPI.h` and `plugin/PlexelsAPI.h`
-
-`plugin/ShaderToyAPI.h`
-```cpp
-#ifndef SHADERTOYAPI_H
-#define SHADERTOYAPI_H
-
-#define STK "SHADERTOYKEY"
-
-#endif // SHADERTOYAPI_H
-```
-
-`plugin/ShaderToyAPI.h`
-```cpp
-#ifndef PEXELSAPI_H
-#define PEXELSAPI_H
-
-#define PAK "PEXELSKEY"
-
-#endif // PEXELSAPI_H
-```
-
-Now that we have the API keys setup, we can finally build from source
-```
 mkdir build
 cmake -S ./ -B ./build
 cmake --build ./build
-cmake --install ./build
+sudo cmake --install ./build
+```
+The contents of data/* should be copied to the system
+```
+sudo mkdir /usr/share/komplex/
+cp -r data/* /usr/share/komplex/
 ```
 
 After installation, it is likely that you may experience scan lines and other artifacts when using the `Video Channel Buffer`. This is due to the default backend being FFMPEG, which is known to have such issues with Qt. You can correct this issue by using the `gstreamer` backend provided by qt6-multimedia-gstreamer. 
