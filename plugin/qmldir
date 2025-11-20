@@ -6,3 +6,4 @@ classname PexelsImageSearchModel
 classname PexelsVideoSearchModel
 classname ShaderToySearchModel
 classname KomplexSearchModel
+classname CubemapSearchModel

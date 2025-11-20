@@ -7,6 +7,7 @@
 #include "ShaderPackModel.h"
 #include "PexelsVideoSearch.h"
 #include "PexelsImageSearch.h"
+#include "CubemapSearch.h"
 #include "ShaderToySearchModel.h"
 #include "GeometryProvider.h"
 #include "KomplexSearchModel.h"
@@ -49,6 +50,7 @@ public:
         qmlRegisterType<PexelsVideoSearchModel>(uri, 1, 0, "PexelsVideoSearchModel");
         qmlRegisterType<PexelsImageSearchModel>(uri, 1, 0, "PexelsImageSearchModel");
         qmlRegisterType<KomplexSearchModel>(uri, 1, 0, "KomplexSearchModel");
+        qmlRegisterType<CubemapSearchModel>(uri, 1, 0, "CubemapSearchModel");
     }
 
     void unregisterTypes() override

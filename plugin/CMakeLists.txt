@@ -31,10 +31,11 @@ add_library(
         ShaderToyMetadata.h
         ShaderToySearchModel.h
         ShaderToySearchModel.cpp
-        ShaderToyAPI.h
-        PexelsAPI.h
         KomplexSearchModel.h
         KomplexSearchModel.cpp
+        CubemapSearch.h
+        CubemapSearch.cpp
+        CubemapMetadata.h
 ) 
 
 qt_add_qml_module(
@@ -66,10 +67,11 @@ qt_add_qml_module(
         ShaderToyMetadata.h
         ShaderToySearchModel.h
         ShaderToySearchModel.cpp
-        ShaderToyAPI.h
-        PexelsAPI.h
         KomplexSearchModel.h
         KomplexSearchModel.cpp
+        CubemapSearch.h
+        CubemapSearch.cpp
+        CubemapMetadata.h
     NO_GENERATE_PLUGIN_SOURCE
 )
 
