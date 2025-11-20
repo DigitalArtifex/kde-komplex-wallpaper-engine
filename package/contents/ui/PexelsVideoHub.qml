@@ -408,7 +408,7 @@ Item
                             visible: !mediaPlayer.playing
                             anchors.fill: parent
 
-                            fillMode: Image.PreserveAspectFill
+                            fillMode: Image.PreserveAspectFit
                             source: downloadDialog.thumbnail
                         }
                     }

@@ -1,5 +1,4 @@
 #include "PexelsVideoSearch.h"
-#include "PexelsAPI.h"
 #include <qeventloop.h>
 
 PexelsVideoSearchModel::PexelsVideoSearchModel(QObject *parent) : QAbstractItemModel { parent }
@@ -73,7 +72,7 @@ void PexelsVideoSearchModel::getSearchResults(QString url)
     setStatus(Searching);
 
     QNetworkRequest request;
-    request.setRawHeader(QStringLiteral("Authorization").toLatin1(), QStringLiteral(PAK).toLatin1());
+    //request.setRawHeader(QStringLiteral("Authorization").toLatin1(), QStringLiteral(PAK).toLatin1());
     request.setUrl(QUrl(url));
 
     QNetworkReply *reply = m_networkManager.get(request);
@@ -378,6 +377,6 @@ void PexelsVideoSearchModel::setQuery(const QString &query)
 
     m_query = query;
     Q_EMIT queryChanged();
-
-    getSearchResults(QStringLiteral("https://api.pexels.com/videos/search?query=%1&per_page=%2").arg(QUrl::toPercentEncoding(m_query)).arg(m_resultsPerPage));
+    
+    getSearchResults(QStringLiteral("https://api.artifex.services/v1/videos/search/%1/0/%2").arg(m_query).arg(m_resultsPerPage));
 }

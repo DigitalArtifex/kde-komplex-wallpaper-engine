@@ -123,7 +123,7 @@ void KomplexSearchModel::downloadMedia(QString fileLocation, QString fileUrl)
                 return;
             }
 
-            if(!file.write(data) != data.length())
+            if(file.write(data) != data.length())
             {
                 file.close();
                 qWarning() << QStringLiteral("Could not write file to download").arg(type.toUpper());

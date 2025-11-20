@@ -1,5 +1,4 @@
 #include "PexelsImageSearch.h"
-#include "PexelsAPI.h"
 
 PexelsImageSearchModel::PexelsImageSearchModel(QObject *parent) : QAbstractItemModel { parent }
 {
@@ -83,7 +82,7 @@ void PexelsImageSearchModel::getSearchResults(QString url)
     setStatus(Searching);
 
     QNetworkRequest request;
-    request.setRawHeader(QStringLiteral("Authorization").toLatin1(), QStringLiteral(PAK).toLatin1());
+    //request.setRawHeader(QStringLiteral("Authorization").toLatin1(), QStringLiteral(PAK).toLatin1());
     request.setUrl(QUrl(url));
 
     QNetworkReply *reply = m_networkManager.get(request);
@@ -382,5 +381,5 @@ void PexelsImageSearchModel::setQuery(const QString &query)
     m_query = query;
     Q_EMIT queryChanged();
 
-    getSearchResults(QStringLiteral("https://api.pexels.com/v1/search?query=%1&per_page=%2").arg(m_query).arg(m_resultsPerPage));
+    getSearchResults(QStringLiteral("https://api.artifex.services/v1/images/search/%1/0/%2").arg(m_query).arg(m_resultsPerPage));
 }

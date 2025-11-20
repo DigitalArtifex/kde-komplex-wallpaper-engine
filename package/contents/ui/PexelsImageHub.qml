@@ -10,7 +10,6 @@ Item
     property alias selectedFile: searchModel.lastSavedFile
 
     id: mainItem
-    anchors.fill: parent
 
     Komplex.PexelsImageSearchModel
     {
@@ -19,8 +18,7 @@ Item
 
     ColumnLayout
     {
-        width: mainItem.width
-        height: mainItem.height
+        anchors.fill: parent
 
         RowLayout
         {
