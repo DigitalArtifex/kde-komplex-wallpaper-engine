@@ -36,6 +36,7 @@ import com.github.digitalartifex.komplex 1.0 as Komplex
 
 Kirigami.FormLayout 
 {
+    wideMode: true
     id: root
     twinFormLayouts: parentLayout // required by parent
     property alias formLayout: root // required by parent
@@ -71,10 +72,14 @@ Kirigami.FormLayout
     property alias cfg_iChannel2_resolution_y: shaderChannelConfig2.resolution_y
     property alias cfg_iChannel3_resolution_x: shaderChannelConfig3.resolution_x
     property alias cfg_iChannel3_resolution_y: shaderChannelConfig3.resolution_y
-    property alias cfg_iChannel0_inverted: shaderChannelConfig0.invert
-    property alias cfg_iChannel1_inverted: shaderChannelConfig1.invert
-    property alias cfg_iChannel2_inverted: shaderChannelConfig2.invert
-    property alias cfg_iChannel3_inverted: shaderChannelConfig3.invert
+    property alias cfg_iChannel0_wrap_mode: shaderChannelConfig0.textureWrapping
+    property alias cfg_iChannel1_wrap_mode: shaderChannelConfig1.textureWrapping
+    property alias cfg_iChannel2_wrap_mode: shaderChannelConfig2.textureWrapping
+    property alias cfg_iChannel3_wrap_mode: shaderChannelConfig3.textureWrapping
+    property alias cfg_iChannel0_mirroring_mode: shaderChannelConfig0.textureMirroring
+    property alias cfg_iChannel1_mirroring_mode: shaderChannelConfig1.textureMirroring
+    property alias cfg_iChannel2_mirroring_mode: shaderChannelConfig2.textureMirroring
+    property alias cfg_iChannel3_mirroring_mode: shaderChannelConfig3.textureMirroring
     property alias cfg_shaderSpeed: speedSlider.value
     property alias cfg_mouseSpeedBias: mouseBiasSlider.value
     property alias cfg_mouseAllowed: mouseEnableButton.checked
@@ -459,6 +464,7 @@ Kirigami.FormLayout
         id: shaderChannelOverlay1
         parent: applicationWindow().overlay
         implicitHeight: 420
+        implicitWidth: 960
 
         ShaderChannelConfiguration
         {
@@ -511,6 +517,7 @@ Kirigami.FormLayout
         id: shaderChannelOverlay2
         parent: applicationWindow().overlay
         implicitHeight: 420
+        implicitWidth: 960
 
         ShaderChannelConfiguration
         {
@@ -562,6 +569,7 @@ Kirigami.FormLayout
         id: shaderChannelOverlay3
         parent: applicationWindow().overlay
         implicitHeight: 420
+        implicitWidth: 960
 
         ShaderChannelConfiguration
         {
@@ -685,11 +693,11 @@ Kirigami.FormLayout
             }
             background: Rectangle 
             {
-                color: resolutionXField.activeFocus ? palette.base : "transparent"
-                border.color: resolutionXField.activeFocus ? palette.highlight : "transparent"
+                color: frameRateField.activeFocus ? palette.base : "transparent"
+                border.color: frameRateField.activeFocus ? palette.highlight : "transparent"
                 border.width: 1
                 radius: 4
-                anchors.fill: resolutionXField
+                anchors.fill: frameRateField
                 anchors.margins: -2
             }
 

@@ -36,19 +36,15 @@ import org.kde.plasma.plasmoid
 WallpaperItem 
 {
     id: wallpaperItem
-    Item
+    Rectangle
     {
+        color: "black"
         property int resolution_x: wallpaper.configuration.resolution_x
         property int resolution_y: wallpaper.configuration.resolution_y
         property string shaderPack: wallpaper.configuration.shader_package
         property bool changing: false
 
         property bool updated: wallpaper.configuration.shader_updated
-
-        property bool iChannel0_inverted: wallpaper.configuration.iChannel0_inverted
-        property bool iChannel1_inverted: wallpaper.configuration.iChannel1_inverted
-        property bool iChannel2_inverted: wallpaper.configuration.iChannel2_inverted
-        property bool iChannel3_inverted: wallpaper.configuration.iChannel3_inverted
 
         anchors.fill: parent
         
@@ -106,7 +102,6 @@ WallpaperItem
         onResolution_xChanged: () => reload();
         onResolution_yChanged: () => reload();
         onShaderPackChanged: () => reload();
-        onIChannel0_invertedChanged: () => reload();
 
         onUpdatedChanged: () =>
         {

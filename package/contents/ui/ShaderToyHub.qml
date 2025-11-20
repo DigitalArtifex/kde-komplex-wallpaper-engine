@@ -587,7 +587,7 @@ Item
             {
                 Layout.alignment: Qt.AlignRight
                 standardButtons: DialogButtonBox.Ok
-                onAccepted: messageDialog.close()
+                onAccepted: warningDialog.close()
             }
         }
 
@@ -596,8 +596,6 @@ Item
             target: searchModel
             function onStatusChanged()
             {
-                console.log("Search Model Status " + searchModel.status)
-
                 if(searchModel.status === Komplex.KomplexSearchModel.Error)
                 {
                     warningDialog.open();

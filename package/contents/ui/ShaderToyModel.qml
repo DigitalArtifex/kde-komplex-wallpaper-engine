@@ -83,18 +83,25 @@ Item
             visible: true
             iTime: mainItem.iTime
             iMouse: mainItem.iMouse
-            iResolution: mainItem.iResolution
+
+            iResolution: [
+                wallpaper.configuration.iChannel0_resolution_x,
+                wallpaper.configuration.iChannel0_resolution_y
+            ]
+            
+            iDate: mainItem.iDate
             iFrame: mainItem.iFrame
 
             id: channel0
-            // width: mainItem.iResolution.x
-            // height: mainItem.iResolution.y
-            type: wallpaper.configuration.iChannel0_flag ? wallpaper.configuration.iChannel0_type : 0
+            width: wallpaper.configuration.iChannel0_resolution_x
+            height: wallpaper.configuration.iChannel0_resolution_y
+            type: wallpaper.configuration.iChannel0_type
 
-            source: wallpaper.configuration.iChannel0_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel0) : ""
+            source: Qt.resolvedUrl(wallpaper.configuration.iChannel0)
 
             // ShaderToy seems to start at bottom left for 0,0
-            invert: wallpaper.configuration.iChannel0_inverted !== undefined ? wallpaper.configuration.iChannel0_inverted : true
+            wrapMode: wallpaper.configuration.iChannel0_wrap_mode
+            textureMirroring: wallpaper.configuration.iChannel0_mirroring_mode
         }
 
         ShaderChannel
@@ -102,18 +109,25 @@ Item
             //Fallback to a channel if the output channel is not set or there was an error loading the shader
             visible: wallpaper.configuration.iChannel1_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
-            iResolution: mainItem.iResolution
+
+            iResolution: [
+                wallpaper.configuration.iChannel1_resolution_x,
+                wallpaper.configuration.iChannel1_resolution_y
+            ]
+            
+            iDate: mainItem.iDate
             iFrame: mainItem.iFrame
 
             id: channel1
-            width: mainItem.iResolution.x
-            height: mainItem.iResolution.y
+            width: wallpaper.configuration.iChannel1_resolution_x
+            height: wallpaper.configuration.iChannel1_resolution_y
             type: wallpaper.configuration.iChannel1_flag ? wallpaper.configuration.iChannel1_type : 0
 
             source: wallpaper.configuration.iChannel1_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel1) : ""
 
             // ShaderToy seems to start at bottom left for 0,0
-            invert: wallpaper.configuration.iChannel1_inverted ? wallpaper.configuration.iChannel1_inverted : true
+            wrapMode: wallpaper.configuration.iChannel1_wrap_mode
+            textureMirroring: wallpaper.configuration.iChannel1_mirroring_mode
         }
 
         ShaderChannel
@@ -121,18 +135,25 @@ Item
             //Fallback to a channel if the output channel is not set or there was an error loading the shader
             visible: wallpaper.configuration.iChannel2_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
-            iResolution: mainItem.iResolution
+
+            iResolution: [
+                wallpaper.configuration.iChannel2_resolution_x,
+                wallpaper.configuration.iChannel2_resolution_y
+            ]
+            
+            iDate: mainItem.iDate
             iFrame: mainItem.iFrame
 
             id: channel2
-            width: mainItem.iResolution.x
-            height: mainItem.iResolution.y
+            width: wallpaper.configuration.iChannel2_resolution_x
+            height: wallpaper.configuration.iChannel2_resolution_y
             type: wallpaper.configuration.iChannel2_flag ? wallpaper.configuration.iChannel2_type : 0
 
             source: wallpaper.configuration.iChannel2_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel2) : ""
 
             // ShaderToy seems to start at bottom left for 0,0
-            invert: wallpaper.configuration.iChannel2_inverted ? wallpaper.configuration.iChannel2_inverted : true
+            wrapMode: wallpaper.configuration.iChannel2_wrap_mode
+            textureMirroring: wallpaper.configuration.iChannel2_mirroring_mode
         }
 
         ShaderChannel
@@ -140,19 +161,25 @@ Item
             //Fallback to a channel if the output channel is not set or there was an error loading the shader
             visible: wallpaper.configuration.iChannel3_flag && (channelOutput.source === "" || channelOutput.source === undefined)
             iTime: mainItem.iTime
-            iResolution: mainItem.iResolution
+
+            iResolution: [
+                wallpaper.configuration.iChannel3_resolution_x,
+                wallpaper.configuration.iChannel3_resolution_y
+            ]
+
             iDate: mainItem.iDate
             iFrame: mainItem.iFrame
 
             id: channel3
-            width: mainItem.iResolution.x
-            height: mainItem.iResolution.y
+            width: wallpaper.configuration.iChannel3_resolution_x
+            height: wallpaper.configuration.iChannel3_resolution_y
             type: wallpaper.configuration.iChannel3_flag ? wallpaper.configuration.iChannel3_type : 0
 
             source: wallpaper.configuration.iChannel3_flag ? Qt.resolvedUrl(wallpaper.configuration.iChannel3) : ""
 
             // ShaderToy seems to start at bottom left for 0,0
-            invert: wallpaper.configuration.iChannel3_inverted ? wallpaper.configuration.iChannel3_inverted : true
+            wrapMode: wallpaper.configuration.iChannel3_wrap_mode
+            textureMirroring: wallpaper.configuration.iChannel3_mirroring_mode
         }
 
         // The output channel that combines all the input channels and displays the final shader output
@@ -179,19 +206,19 @@ Item
             blending: false
         }
 
-        // ShaderEffectSource
-        // {
-        //     anchors.fill: parent
-        //     sourceItem: channelOutput
-        //     sourceRect: Qt.rect(0,0, mainItem.iResolution.x, mainItem.iResolution.y)
-        //     textureSize: Qt.size(mainItem.iResolution.x, mainItem.iResolution.y)
-        //     hideSource: true
-        //     visible: true
-        //     smooth: true
-        //     live: true
+        ShaderEffectSource
+        {
+            anchors.fill: parent
+            sourceItem: channelOutput
+            sourceRect: Qt.rect(0,0, mainItem.iResolution.x, mainItem.iResolution.y)
+            textureSize: Qt.size(mainItem.iResolution.x, mainItem.iResolution.y)
+            hideSource: true
+            visible: true
+            smooth: true
+            live: true
 
-        //     id: finalSource
-        // }
+            id: finalSource
+        }
 
         // To save on performance, just use one timer for all channels
         Timer

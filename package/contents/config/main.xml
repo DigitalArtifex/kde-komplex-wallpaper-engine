@@ -65,17 +65,21 @@
       <label>iChannel0 on/off flag</label>
       <default>true</default>
     </entry>
-    <entry name="iChannel0_inverted" type="Bool">
-      <label>Invert iChannel0's data for the shader</label>
-      <default>true</default>
-    </entry>
     <entry name="iChannel0_timeScale" type="Double">
       <label>iChannel0 time scale</label>
       <default>1.0</default>
     </entry>
+    <entry name="iChannel0_mirroring_mode" type="Int">
+      <label>iChannel0's Mirroring Mode</label>
+      <default>2</default>
+    </entry>
+    <entry name="iChannel0_wrap_mode" type="Int">
+      <label>iChannel0's Wrap Mode</label>
+      <default>3</default>
+    </entry>
     <entry name="iChannel1" type="String">
       <label>iChannel1's path</label>
-      <default>./Resources/wallpaper2.png</default>
+      <default>""</default>
     </entry>
     <entry name="iChannel1_type" type="Int">
       <label>iChannel1's Channel Type</label>
@@ -97,13 +101,17 @@
       <label>iChannel1 on/off flag</label>
       <default>true</default>
     </entry>
-    <entry name="iChannel1_inverted" type="Bool">
-      <label>Invert iChannel1's data for the shader</label>
-      <default>true</default>
-    </entry>
     <entry name="iChannel1_timeScale" type="Double">
       <label>iChannel1 time scale</label>
       <default>1.0</default>
+    </entry>
+    <entry name="iChannel1_mirroring_mode" type="Int">
+      <label>iChannel1's Mirroring Mode</label>
+      <default>2</default>
+    </entry>
+    <entry name="iChannel1_wrap_mode" type="Int">
+      <label>iChannel1's Wrap Mode</label>
+      <default>3</default>
     </entry>
     <entry name="iChannel2" type="String">
       <label>iChannel2's path</label>
@@ -129,9 +137,13 @@
       <label>iChannel2 on/off flag</label>
       <default>true</default>
     </entry>
-    <entry name="iChannel2_inverted" type="Bool">
-      <label>Invert iChannel2's data for the shader</label>
-      <default>true</default>
+    <entry name="iChannel2_mirroring_mode" type="Int">
+      <label>iChannel2's Mirroring Mode</label>
+      <default>2</default>
+    </entry>
+    <entry name="iChannel2_wrap_mode" type="Int">
+      <label>iChannel2's Wrap Mode</label>
+      <default>3</default>
     </entry>
     <entry name="iChannel2_timeScale" type="Double">
       <label>iChannel2 time scale</label>
@@ -161,13 +173,17 @@
       <label>iChannel3 on/off flag</label>
       <default>false</default>
     </entry>
-    <entry name="iChannel3_inverted" type="Bool">
-      <label>Invert iChannel3's data for the shader</label>
-      <default>true</default>
-    </entry>
     <entry name="iChannel3_timeScale" type="Double">
       <label>iChannel3 time scale</label>
       <default>1.0</default>
+    </entry>
+    <entry name="iChannel3_mirroring_mode" type="Int">
+      <label>iChannel3's Mirroring Mode</label>
+      <default>0</default>
+    </entry>
+    <entry name="iChannel3_wrap_mode" type="Int">
+      <label>iChannel3's Wrap Mode</label>
+      <default>3</default>
     </entry>
     <entry name="resolution_x" type="Int">
       <label>Output Channel's Resolution (Width)</label>

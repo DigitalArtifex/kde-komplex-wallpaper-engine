@@ -79,7 +79,6 @@ Item
     property var wrapMode: ShaderEffectSource.Repeat
     property var format: ShaderEffectSource.RGBA8
     property var windowModel
-    property bool invert: false
 
     property var iChannelResolution: [Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1), Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1), Qt.vector3d(channel.iResolution.x * iResolutionScale, channel.iResolution.y * iResolutionScale, 1)]
 
@@ -95,7 +94,7 @@ Item
         property vector4d iMouse: Qt.vector4d(channel.iMouse.x * channel.mouseBias, channel.iMouse.y * channel.mouseBias, channel.iMouse.z, channel.iMouse.w)
         property real iTime: 0
         property real lastITime: 0
-        property real angle: channel.invert ? 180 : 0
+        property real angle: 0
     }
 
     onITimeChanged: 
@@ -473,7 +472,7 @@ Item
 
             // recursive frame buffer
             ShaderEffectSource
-            {    
+            {
                 id: frameBufferSource
                 sourceItem: channel.channelShaderOutput === -1 ? null : channelShaderOutput
                 sourceRect: Qt.rect(0,0, channelShaderOutput.width, channelShaderOutput.height)

@@ -63,7 +63,8 @@ Item
     property alias tmp_resolution_scale: resolutionScaleSlider.value
     property alias tmp_resolution_x: resolutionXEdit.value
     property alias tmp_resolution_y: resolutionYEdit.value
-    property alias tmp_invert: channelInvertedCheckBox.checked
+    property alias tmp_mirroring: textureMirroringSelector.currentIndex
+    property alias tmp_wrap: textureWrapSelector.currentIndex
     property bool tmp_enabled: tmp_source !== ""
     property Palette palette
 
@@ -73,8 +74,9 @@ Item
     property real resolution_scale
     property int resolution_x
     property int resolution_y
+    property int textureMirroring
+    property int textureWrapping
     property bool enabled
-    property bool invert
     property bool changed
 
     id: window
@@ -355,12 +357,19 @@ Item
                     pexelsVideoDialog.open()
                 }
             }
-        }
 
-        CheckBox 
-        {
-            id: channelInvertedCheckBox
-            text: i18n("Invert Channel Data")
+            Button
+            {
+                visible: window.tmp_type === ShaderChannel.CubeMapChannel
+                icon.name: "network-symbolic"
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 2
+                Layout.preferredHeight: Kirigami.Units.gridUnit * 2
+
+                onClicked: 
+                {
+                    cubemapHubDialog.open()
+                }
+            }
         }
 
         RowLayout 
@@ -568,6 +577,80 @@ Item
                 }
             }
         }
+
+        RowLayout
+        {
+            Layout.alignment: Qt.AlignTop
+            Layout.fillWidth: true
+
+            RowLayout
+            {
+                Layout.fillWidth: true
+                Label
+                {
+                    text: "Texture Mirroring"
+                    color: palette.text
+                    Layout.preferredHeight: 35
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ComboBox
+                {
+                    id: textureMirroringSelector
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 35
+
+                    model: ListModel {
+                        ListElement { text: "No Mirroring" }
+                        ListElement { text: "Mirror Horizontally" }
+                        ListElement { text: "Mirror Vertically" }
+                    }
+
+                    onCurrentIndexChanged: () =>
+                    {
+                        mainItem.tmp_mirroring = currentIndex
+                    }
+                }
+            }
+
+            RowLayout
+            {
+                Layout.fillWidth: true
+                Label
+                {
+                    text: "Texture Wrap Mode"
+                    color: palette.text
+                    Layout.preferredHeight: 35
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ComboBox
+                {
+                    id: textureWrapSelector
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 35
+
+                    model: ListModel {
+                        ListElement { text: "Clamp To Edge" }
+                        ListElement { text: "Repeat Horizontally" }
+                        ListElement { text: "Repeat Vertically" }
+                        ListElement { text: "Repeat" }
+                    }
+
+                    onCurrentIndexChanged: () =>
+                    {
+                        mainItem.tmp_wrap = currentIndex
+                    }
+                }
+            }
+        }
+
+        Rectangle
+        {
+            color: "transparent"
+            Layout.fillHeight: true
+        }
+
         RowLayout
         {
             Layout.fillWidth: true
@@ -630,7 +713,7 @@ Item
             width: pexelsVideoDialog.width - 10
             height: pexelsVideoDialog.height - 40
 
-            onSelectedFileChanged:
+            onSelectedFileChanged: () =>
             {
                 window.tmp_source = pexelsImageHub.selectedFile
 
@@ -638,6 +721,32 @@ Item
                     return;
 
                 pexelsImageDialog.close()
+            }
+        }
+    }
+
+    Kirigami.OverlaySheet
+    {
+        title: "Cubemap Import"
+        id: cubemapHubDialog
+        implicitWidth: 960
+        implicitHeight: 480
+        parent: applicationWindow().overlay
+
+        CubemapHub
+        {
+            id: cubemapHub 
+            width: cubemapHubDialog.width - 10
+            height: cubemapHubDialog.height - 40
+
+            onSelectedFileChanged: () =>
+            {
+                window.tmp_source = cubemapHub.selectedFile
+
+                if(selectedFile === "" || selectedFile === undefined)
+                    return;
+
+                cubemapHubDialog.close()
             }
         }
     }
@@ -656,7 +765,7 @@ Item
             width: pexelsVideoDialog.width - 10
             height: pexelsVideoDialog.height - 40
 
-            onSelectedFileChanged:
+            onSelectedFileChanged: () =>
             {
                 window.tmp_source = pexelsVideoHub.selectedFile
 
@@ -678,7 +787,8 @@ Item
         resolution_x = tmp_resolution_x
         resolution_y = tmp_resolution_y
         enabled = tmp_enabled
-        invert = tmp_invert
+        textureMirroring = tmp_mirroring
+        textureWrapping = tmp_wrap
 
         // Emit the accepted signal and reset the selection
         window.accepted()
@@ -727,17 +837,18 @@ Item
     function resetSelection()
     {
         if((tmp_source !== source) || (tmp_enabled !== enabled) ||
-        (tmp_invert !== invert) || (tmp_resolution_scale !== resolution_scale) ||
+        (tmp_mirroring !== textureMirroring) || (tmp_resolution_scale !== resolution_scale) ||
         (tmp_resolution_x !== resolution_x) || (tmp_resolution_y !== resolution_y) ||
-        (tmp_timeScale !== timeScale) || (tmp_type !== type))
+        (tmp_timeScale !== timeScale) || (tmp_type !== type) || (tmp_wrap !== textureWrapping))
             changed = true;
-        
+
         tmp_source = source
         tmp_timeScale = timeScale
         tmp_resolution_scale = resolution_scale
         tmp_resolution_x = resolution_x
         tmp_resolution_y = resolution_y
-        tmp_invert = invert
+        tmp_mirroring = textureMirroring
+        tmp_wrap = textureWrapping
 
         tmp_type = type
         updateCurrentSelection()
