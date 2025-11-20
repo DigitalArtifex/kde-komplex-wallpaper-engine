@@ -20,7 +20,6 @@
 #include <qpixmap.h>
 #include <qqmlintegration.h>
 
-#include "ShaderToyAPI.h"
 #include "Komplex_global.h"
 
 struct KOMPLEX_EXPORT ShaderToyMetadata

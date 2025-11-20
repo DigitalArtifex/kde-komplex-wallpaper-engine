@@ -554,7 +554,7 @@ void ShaderToySearchModel::download(quint64 index)
 
     // setState(Loading, QStringLiteral("Downloading Metadata"));
 
-    QUrl url(QStringLiteral("https://www.shadertoy.com/api/v1/shaders/%1?key=%2").arg(entry.metadata.id, STK));
+    QUrl url(QStringLiteral("https://www.shadertoy.com/api/v1/shaders/%1?key=%2").arg(entry.metadata.id, QString()));
     QNetworkReply *reply = m_manager.get(QNetworkRequest(url));
 
     QObject::connect
@@ -1078,7 +1078,7 @@ void ShaderToySearchModel::setQuery(const QString &query)
     if(m_currentPage == 0)
         setCurrentPage(1);
 
-    getSearchResults(QStringLiteral("https://www.shadertoy.com/api/v1/shaders/query/%1?from=%2&num=%3&key=%4").arg(m_query).arg((m_currentPage - 1) * m_resultsPerPage).arg(m_resultsPerPage).arg(STK));
+    getSearchResults(QStringLiteral("https://www.shadertoy.com/api/v1/shaders/query/%1?from=%2&num=%3&key=%4").arg(m_query).arg((m_currentPage - 1) * m_resultsPerPage).arg(m_resultsPerPage).arg(QString()));
 }
 
 void ShaderToySearchModel::getSearchResults(QString url)
