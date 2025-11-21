@@ -1,3 +1,6 @@
+> [!NOTE]
+> `api.artifex.services` is now live! Shaders, Images, Videos and Cubemaps can now be obtained with the in-app media hubs
+
 # Komplex Wallpaper Engine
 
 Komplex Wallpaper Engine is an advanced wallpaper engine for the KDE Plasma 6 Desktop Environment that allows the use of complex shader arrangements as a Wallpaper. Shader arrangements are a collection of shaders and various channel buffers that the shader is intended to manipulate, resulting in visually stunning live motion and reactive wallpapers.
@@ -9,19 +12,19 @@ Komplex Wallpaper Engine is an advanced wallpaper engine for the KDE Plasma 6 De
 - Komplex
 
 ### Supported Channel Buffers
-- Shaders*
+- Shaders
 - Images
 - Videos
-- Cubemaps**
-- Audio***
+- Cubemaps
+- Audio
 - QML Scenes
 - Recursive Frame Buffer
 
-*Shaders must be compiled with the `qsb` tool supplied with Qt. It may be available through your distribution's package manager. Follow the instructions in /tools/README.md to compile shaders for use with Qt.
+> [!IMPORTANT]
+> GLSL Shaders can be manually imported but must be compiled with the `qsb` tool supplied with Qt. A tool has been provided as `~/.local/share/komplex/tools/stc.py` to assist with this process and to process shader importing. Please see the [Wiki](https://github.com/DigitalArtifex/kde-komplex-wallpaper-engine/wiki/Converting-ShaderToy-Pages-To-Komplex-Packs) for more information.
 
-**The Cubemaps provided in this package are released under Creative Commons Attribution 3.0 Unported License and were obtained from [Humus](http://www.humus.name)
-
-***Audio reactivity requires KDE to be using Pipewire
+> [!IMPORTANT]
+> Audio reactivity requires Pipewire be the active audio server
 
 ### Engine Mode: Simple
 
@@ -80,11 +83,10 @@ sudo mkdir /usr/share/komplex/
 cp -r data/* /usr/share/komplex/
 ```
 
-After installation, it is likely that you may experience scan lines and other artifacts when using the `Video Channel Buffer`. This is due to the default backend being FFMPEG, which is known to have such issues with Qt. You can correct this issue by using the `gstreamer` backend provided by qt6-multimedia-gstreamer. 
-```
-sudo echo "export QT_MEDIA_BACKEND=gstreamer" >> /etc/profile
-```
-This step is automatically executed by the Arch installation package.
+> [!WARNING]
+> After installation, it is likely that you may experience scan lines and other artifacts when using the `Video Channel Buffer`. This is due to the default backend being FFMPEG, which is known to have such issues with Qt. You can correct this issue by using the following command to change to the `gstreamer` backend provided by qt6-multimedia-gstreamer.
+> 
+> `sudo echo "export QT_MEDIA_BACKEND=gstreamer" >> /etc/profile`
 
 ## Credits
 
@@ -92,8 +94,8 @@ This project was inspired by `KDE Shader Wallpaper`, `Wallpaper Engine` and othe
 
 This project uses icons donated by [Icons8](http://www.icons8.com)
 
-Shader import functionality provided by [ShaderToy](http://www.shadertoy.com) API
+Shaders provided by various artists from [ShaderToy](http://www.shadertoy.com) (API)
 
-Image and Video import functionality provided by [Pexels](http://www.pexels.com) API
+Image and Videos provided by [Pexels](http://www.pexels.com) (API)
 
 To support me, this project or to find Linux themed hot sauces, you can [Buy me a coffee](https://ko-fi.com/digitalartifex)
