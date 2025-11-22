@@ -1,11 +1,11 @@
-> [!NOTE]
-> `api.artifex.services` is now live! Shaders, Images, Videos and Cubemaps can now be obtained with the in-app media hubs
-
 # Komplex Wallpaper Engine
+
+<img src="https://github.com/DigitalArtifex/DigitalArtifex/blob/f3eb531a9afda9a36d5753a82974b12e54172ad2/komplex.gif" width="100%" />
 
 Komplex Wallpaper Engine is an advanced wallpaper engine for the KDE Plasma 6 Desktop Environment that allows the use of complex shader arrangements as a Wallpaper. Shader arrangements are a collection of shaders and various channel buffers that the shader is intended to manipulate, resulting in visually stunning live motion and reactive wallpapers.
 
-[![Youtube Video](https://github.com/user-attachments/assets/19196d80-0a30-4e94-9260-6e450ae0f325)](https://www.youtube.com/watch?v=qjKEwrNts1A)
+> [!NOTE]
+> `api.artifex.services` is now live! Shaders, Images, Videos and Cubemaps can now be obtained with the in-app media hubs
 
 ## Supported Engine Modes
 - Simple
