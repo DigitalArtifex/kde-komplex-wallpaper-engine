@@ -16,6 +16,10 @@
 
 AudioModel::AudioModel(QObject *parent) : QObject(parent)
 {
+    //init a blank 512x2 texture for the audio provider
+    m_frame = QPixmap(512, 2);
+    m_frame.fill(QColor());
+
     m_impl_data = { nullptr, nullptr, {0, 0, {}}, 1, {}, {}, 0.0};
     m_impl_data.samples.reserve(4096);
     m_impl_data.smoothed.reserve(2048);
@@ -151,7 +155,12 @@ void AudioModel::startCaptureAsync()
 QPixmap AudioModel::frame()
 {
     if(!m_instance)
-        return QPixmap();
+    {
+        QPixmap frame = QPixmap(512, 2);
+        frame.fill(QColor());
+        
+        return frame;
+    }
     
     return m_instance->m_frame;
 }
