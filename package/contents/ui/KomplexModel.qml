@@ -386,7 +386,6 @@ Rectangle
         channel.mipmap = typeof json.mipmap === "boolean" ? json.mipmap : true
         channel.blending = typeof json.blending === "boolean" ? json.blending : false
         channel.samples = typeof json.samples === "number" ? json.samples : 1
-        channel.invert = typeof json.invert === "boolean" ? json.invert : false
         channel.visible = false
 
         /*
