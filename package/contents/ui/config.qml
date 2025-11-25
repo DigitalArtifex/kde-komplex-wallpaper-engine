@@ -825,7 +825,7 @@ Kirigami.FormLayout
         text: i18n("Play/Pause the shader")
         onCheckedChanged: () =>
         {
-            wallpaper.configuration.running = checked;
+            // wallpaper.configuration.running = checked;
             root.cfg_running = checked;
         }
     }
@@ -866,7 +866,7 @@ Kirigami.FormLayout
                 onValueChanged: () =>
                 {
                     mouseBiasField.text = String(value.toFixed(2));
-                    wallpaper.configuration.mouseBias = mouseBiasField.text;
+                    // wallpaper.configuration.mouseBias = mouseBiasField.text;
                     root.cfg_mouseSpeedBias = mouseBiasField.text;
                 }
             }
@@ -890,7 +890,7 @@ Kirigami.FormLayout
                     
                     text = inputValue.toFixed(2);
                     mouseBiasSlider.value = inputValue;
-                    wallpaper.configuration.mouseBias = inputValue;
+                    // wallpaper.configuration.mouseBias = inputValue;
                     root.cfg_mouseSpeedBias = inputValue;
                 }
                 Keys.onPressed: (event) =>
