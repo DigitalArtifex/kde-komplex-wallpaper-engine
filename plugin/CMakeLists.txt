@@ -13,7 +13,6 @@ add_library(
         ShaderPackModel.cpp
         AudioModel.cpp
         AudioImageProvider.cpp
-        ShaderPackMetadata.cpp
         ShaderPackModel.h
         AudioModel.h
         AudioImageProvider.h
@@ -53,7 +52,6 @@ qt_add_qml_module(
         ShaderPackModel.cpp
         AudioModel.cpp
         AudioImageProvider.cpp
-        ShaderPackMetadata.cpp
         GeometryProvider.cpp
         GeometryProvider.h
         PexelsImageMetadata.h
