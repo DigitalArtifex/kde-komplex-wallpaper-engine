@@ -76,7 +76,7 @@ QHash<int, QByteArray> KomplexSearchModel::roleNames() const
 
 void KomplexSearchModel::downloadMedia(QString fileLocation, QString fileUrl)
 {
-    QUrl remoteUrl(QStringLiteral("http://api.artifex.services/v1%2").arg(fileUrl));
+    QUrl remoteUrl(QStringLiteral("https://api.artifex.services/v1%2").arg(fileUrl));
     QNetworkRequest request(remoteUrl);
     QNetworkReply *reply = m_manager.get(request);
 
@@ -552,7 +552,7 @@ void KomplexSearchModel::install(quint64 index)
 
     if(!process.waitForStarted(3000))
     {
-        qWarning() << QStringLiteral("Could not start copy process: %1").arg(process.readAllStandardError());
+        qWarning() << QStringLiteral("Could not start copy process: %1").arg(QString::fromUtf8(process.readAllStandardError()));
         setStatus(Error, QStringLiteral("Could not start install process"));
         return;
     }

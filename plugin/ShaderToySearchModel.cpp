@@ -530,7 +530,7 @@ void ShaderToySearchModel::install(quint64 index)
 
     if(!process.waitForStarted(3000))
     {
-        qWarning() << QStringLiteral("Could not start copy process: %1").arg(process.readAllStandardError());
+        qWarning() << QStringLiteral("Could not start copy process: %1").arg(QString::fromUtf8(process.readAllStandardError()));
         setStatus(Error, QStringLiteral("Could not start install process"));
         return;
     }

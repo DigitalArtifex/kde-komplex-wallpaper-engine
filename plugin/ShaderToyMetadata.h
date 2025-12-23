@@ -10,14 +10,15 @@
 #include <QProcess>
 #include <QTimer>
 #include <QMutex>
-#include <qdir.h>
-#include <qeventloop.h>
-#include <qjsonarray.h>
-#include <qjsondocument.h>
-#include <qjsonobject.h>
-#include <qjsonparseerror.h>
-#include <qnetworkaccessmanager.h>
-#include <qpixmap.h>
+#include <QDir>
+#include <QEventLoop>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
+#include <QNetworkAccessManager>
+#include <QPixmap>
 #include <qqmlintegration.h>
 
 #include "Komplex_global.h"
