@@ -268,5 +268,6 @@ private:
     Q_PROPERTY(QString statusMessage READ statusMessage WRITE setStatusMessage NOTIFY statusMessageChanged FINAL)
     Q_PROPERTY(QStringList videoSelections READ videoSelections WRITE setVideoSelections NOTIFY videoSelectionsChanged FINAL)
 };
+
 Q_DECLARE_METATYPE(ShaderToySearchModel)
 #endif // ShaderToySearchModel_H
